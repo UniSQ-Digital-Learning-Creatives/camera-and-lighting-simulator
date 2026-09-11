@@ -25,12 +25,7 @@ extends Node3D
 @onready var rim_temp_slider = $"CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Rim Temp Group/Rim Temp"
 
 @onready var camera = $"POV Cam"
-@onready var pov_camera_render = $MainViewport/POVCameraRender
 @onready var exposure_controller = $ExposureController
-
-
-@onready var main_view_texture_rect = $CanvasLayer/MainViewTextRect
-@onready var main_viewport = $MainViewport
 
 var camera_distance := 5.0
 var camera_height := 0.4
@@ -57,16 +52,27 @@ var key_temperature = 5600.0
 var fill_temperature = 5600.0
 var rim_temperature = 5600.0
 
+var _last_dof_focus_distance = null
+var _last_dof_aperture = null
+
 func _process(_delta):
-	pov_camera_render.global_transform = camera.global_transform
-	pov_camera_render.fov = camera.fov
 	update_dof()
 
 func update_dof():
-	var attributes = camera.attributes
-
 	var focus_distance = exposure_controller.focus_distance
 	var aperture = exposure_controller.aperture
+
+	# Skip re-pushing the DOF attributes resource to the renderer when
+	# nothing changed since last frame -- on the web/WebGPU target every
+	# RenderingServer update crosses the JS/WASM command bridge, so a
+	# steady-state frame (nothing being dragged) should cost nothing here.
+	if focus_distance == _last_dof_focus_distance and aperture == _last_dof_aperture:
+		return
+
+	_last_dof_focus_distance = focus_distance
+	_last_dof_aperture = aperture
+
+	var attributes = camera.attributes
 
 	attributes.dof_blur_near_distance = focus_distance
 	attributes.dof_blur_far_distance = focus_distance
@@ -78,8 +84,6 @@ func update_dof():
 	attributes.dof_blur_amount = remap(aperture, 1.4, 22.0, 0.5, 0.05)
 
 func _ready():
-	main_view_texture_rect.texture = main_viewport.get_texture()
-
 	camera_distance = camera.global_position.distance_to(subject.global_position)
 
 	set_lens(current_focal_length)
@@ -94,9 +98,6 @@ func _ready():
 
 	sync_sliders_to_data()
 	exposure_controller.sync_focus_distance_slider()
-
-	print("POV Cam: ", $"POV Cam".global_position)
-	print("Render Cam: ", $MainViewport/POVCameraRender.global_position)
 
 
 func sync_sliders_to_data():

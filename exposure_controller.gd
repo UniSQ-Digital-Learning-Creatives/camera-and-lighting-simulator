@@ -33,7 +33,7 @@ var autofocus_enabled := true
 #var blur_amount = 0.0
 var subject_distance = 1
 
-
+var _last_brightness = null
 
 var dof_data = {
 	"aperture": 8,
@@ -130,10 +130,15 @@ func _process(delta):
 	#var noise = get_noise_strength()
 	var meter_value = clamp(diff, -3.0, 3.0)
 	var brightness = pow(2.0,-diff)
-	
-	world_env.environment.adjustment_enabled = true
-	world_env.environment.adjustment_brightness = brightness
-	
+
+	# adjustment_brightness lives on the Environment resource, so writing it
+	# pushes a RenderingServer update across the JS/WASM bridge on web;
+	# skip the call on frames where exposure hasn't actually changed.
+	if _last_brightness == null or absf(brightness - _last_brightness) > 0.0005:
+		world_env.environment.adjustment_enabled = true
+		world_env.environment.adjustment_brightness = brightness
+		_last_brightness = brightness
+
 	#pointer.position.x = 150 + meter_value * 50
 	
 

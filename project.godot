@@ -47,3 +47,6 @@ my_action={
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method.mobile="forward_plus"
 renderer/rendering_method.web="forward_plus"
+textures/vram_compression/import_etc2_astc=true
+lights_and_shadows/positional_shadow/atlas_size=1024
+lights_and_shadows/directional_shadow/size=2048

@@ -40,15 +40,6 @@ script = ExtResource("1_0xm2m")
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
 shadow_enabled = true
 
-[node name="MainViewport" type="SubViewport" parent="." unique_id=1586841294]
-size = Vector2i(2500, 1406)
-
-[node name="POVCameraRender" type="Camera3D" parent="MainViewport" unique_id=2137194341]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.126, 2.7585547)
-cull_mask = 1
-attributes = SubResource("CameraAttributesPractical_povcam")
-fov = 37.849285
-
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=469414272]
 environment = SubResource("Environment_0thei")
 
@@ -70,18 +61,6 @@ position = Vector2(200, 1100)
 script = ExtResource("5_7mycd")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1165215695]
-
-[node name="MainViewTextRect" type="TextureRect" parent="CanvasLayer" unique_id=665916621]
-visible = false
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_bottom = 4.214966
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_stretch_ratio = 17.29
-mouse_filter = 2
-stretch_mode = 5
 
 [node name="CameraPanel" type="Panel" parent="CanvasLayer" unique_id=1231028787]
 offset_left = 100.0
