@@ -628,6 +628,7 @@ distance_fade_enabled = true
 
 [node name="Mesh" type="MeshInstance3D" parent="KeyLight" unique_id=636445641]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+cast_shadow = 0
 mesh = SubResource("CylinderMesh_0thei")
 
 [node name="FillLight" type="SpotLight3D" parent="." unique_id=1945025475]
@@ -636,6 +637,7 @@ shadow_enabled = true
 
 [node name="Mesh2" type="MeshInstance3D" parent="FillLight" unique_id=327402929]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+cast_shadow = 0
 mesh = SubResource("CylinderMesh_0thei")
 
 [node name="RimLight" type="SpotLight3D" parent="." unique_id=271086274]
@@ -644,6 +646,7 @@ shadow_enabled = true
 
 [node name="Mesh3" type="MeshInstance3D" parent="RimLight" unique_id=1501152486]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+cast_shadow = 0
 mesh = SubResource("CylinderMesh_0thei")
 
 [node name="Floor" type="MeshInstance3D" parent="." unique_id=1770790046]
@@ -658,10 +661,12 @@ mesh = SubResource("PlaneMesh_0xm2m")
 
 [node name="Cube 1" type="MeshInstance3D" parent="." unique_id=184063576]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.565, -0.575, 0.5)
+cast_shadow = 0
 mesh = SubResource("BoxMesh_0thei")
 
 [node name="Cube 2" type="MeshInstance3D" parent="." unique_id=1385876625]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.53, -0.565, -0.635)
+cast_shadow = 0
 mesh = SubResource("BoxMesh_0thei")
 
 [node name="Subject" parent="." unique_id=444173362 instance=ExtResource("3_h2yge")]

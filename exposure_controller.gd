@@ -34,6 +34,8 @@ var autofocus_enabled := true
 var subject_distance = 1
 
 var _last_brightness = null
+var _last_focus_distance = null
+var _last_autofocus_enabled = null
 
 var dof_data = {
 	"aperture": 8,
@@ -98,6 +100,34 @@ func _ready():
 	shutter_slider.set_value_no_signal(shutter_index)
 
 	aperture_indicator.set_aperture(aperture)
+	update_exposure_display()
+
+# aperture/shutter/iso only ever change via slider signals below, never per
+# frame -- computing this in _process() every frame (as it used to be) redid
+# the same log()/pow() math and rebuilt three label strings ~60x/sec for
+# values that were almost always unchanged. Called once here and once from
+# each relevant slider callback instead.
+func update_exposure_display():
+	var diff = get_exposure_difference()
+	var brightness = pow(2.0, -diff)
+
+	# adjustment_brightness lives on the Environment resource, so writing it
+	# pushes a RenderingServer update across the JS/WASM bridge on web;
+	# skip the call when exposure hasn't actually changed.
+	if _last_brightness == null or absf(brightness - _last_brightness) > 0.0005:
+		world_env.environment.adjustment_enabled = true
+		world_env.environment.adjustment_brightness = brightness
+		_last_brightness = brightness
+
+	iso_label.text = "ISO " + str(int(iso))
+
+	shutter_label.text = shutter_labels[shutter_index]
+
+	aperture_label.text = (
+		"f/" + str(snapped(aperture, 0.1))
+		+ "\nEV Difference: "
+		+ str(snapped(diff, 0.1))
+	)
 
 func sync_focus_distance_slider():
 	if autofocus_enabled:
@@ -124,62 +154,28 @@ func _process(delta):
 		subject.global_position
 	)
 	else: focus_distance = manual_focus_distance
-	
 
-	var diff = get_exposure_difference()
-	#var noise = get_noise_strength()
-	var meter_value = clamp(diff, -3.0, 3.0)
-	var brightness = pow(2.0,-diff)
+	# focus_distance only actually changes while dragging a camera/focus
+	# slider or while autofocus tracks a moving subject; skip rebuilding the
+	# label string (and the Mode:/AUTO-MANUAL branch) on every other frame.
+	if focus_distance != _last_focus_distance or autofocus_enabled != _last_autofocus_enabled:
+		_last_focus_distance = focus_distance
+		_last_autofocus_enabled = autofocus_enabled
 
-	# adjustment_brightness lives on the Environment resource, so writing it
-	# pushes a RenderingServer update across the JS/WASM bridge on web;
-	# skip the call on frames where exposure hasn't actually changed.
-	if _last_brightness == null or absf(brightness - _last_brightness) > 0.0005:
-		world_env.environment.adjustment_enabled = true
-		world_env.environment.adjustment_brightness = brightness
-		_last_brightness = brightness
+		var focus_mode = "AUTO" if autofocus_enabled else "MANUAL"
 
-	#pointer.position.x = 150 + meter_value * 50
-	
+		focus_dist_label.text = (
+			"Mode: " + focus_mode
+			+ "\nFocus: "
+			+ str(snapped(focus_distance, 0.1))
+			+ "m"
+			+ "\nSubject: "
+			+ str(snapped(subject_distance, 0.1))
+			+ "m"
+		)
 
-	var focus_mode = "AUTO" if autofocus_enabled else "MANUAL"
-
-	focus_dist_label.text = (
-		"Mode: " + focus_mode
-		+ "\nFocus: "
-		+ str(snapped(focus_distance, 0.1))
-		+ "m"
-		+ "\nSubject: "
-		+ str(snapped(subject_distance, 0.1))
-		+ "m"
-	)
-	
-	
-	
-	
-	
-
-	#focus_dist_label.text = (
-		#"Focus: "
-		#+ str(snapped(focus_distance, 0.1))
-		#+ "m"
-		#+ "\nSubject: "
-		#+ str(snapped(subject_distance, 0.1))
-		#+ "m"
-	#)
-	#
 	#exposure_meter.text = ("-3  -2  -1   0  +1  +2  +3\n" +"Exposure: " + str(snapped(diff, 0.1))
 	#)
-#
-	iso_label.text = "ISO " + str(int(iso))
-	
-	shutter_label.text = shutter_labels[shutter_index]
-#
-	aperture_label.text = (
-		"f/" + str(snapped(aperture, 0.1))
-		+ "\nEV Difference: "
-		+ str(snapped(diff, 0.1))
-	)
 	#
 	#if abs(diff) < 0.5: pointer.modulate = Color.GREEN
 	#elif abs(diff) < 1.5: pointer.modulate = Color.ORANGE
@@ -225,13 +221,16 @@ func _process(delta):
 func _on_aperture_slider_value_changed(value):
 	aperture = value
 	aperture_indicator.set_aperture(value)
+	update_exposure_display()
 
 func _on_iso_slider_value_changed(value):
 	iso = value
+	update_exposure_display()
 
 func _on_shutter_slider_value_changed(value: float) -> void:
 	shutter_index = int(value)
 	shutter_speed = shutter_speeds[shutter_index]
+	update_exposure_display()
 
 func get_dof_strength() -> float:
 
