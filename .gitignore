@@ -16,3 +16,9 @@ data_*/
 mono_crash.*.json
 
 builds
+
+# Local instructions file, kept out of history on purpose
+CLAUDE.md
+
+# macOS Finder metadata
+.DS_Store
