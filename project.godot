@@ -17,14 +17,11 @@ config/icon="res://icon.svg"
 
 [display]
 
-window/size/viewport_width=1280
-window/size/viewport_height=720
+window/size/viewport_width=1920
+window/size/viewport_height=1080
 window/energy_saving/keep_screen_on=false
 window/frame_pacing/android/enable_frame_pacing=false
-window/stretch/mode="viewport"
-window/stretch/scale_mode="integer"
 window/dpi/allow_hidpi=false
-window/vsync/vsync_mode=2
 window/ios/allow_high_refresh_rate=false
 window/ios/hide_home_indicator=false
 window/ios/hide_status_bar=false
@@ -38,15 +35,13 @@ my_action={
 ]
 }
 
-[physics]
-
-3d/physics_engine="Jolt Physics"
-
 [rendering]
 
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method.mobile="forward_plus"
 renderer/rendering_method.web="forward_plus"
 textures/vram_compression/import_etc2_astc=true
-lights_and_shadows/positional_shadow/atlas_size=1024
 lights_and_shadows/directional_shadow/size=2048
+lights_and_shadows/positional_shadow/atlas_size=1024
+scaling_3d/mode=0
+scaling_3d/scale=0.85
