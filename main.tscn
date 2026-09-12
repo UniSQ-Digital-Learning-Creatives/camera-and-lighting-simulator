@@ -47,12 +47,12 @@ environment = SubResource("Environment_0thei")
 script = ExtResource("2_7mycd")
 
 [node name="SensorDiagram" type="Node2D" parent="." unique_id=1831491059]
-position = Vector2(450.56, 0)
+position = Vector2(582.12, 1.9999999)
 scale = Vector2(0.3584, 0.3584)
 script = ExtResource("5_lquwl")
 
 [node name="CameraDiagram" type="Node2D" parent="." unique_id=408330464]
-position = Vector2(317.44, 128)
+position = Vector2(449, 130)
 scale = Vector2(0.4096, 0.4096)
 script = ExtResource("4_1bvp3")
 
@@ -63,17 +63,30 @@ script = ExtResource("5_7mycd")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1165215695]
 scale = Vector2(0.512, 0.512)
+transform = Transform2D(0.512, 0, 0, 0.512, 0, 0)
 
 [node name="CameraPanel" type="Panel" parent="CanvasLayer" unique_id=1231028787]
-offset_left = 100.0
-offset_top = 100.0
-offset_right = 239.0
-offset_bottom = 100.0
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 21.484373
+offset_top = 15.624999
+offset_right = 374.99997
+offset_bottom = 139.37494
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/CameraPanel" unique_id=885670550]
-layout_mode = 0
-offset_right = 144.0
-offset_bottom = 651.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/CameraPanel/MarginContainer" unique_id=1777813043]
 layout_mode = 2
@@ -240,19 +253,30 @@ max_value = 1.5
 step = 0.05
 
 [node name="LightingPanel" type="Panel" parent="CanvasLayer" unique_id=291720516]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -239.0
-offset_top = 100.0
-offset_right = -100.0
-offset_bottom = 100.0
-grow_horizontal = 0
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 1596.3279
+offset_top = 19.531248
+offset_right = 1843.0466
+offset_bottom = 19.53125
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/LightingPanel" unique_id=1026364363]
-layout_mode = 0
-offset_right = 200.0
-offset_bottom = 264.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/LightingPanel/MarginContainer" unique_id=268561011]
 layout_mode = 2
@@ -295,7 +319,6 @@ value = 1.0
 
 [node name="Key Height Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer" unique_id=1770847508]
 layout_mode = 2
-size_flags_vertical = 3
 
 [node name="Label" type="Label" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Key Height Group" unique_id=609323898]
 layout_mode = 2
@@ -311,7 +334,6 @@ value = 0.6
 
 [node name="Key Temp Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer" unique_id=1658345405]
 layout_mode = 2
-size_flags_vertical = 3
 
 [node name="Label" type="Label" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Key Temp Group" unique_id=48045600]
 layout_mode = 2
@@ -374,7 +396,6 @@ value = 0.6
 
 [node name="Fill Temp Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer" unique_id=1298042515]
 layout_mode = 2
-size_flags_vertical = 3
 
 [node name="Label" type="Label" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Fill Temp Group" unique_id=116864293]
 layout_mode = 2
@@ -437,7 +458,6 @@ value = 0.6
 
 [node name="Rim Temp Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer" unique_id=190302453]
 layout_mode = 2
-size_flags_vertical = 3
 
 [node name="Label" type="Label" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Rim Temp Group" unique_id=1532073645]
 layout_mode = 2
@@ -452,6 +472,7 @@ step = 100.0
 value = 5600.0
 
 [node name="ARCHIVE" type="Control" parent="CanvasLayer" unique_id=1119934313]
+visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
