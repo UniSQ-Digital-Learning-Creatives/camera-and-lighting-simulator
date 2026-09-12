@@ -1,28 +1,28 @@
 extends Node3D
 
 
-@onready var label = $CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/LensLabel
-@onready var lens_slider = $CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/lensSlider
+@onready var label = $CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/LensLabel
+@onready var lens_slider = $CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/lensSlider
 @onready var subject = $Subject
-@onready var camera_distance_label = $CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/CameraDistanceLabel
+@onready var camera_distance_label = $CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/CameraDistanceLabel
 
-@onready var camera_distance_slider = $CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/CameraDistanceSlider
-@onready var camera_height_slider = $CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/CameraHeightSlider
+@onready var camera_distance_slider = $CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/CameraDistanceSlider
+@onready var camera_height_slider = $CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/CameraHeightSlider
 
-@onready var key_angle_slider = $"CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Key Angle Group/KeyAngleSlider"
-@onready var key_dist_slider = $"CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Key Dist Group/KeyDist"
-@onready var key_height_slider = $"CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Key Height Group/KeyHeight"
-@onready var key_temp_slider = $"CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Key Temp Group/Keytemp"
+@onready var key_angle_slider = $"CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Key Angle Group/KeyAngleSlider"
+@onready var key_dist_slider = $"CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Key Dist Group/KeyDist"
+@onready var key_height_slider = $"CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Key Height Group/KeyHeight"
+@onready var key_temp_slider = $"CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Key Temp Group/Keytemp"
 
-@onready var fill_angle_slider = $"CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Fill Angle Group/FillAngleSlider"
-@onready var fill_dist_slider = $"CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Fill Dist Group/FillDist"
-@onready var fill_height_slider = $"CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Fill Height Group/FillHeight"
-@onready var fill_temp_slider = $"CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Fill Temp Group/Fill Temp"
+@onready var fill_angle_slider = $"CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Fill Angle Group/FillAngleSlider"
+@onready var fill_dist_slider = $"CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Fill Dist Group/FillDist"
+@onready var fill_height_slider = $"CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Fill Height Group/FillHeight"
+@onready var fill_temp_slider = $"CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Fill Temp Group/Fill Temp"
 
-@onready var rim_angle_slider = $"CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Rim Angle Group/RimAngleSlider"
-@onready var rim_dist_slider = $"CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Rim Dist Group/RimDist"
-@onready var rim_height_slider = $"CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Rim Height Group/RimHeight"
-@onready var rim_temp_slider = $"CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Rim Temp Group/Rim Temp"
+@onready var rim_angle_slider = $"CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Rim Angle Group/RimAngleSlider"
+@onready var rim_dist_slider = $"CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Rim Dist Group/RimDist"
+@onready var rim_height_slider = $"CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Rim Height Group/RimHeight"
+@onready var rim_temp_slider = $"CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Rim Temp Group/Rim Temp"
 
 @onready var camera = $"POV Cam"
 @onready var exposure_controller = $ExposureController
