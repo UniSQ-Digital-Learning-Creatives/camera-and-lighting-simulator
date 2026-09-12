@@ -7,18 +7,18 @@
 [ext_resource type="Script" uid="uid://wgvsgeww2r03" path="res://aperture_indicator.gd" id="5_7mycd"]
 [ext_resource type="Script" uid="uid://douyrjghtbk24" path="res://sensor_diagram.gd" id="5_lquwl"]
 
-[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_povcam"]
-dof_blur_far_enabled = true
-dof_blur_far_distance = 3.17
-dof_blur_near_enabled = true
-dof_blur_near_distance = 2.86
-
 [sub_resource type="Environment" id="Environment_0thei"]
 background_mode = 1
 background_color = Color(1, 0.35913473, 0.66001046, 1)
 background_energy_multiplier = 0.0
 tonemap_exposure = 0.1
 adjustment_enabled = true
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_povcam"]
+dof_blur_far_enabled = true
+dof_blur_far_distance = 3.17
+dof_blur_near_enabled = true
+dof_blur_near_distance = 2.86
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_0thei"]
 lightmap_size_hint = Vector2i(6, 6)
@@ -47,264 +47,243 @@ environment = SubResource("Environment_0thei")
 script = ExtResource("2_7mycd")
 
 [node name="SensorDiagram" type="Node2D" parent="." unique_id=1831491059]
-position = Vector2(720, 20)
-scale = Vector2(0.55, 0.55)
+position = Vector2(450.56, 0)
+scale = Vector2(0.3584, 0.3584)
 script = ExtResource("5_lquwl")
 
 [node name="CameraDiagram" type="Node2D" parent="." unique_id=408330464]
-position = Vector2(720, 200)
-scale = Vector2(0.4, 0.4)
+position = Vector2(317.44, 128)
+scale = Vector2(0.4096, 0.4096)
 script = ExtResource("4_1bvp3")
 
 [node name="ApertureIndicator" type="Node2D" parent="." unique_id=1465089650]
-position = Vector2(920, 420)
-scale = Vector2(0.8, 0.8)
+position = Vector2(102.4, 563.2)
+scale = Vector2(0.512, 0.512)
 script = ExtResource("5_7mycd")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1165215695]
+scale = Vector2(0.512, 0.512)
 
 [node name="CameraPanel" type="Panel" parent="CanvasLayer" unique_id=1231028787]
-anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = 20.0
-offset_right = 220.0
-offset_bottom = -20.0
-grow_vertical = 2
+offset_left = 100.0
+offset_top = 100.0
+offset_right = 239.0
+offset_bottom = 100.0
 
-[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/CameraPanel" unique_id=1231028788]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-horizontal_scroll_mode = 0
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/CameraPanel" unique_id=885670550]
+layout_mode = 0
+offset_right = 144.0
+offset_bottom = 651.0
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/CameraPanel/ScrollContainer" unique_id=885670550]
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/CameraPanel/MarginContainer" unique_id=1777813043]
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer" unique_id=1777813043]
-layout_mode = 2
-size_flags_horizontal = 3
 size_flags_stretch_ratio = 4.01
 
-[node name="CAMERA SETTINGS" type="Label" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=249649222]
+[node name="CAMERA SETTINGS" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=249649222]
 layout_mode = 2
 text = "CAMERA SETTINGS
 "
 
-[node name="Sensor" type="Label" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=182583933]
+[node name="Sensor" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=182583933]
 layout_mode = 2
 text = "Sensor"
 
-[node name="SensorContainer" type="BoxContainer" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1627355705]
+[node name="SensorContainer" type="BoxContainer" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=1627355705]
 layout_mode = 2
 
-[node name="FullFrame" type="Button" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/SensorContainer" unique_id=1392156066]
+[node name="FullFrame" type="Button" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/SensorContainer" unique_id=1392156066]
 layout_mode = 2
 text = "Full Frame"
 
-[node name="APSC" type="Button" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/SensorContainer" unique_id=934143034]
+[node name="APSC" type="Button" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/SensorContainer" unique_id=934143034]
 layout_mode = 2
 text = "APS-C"
 
-[node name="MFT" type="Button" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/SensorContainer" unique_id=1584750582]
+[node name="MFT" type="Button" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/SensorContainer" unique_id=1584750582]
 layout_mode = 2
 text = "Micro Four Thirds"
 
-[node name="Lens Setting" type="Label" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1778551268]
+[node name="Lens Setting" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=1778551268]
 layout_mode = 2
 text = "
 Lens Settings"
 
-[node name="Label" type="Label" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1739194307]
+[node name="Label" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=1739194307]
 layout_mode = 2
 text = "Lens:"
 
-[node name="lensSlider" type="HSlider" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=755338863]
+[node name="lensSlider" type="HSlider" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=755338863]
 layout_mode = 2
 min_value = 18.0
 max_value = 200.0
 value = 50.0
 
-[node name="LensContainer" type="BoxContainer" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1022075020]
+[node name="LensContainer" type="BoxContainer" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=1022075020]
 layout_mode = 2
 
-[node name="24mm" type="Button" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/LensContainer" unique_id=1431501269]
+[node name="24mm" type="Button" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/LensContainer" unique_id=1431501269]
 layout_mode = 2
 text = "24mm"
 
-[node name="50mm" type="Button" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/LensContainer" unique_id=836034832]
+[node name="50mm" type="Button" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/LensContainer" unique_id=836034832]
 layout_mode = 2
 text = "50mm"
 
-[node name="200mm" type="Button" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/LensContainer" unique_id=382497593]
+[node name="200mm" type="Button" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/LensContainer" unique_id=382497593]
 layout_mode = 2
 text = "200mm"
 
-[node name="LensLabel" type="Label" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=744145912]
+[node name="LensLabel" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=744145912]
 layout_mode = 2
 text = "Lens Slider"
 vertical_alignment = 2
 
-[node name="ApertureNameLabel" type="Label" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1126309658]
+[node name="ApertureNameLabel" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=1126309658]
 layout_mode = 2
 text = "
 Aperture Settings"
 
-[node name="ApertureSlider" type="HSlider" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=64118728]
+[node name="ApertureSlider" type="HSlider" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=64118728]
 layout_mode = 2
 min_value = 1.4
 max_value = 22.0
 step = 0.1
 value = 5.6
 
-[node name="ApertureLabel" type="Label" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1905888691]
+[node name="ApertureLabel" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=1905888691]
 layout_mode = 2
 text = "Ap num"
 
-[node name="ISO Setting" type="Label" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=458790921]
+[node name="ISO Setting" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=458790921]
 layout_mode = 2
 text = "
 ISO Settings"
 
-[node name="ISOSlider" type="HSlider" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=565513804]
+[node name="ISOSlider" type="HSlider" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=565513804]
 layout_mode = 2
 min_value = 100.0
 max_value = 500.0
 step = 10.0
 value = 100.0
 
-[node name="IsoLabel" type="Label" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1484873174]
+[node name="IsoLabel" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=1484873174]
 layout_mode = 2
 text = "ISO num"
 
-[node name="Shutter Speed Settings" type="Label" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1185902804]
+[node name="Shutter Speed Settings" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=1185902804]
 layout_mode = 2
 text = "
 Shutter Speed Settings"
 
-[node name="ShutterSlider" type="HSlider" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=94337700]
+[node name="ShutterSlider" type="HSlider" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=94337700]
 layout_mode = 2
 max_value = 12.0
 step = 0.1
 
-[node name="ShutterLabel" type="Label" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1612340614]
+[node name="ShutterLabel" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=1612340614]
 layout_mode = 2
 text = "Shutter num"
 
-[node name="Focus Distance Settings" type="Label" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1204639563]
+[node name="Focus Distance Settings" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=1204639563]
 layout_mode = 2
 text = "
 Focus Distance Settings"
 
-[node name="FocusDistSlider" type="HSlider" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=2053388499]
+[node name="FocusDistSlider" type="HSlider" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=2053388499]
 layout_mode = 2
 min_value = 0.5
 max_value = 10.0
 step = 0.1
 value = 0.5
 
-[node name="DOFLabel" type="Label" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=204793944]
+[node name="DOFLabel" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=204793944]
 visible = false
 layout_mode = 2
 
-[node name="FocusDistLabel" type="Label" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=223504545]
+[node name="FocusDistLabel" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=223504545]
 visible = false
 layout_mode = 2
 
-[node name="Focus Status" type="Label" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=343047961]
+[node name="Focus Status" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=343047961]
 visible = false
 layout_mode = 2
 
-[node name="AutoFocus" type="Button" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1835136849]
+[node name="AutoFocus" type="Button" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=1835136849]
 visible = false
 layout_mode = 2
 text = "Auto Focus"
 
-[node name="Focus Distance Settings2" type="Label" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1265488895]
+[node name="Focus Distance Settings2" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=1265488895]
 layout_mode = 2
 text = "
 Camera Position Settings"
 
-[node name="CameraDistanceLabel" type="Label" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=713554490]
+[node name="CameraDistanceLabel" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=713554490]
 layout_mode = 2
 text = "
 Distance from subject"
 
-[node name="CameraDistanceSlider" type="HSlider" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=2100955375]
+[node name="CameraDistanceSlider" type="HSlider" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=2100955375]
 layout_mode = 2
 min_value = 0.3
 max_value = 7.0
 step = 0.1
 value = 2.0
 
-[node name="CameraHeightLabel" type="Label" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=284867459]
+[node name="CameraHeightLabel" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=284867459]
 layout_mode = 2
 text = "Camera Height"
 
-[node name="CameraHeightSlider" type="HSlider" parent="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=680579700]
+[node name="CameraHeightSlider" type="HSlider" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=680579700]
 layout_mode = 2
 max_value = 1.5
 step = 0.05
 
 [node name="LightingPanel" type="Panel" parent="CanvasLayer" unique_id=291720516]
+anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -220.0
-offset_top = 20.0
-offset_right = -20.0
-offset_bottom = -20.0
+offset_left = -239.0
+offset_top = 100.0
+offset_right = -100.0
+offset_bottom = 100.0
 grow_horizontal = 0
-grow_vertical = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/LightingPanel" unique_id=291720517]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-horizontal_scroll_mode = 0
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/LightingPanel" unique_id=1026364363]
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 264.0
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/LightingPanel/ScrollContainer" unique_id=1026364363]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer" unique_id=268561011]
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/LightingPanel/MarginContainer" unique_id=268561011]
 layout_mode = 2
 
-[node name="Key Light Label" type="Label" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1538396005]
+[node name="Key Light Label" type="Label" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer" unique_id=1538396005]
 layout_mode = 2
 text = "KEY Light"
 
-[node name="Key Angle Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=302540183]
+[node name="Key Angle Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer" unique_id=302540183]
 custom_maximum_size = Vector2(200, -1)
 layout_mode = 2
 
-[node name="Angle Setting" type="Label" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Key Angle Group" unique_id=1466749533]
+[node name="Angle Setting" type="Label" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Key Angle Group" unique_id=1466749533]
 layout_mode = 2
 text = "Angle"
 
-[node name="KeyAngleSlider" type="HSlider" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Key Angle Group" unique_id=1615041954]
+[node name="KeyAngleSlider" type="HSlider" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Key Angle Group" unique_id=1615041954]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 max_value = 360.0
 value = 45.0
 
-[node name="Key Dist Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=399027468]
+[node name="Key Dist Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer" unique_id=399027468]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Key Dist Group" unique_id=373111333]
+[node name="Label" type="Label" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Key Dist Group" unique_id=373111333]
 layout_mode = 2
 text = "Distance"
 
-[node name="KeyDist" type="HSlider" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Key Dist Group" unique_id=1458995321]
+[node name="KeyDist" type="HSlider" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Key Dist Group" unique_id=1458995321]
 custom_maximum_size = Vector2(200, -1)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -314,15 +293,15 @@ max_value = 5.0
 step = 0.1
 value = 1.0
 
-[node name="Key Height Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1770847508]
+[node name="Key Height Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer" unique_id=1770847508]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Key Height Group" unique_id=609323898]
+[node name="Label" type="Label" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Key Height Group" unique_id=609323898]
 layout_mode = 2
 text = "Height"
 
-[node name="KeyHeight" type="HSlider" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Key Height Group" unique_id=607916845]
+[node name="KeyHeight" type="HSlider" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Key Height Group" unique_id=607916845]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -330,15 +309,15 @@ max_value = 1.5
 step = 0.1
 value = 0.6
 
-[node name="Key Temp Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1658345405]
+[node name="Key Temp Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer" unique_id=1658345405]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Key Temp Group" unique_id=48045600]
+[node name="Label" type="Label" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Key Temp Group" unique_id=48045600]
 layout_mode = 2
 text = "Temperature"
 
-[node name="Keytemp" type="HSlider" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Key Temp Group" unique_id=760978581]
+[node name="Keytemp" type="HSlider" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Key Temp Group" unique_id=760978581]
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = 2000.0
@@ -346,32 +325,32 @@ max_value = 10000.0
 step = 100.0
 value = 5600.0
 
-[node name="Fill Light Label" type="Label" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=197372758]
+[node name="Fill Light Label" type="Label" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer" unique_id=197372758]
 layout_mode = 2
 text = "
 FILL Light"
 
-[node name="Fill Angle Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1095657739]
+[node name="Fill Angle Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer" unique_id=1095657739]
 layout_mode = 2
 
-[node name="Angle Setting2" type="Label" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Fill Angle Group" unique_id=1797958809]
+[node name="Angle Setting2" type="Label" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Fill Angle Group" unique_id=1797958809]
 layout_mode = 2
 text = "Angle"
 
-[node name="FillAngleSlider" type="HSlider" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Fill Angle Group" unique_id=114871884]
+[node name="FillAngleSlider" type="HSlider" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Fill Angle Group" unique_id=114871884]
 layout_mode = 2
 size_flags_horizontal = 3
 max_value = 360.0
 value = 45.0
 
-[node name="Fill Dist Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=166962843]
+[node name="Fill Dist Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer" unique_id=166962843]
 layout_mode = 2
 
-[node name="Label2" type="Label" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Fill Dist Group" unique_id=1957633286]
+[node name="Label2" type="Label" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Fill Dist Group" unique_id=1957633286]
 layout_mode = 2
 text = "Distance"
 
-[node name="FillDist" type="HSlider" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Fill Dist Group" unique_id=2103635211]
+[node name="FillDist" type="HSlider" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Fill Dist Group" unique_id=2103635211]
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = 0.5
@@ -379,29 +358,29 @@ max_value = 5.0
 step = 0.1
 value = 1.5
 
-[node name="Fill Height Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1377222195]
+[node name="Fill Height Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer" unique_id=1377222195]
 layout_mode = 2
 
-[node name="Label2" type="Label" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Fill Height Group" unique_id=1519662672]
+[node name="Label2" type="Label" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Fill Height Group" unique_id=1519662672]
 layout_mode = 2
 text = "Height"
 
-[node name="FillHeight" type="HSlider" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Fill Height Group" unique_id=1975224881]
+[node name="FillHeight" type="HSlider" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Fill Height Group" unique_id=1975224881]
 layout_mode = 2
 size_flags_horizontal = 3
 max_value = 1.5
 step = 0.1
 value = 0.6
 
-[node name="Fill Temp Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1298042515]
+[node name="Fill Temp Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer" unique_id=1298042515]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Fill Temp Group" unique_id=116864293]
+[node name="Label" type="Label" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Fill Temp Group" unique_id=116864293]
 layout_mode = 2
 text = "Temperature"
 
-[node name="Fill Temp" type="HSlider" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Fill Temp Group" unique_id=56663021]
+[node name="Fill Temp" type="HSlider" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Fill Temp Group" unique_id=56663021]
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = 2000.0
@@ -409,32 +388,32 @@ max_value = 10000.0
 step = 100.0
 value = 5600.0
 
-[node name="Rim Light Label" type="Label" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=2127388284]
+[node name="Rim Light Label" type="Label" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer" unique_id=2127388284]
 layout_mode = 2
 text = "
 RIM Light"
 
-[node name="Rim Angle Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1952334820]
+[node name="Rim Angle Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer" unique_id=1952334820]
 layout_mode = 2
 
-[node name="Angle Setting3" type="Label" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Rim Angle Group" unique_id=881838337]
+[node name="Angle Setting3" type="Label" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Rim Angle Group" unique_id=881838337]
 layout_mode = 2
 text = "Angle"
 
-[node name="RimAngleSlider" type="HSlider" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Rim Angle Group" unique_id=1607774061]
+[node name="RimAngleSlider" type="HSlider" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Rim Angle Group" unique_id=1607774061]
 layout_mode = 2
 size_flags_horizontal = 3
 max_value = 360.0
 value = 45.0
 
-[node name="Rim Dist Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1353288496]
+[node name="Rim Dist Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer" unique_id=1353288496]
 layout_mode = 2
 
-[node name="Label3" type="Label" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Rim Dist Group" unique_id=476697031]
+[node name="Label3" type="Label" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Rim Dist Group" unique_id=476697031]
 layout_mode = 2
 text = "Distance"
 
-[node name="RimDist" type="HSlider" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Rim Dist Group" unique_id=451162935]
+[node name="RimDist" type="HSlider" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Rim Dist Group" unique_id=451162935]
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = 0.5
@@ -442,29 +421,29 @@ max_value = 5.0
 step = 0.1
 value = 1.5
 
-[node name="Rim Height Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=1821133039]
+[node name="Rim Height Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer" unique_id=1821133039]
 layout_mode = 2
 
-[node name="Label3" type="Label" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Rim Height Group" unique_id=612399184]
+[node name="Label3" type="Label" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Rim Height Group" unique_id=612399184]
 layout_mode = 2
 text = "Height"
 
-[node name="RimHeight" type="HSlider" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Rim Height Group" unique_id=1333538751]
+[node name="RimHeight" type="HSlider" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Rim Height Group" unique_id=1333538751]
 layout_mode = 2
 size_flags_horizontal = 3
 max_value = 1.5
 step = 0.1
 value = 0.6
 
-[node name="Rim Temp Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer" unique_id=190302453]
+[node name="Rim Temp Group" type="HBoxContainer" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer" unique_id=190302453]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Rim Temp Group" unique_id=1532073645]
+[node name="Label" type="Label" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Rim Temp Group" unique_id=1532073645]
 layout_mode = 2
 text = "Temperature"
 
-[node name="Rim Temp" type="HSlider" parent="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Rim Temp Group" unique_id=1247280274]
+[node name="Rim Temp" type="HSlider" parent="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Rim Temp Group" unique_id=1247280274]
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = 2000.0
@@ -667,32 +646,32 @@ mesh = SubResource("BoxMesh_0thei")
 [node name="Subject" parent="." unique_id=444173362 instance=ExtResource("3_h2yge")]
 transform = Transform3D(0.07884044, 0, -0.99688727, 0, 1, 0, 0.99688727, 0, 0.07884044, 0, -0.24, 0)
 
-[connection signal="pressed" from="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/SensorContainer/FullFrame" to="." method="_on_full_frame_pressed"]
-[connection signal="pressed" from="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/SensorContainer/APSC" to="." method="_on_apsc_pressed"]
-[connection signal="pressed" from="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/SensorContainer/MFT" to="." method="_on_mft_pressed"]
-[connection signal="value_changed" from="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/lensSlider" to="." method="_on_lens_slider_value_changed"]
-[connection signal="pressed" from="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/LensContainer/24mm" to="." method="_on_24mm_pressed"]
-[connection signal="pressed" from="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/LensContainer/50mm" to="." method="_on_50mm_pressed"]
-[connection signal="pressed" from="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/LensContainer/200mm" to="." method="_on_200mm_pressed"]
-[connection signal="value_changed" from="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/ApertureSlider" to="ExposureController" method="_on_aperture_slider_value_changed"]
-[connection signal="value_changed" from="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/ISOSlider" to="ExposureController" method="_on_iso_slider_value_changed"]
-[connection signal="value_changed" from="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/ShutterSlider" to="ExposureController" method="_on_shutter_slider_value_changed"]
-[connection signal="value_changed" from="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/FocusDistSlider" to="ExposureController" method="_on_focus_dist_slider_value_changed"]
-[connection signal="pressed" from="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/AutoFocus" to="ExposureController" method="_on_auto_focus_pressed"]
-[connection signal="value_changed" from="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/CameraDistanceSlider" to="." method="_on_camera_distance_slider_value_changed"]
-[connection signal="value_changed" from="CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/CameraHeightSlider" to="." method="_on_camera_height_slider_value_changed"]
-[connection signal="value_changed" from="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Key Angle Group/KeyAngleSlider" to="." method="_on_key_angle_slider_value_changed"]
-[connection signal="value_changed" from="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Key Dist Group/KeyDist" to="." method="_on_key_dist_value_changed"]
-[connection signal="value_changed" from="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Key Height Group/KeyHeight" to="." method="_on_key_height_value_changed"]
-[connection signal="value_changed" from="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Key Temp Group/Keytemp" to="." method="_on_keytemp_value_changed"]
-[connection signal="value_changed" from="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Fill Angle Group/FillAngleSlider" to="." method="_on_fill_angle_slider_value_changed"]
-[connection signal="value_changed" from="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Fill Dist Group/FillDist" to="." method="_on_fill_dist_value_changed"]
-[connection signal="value_changed" from="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Fill Height Group/FillHeight" to="." method="_on_fill_height_value_changed"]
-[connection signal="value_changed" from="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Fill Temp Group/Fill Temp" to="." method="_on_fill_temp_value_changed"]
-[connection signal="value_changed" from="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Rim Angle Group/RimAngleSlider" to="." method="_on_rim_angle_slider_value_changed"]
-[connection signal="value_changed" from="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Rim Dist Group/RimDist" to="." method="_on_rim_dist_value_changed"]
-[connection signal="value_changed" from="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Rim Height Group/RimHeight" to="." method="_on_rim_height_value_changed"]
-[connection signal="value_changed" from="CanvasLayer/LightingPanel/ScrollContainer/MarginContainer/VBoxContainer/Rim Temp Group/Rim Temp" to="." method="_on_rim_temp_value_changed"]
+[connection signal="pressed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/SensorContainer/FullFrame" to="." method="_on_full_frame_pressed"]
+[connection signal="pressed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/SensorContainer/APSC" to="." method="_on_apsc_pressed"]
+[connection signal="pressed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/SensorContainer/MFT" to="." method="_on_mft_pressed"]
+[connection signal="value_changed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/lensSlider" to="." method="_on_lens_slider_value_changed"]
+[connection signal="pressed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/LensContainer/24mm" to="." method="_on_24mm_pressed"]
+[connection signal="pressed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/LensContainer/50mm" to="." method="_on_50mm_pressed"]
+[connection signal="pressed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/LensContainer/200mm" to="." method="_on_200mm_pressed"]
+[connection signal="value_changed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/ApertureSlider" to="ExposureController" method="_on_aperture_slider_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/ISOSlider" to="ExposureController" method="_on_iso_slider_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/ShutterSlider" to="ExposureController" method="_on_shutter_slider_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/FocusDistSlider" to="ExposureController" method="_on_focus_dist_slider_value_changed"]
+[connection signal="pressed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/AutoFocus" to="ExposureController" method="_on_auto_focus_pressed"]
+[connection signal="value_changed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/CameraDistanceSlider" to="." method="_on_camera_distance_slider_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/CameraHeightSlider" to="." method="_on_camera_height_slider_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Key Angle Group/KeyAngleSlider" to="." method="_on_key_angle_slider_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Key Dist Group/KeyDist" to="." method="_on_key_dist_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Key Height Group/KeyHeight" to="." method="_on_key_height_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Key Temp Group/Keytemp" to="." method="_on_keytemp_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Fill Angle Group/FillAngleSlider" to="." method="_on_fill_angle_slider_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Fill Dist Group/FillDist" to="." method="_on_fill_dist_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Fill Height Group/FillHeight" to="." method="_on_fill_height_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Fill Temp Group/Fill Temp" to="." method="_on_fill_temp_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Rim Angle Group/RimAngleSlider" to="." method="_on_rim_angle_slider_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Rim Dist Group/RimDist" to="." method="_on_rim_dist_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Rim Height Group/RimHeight" to="." method="_on_rim_height_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Rim Temp Group/Rim Temp" to="." method="_on_rim_temp_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/ARCHIVE/ControlsPanel/brightnessSlider" to="." method="_on_h_slider_value_changed"]
 [connection signal="pressed" from="CanvasLayer/ARCHIVE/ControlsPanel/SwapCams Button" to="." method="_on_swap_cams_button_pressed"]
 

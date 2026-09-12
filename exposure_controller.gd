@@ -1,23 +1,23 @@
 extends Node
 
-@onready var aperture_label = $"../CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/ApertureLabel"
+@onready var aperture_label = $"../CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/ApertureLabel"
 @onready var world_env = $"../WorldEnvironment"
 @onready var camera = $"../POV Cam"
 @onready var subject = $"../Subject"
-@onready var iso_label = $"../CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/IsoLabel"
-@onready var shutter_label = $"../CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/ShutterLabel"
+@onready var iso_label = $"../CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/IsoLabel"
+@onready var shutter_label = $"../CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/ShutterLabel"
 #@onready var exposure_meter = $"../CanvasLayer/Exposure Panel/Control/VBoxContainer/ExposureMeter"
 #@onready var pointer = $"../CanvasLayer/Exposure Panel/Control/VBoxContainer/ExposureMeter/Panel/Pointer"
-@onready var dof_label = $"../CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/DOFLabel"
-@onready var focus_dist_label = $"../CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/FocusDistLabel"
-@onready var focus_status_label = $"../CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/Focus Status"
+@onready var dof_label = $"../CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/DOFLabel"
+@onready var focus_dist_label = $"../CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/FocusDistLabel"
+@onready var focus_status_label = $"../CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/Focus Status"
 @onready var aperture_indicator = $"../ApertureIndicator"
 @onready var main = get_parent()
 
-@onready var aperture_slider = $"../CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/ApertureSlider"
-@onready var iso_slider = $"../CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/ISOSlider"
-@onready var shutter_slider = $"../CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/ShutterSlider"
-@onready var focus_dist_slider = $"../CanvasLayer/CameraPanel/ScrollContainer/MarginContainer/VBoxContainer/FocusDistSlider"
+@onready var aperture_slider = $"../CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/ApertureSlider"
+@onready var iso_slider = $"../CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/ISOSlider"
+@onready var shutter_slider = $"../CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/ShutterSlider"
+@onready var focus_dist_slider = $"../CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/FocusDistSlider"
 
 signal focus_distance_change(focus_distance)
 
