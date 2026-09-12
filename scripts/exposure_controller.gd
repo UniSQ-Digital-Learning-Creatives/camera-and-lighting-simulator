@@ -19,7 +19,7 @@ extends Node
 @onready var shutter_slider = $"../CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/ShutterSlider"
 @onready var focus_dist_slider = $"../CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/FocusDistSlider"
 
-signal focus_distance_change(focus_distance)
+#signal focus_distance_change(focus_distance)
 
 var aperture := 8
 var shutter_speed := 1.0 / 125.0
@@ -77,7 +77,7 @@ var shutter_labels = [
 
 func get_camera_ev() -> float:
 	return log((aperture * aperture) / shutter_speed) / log(2.0)
-	
+
 func get_final_ev() -> float:
 	var camera_ev = get_camera_ev()
 	var iso_adjustment = log(iso / 100.0) / log(2.0)
@@ -86,14 +86,14 @@ func get_final_ev() -> float:
 
 func get_exposure_difference() -> float:
 	return get_final_ev() - scene_ev
-	
+
 func get_noise_strength() -> float:
 	return clamp(
 		(iso - 100.0) / 6300.0,
 		0.0,
 		1.0
 	)
-	
+
 func _ready():
 	aperture_slider.set_value_no_signal(aperture)
 	iso_slider.set_value_no_signal(iso)
@@ -136,7 +136,7 @@ func sync_focus_distance_slider():
 
 	focus_dist_slider.set_value_no_signal(manual_focus_distance)
 
-func _process(delta):
+func _process(_delta):
 
 	#var subject_distance = camera_distance
 
@@ -287,10 +287,10 @@ func get_subject_distance() -> float:
 	return camera.global_position.distance_to(
 		subject.global_position
 	)
-	
+
 func get_focus_error() -> float:
 
-	var subject_distance = get_subject_distance()
+	subject_distance = get_subject_distance()
 
 	return abs(
 		subject_distance -

@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://etk7cti113sw"]
 
-[ext_resource type="Script" uid="uid://xlvcb647y6ov" path="res://main.gd" id="1_0xm2m"]
-[ext_resource type="Script" uid="uid://oi0gx752llfs" path="res://exposure_controller.gd" id="2_7mycd"]
-[ext_resource type="PackedScene" uid="uid://cvwv2r2uanjjx" path="res://character/source/Школяр.glb" id="3_h2yge"]
-[ext_resource type="Script" uid="uid://5yq7hddwqgvk" path="res://camera_diagram.gd" id="4_1bvp3"]
-[ext_resource type="Script" uid="uid://wgvsgeww2r03" path="res://aperture_indicator.gd" id="5_7mycd"]
-[ext_resource type="Script" uid="uid://douyrjghtbk24" path="res://sensor_diagram.gd" id="5_lquwl"]
+[ext_resource type="Script" uid="uid://xlvcb647y6ov" path="res://scripts/main.gd" id="1_tefeu"]
+[ext_resource type="Script" uid="uid://oi0gx752llfs" path="res://scripts/exposure_controller.gd" id="2_o6xl0"]
+[ext_resource type="Script" uid="uid://douyrjghtbk24" path="res://scripts/sensor_diagram.gd" id="3_tipki"]
+[ext_resource type="Script" uid="uid://5yq7hddwqgvk" path="res://scripts/camera_diagram.gd" id="4_85g3d"]
+[ext_resource type="Script" uid="uid://wgvsgeww2r03" path="res://scripts/aperture_indicator.gd" id="5_choun"]
+[ext_resource type="PackedScene" uid="uid://cvwv2r2uanjjx" path="res://character/source/Школяр.glb" id="6_ya4ey"]
 
 [sub_resource type="Environment" id="Environment_0thei"]
 background_mode = 1
@@ -34,7 +34,7 @@ rings = 0
 size = Vector3(0.3, 0.3, 0.3)
 
 [node name="Main" type="Node3D" unique_id=351611395]
-script = ExtResource("1_0xm2m")
+script = ExtResource("1_tefeu")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=625592752]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
@@ -44,22 +44,22 @@ shadow_enabled = true
 environment = SubResource("Environment_0thei")
 
 [node name="ExposureController" type="Node" parent="." unique_id=63031158]
-script = ExtResource("2_7mycd")
+script = ExtResource("2_o6xl0")
 
 [node name="SensorDiagram" type="Node2D" parent="." unique_id=1831491059]
-position = Vector2(582.12, 1.9999999)
+position = Vector2(895.11993, 35.000004)
 scale = Vector2(0.3584, 0.3584)
-script = ExtResource("5_lquwl")
+script = ExtResource("3_tipki")
 
 [node name="CameraDiagram" type="Node2D" parent="." unique_id=408330464]
-position = Vector2(449, 130)
+position = Vector2(761.99994, 163)
 scale = Vector2(0.4096, 0.4096)
-script = ExtResource("4_1bvp3")
+script = ExtResource("4_85g3d")
 
 [node name="ApertureIndicator" type="Node2D" parent="." unique_id=1465089650]
-position = Vector2(102.4, 563.2)
+position = Vector2(158, 939)
 scale = Vector2(0.512, 0.512)
-script = ExtResource("5_7mycd")
+script = ExtResource("5_choun")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1165215695]
 scale = Vector2(0.512, 0.512)
@@ -70,9 +70,10 @@ anchors_preset = 9
 anchor_bottom = 1.0
 offset_left = 21.484373
 offset_top = 15.624999
-offset_right = 374.99997
-offset_bottom = 139.37494
+offset_right = 375.00037
+offset_bottom = -203.375
 grow_vertical = 2
+scale = Vector2(1.755, 1.755)
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -257,12 +258,13 @@ anchors_preset = 13
 anchor_left = 0.5
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = 1596.3279
-offset_top = 19.531248
-offset_right = 1843.0466
-offset_bottom = 19.53125
+offset_left = 2323.2026
+offset_top = 33.203117
+offset_right = 2569.9216
+offset_bottom = -547.7969
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(1.755, 1.755)
 size_flags_horizontal = 3
 size_flags_vertical = 2
 
@@ -669,7 +671,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.53, -0.565, -0.635)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_0thei")
 
-[node name="Subject" parent="." unique_id=444173362 instance=ExtResource("3_h2yge")]
+[node name="Subject" parent="." unique_id=444173362 instance=ExtResource("6_ya4ey")]
 transform = Transform3D(0.07884044, 0, -0.99688727, 0, 1, 0, 0.99688727, 0, 0.07884044, 0, -0.24, 0)
 
 [connection signal="pressed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/SensorContainer/FullFrame" to="." method="_on_full_frame_pressed"]

@@ -4,8 +4,9 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://bbdf31gxuhhfa"
 path.s3tc="res://.godot/imported/Школяр_student_with_backpack_3d_model_basecolor.jpg-46b0d156e9d6e4c2468d827f3ba8dd97.s3tc.ctex"
+path.etc2="res://.godot/imported/Школяр_student_with_backpack_3d_model_basecolor.jpg-46b0d156e9d6e4c2468d827f3ba8dd97.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 generator_parameters={
@@ -15,7 +16,7 @@ generator_parameters={
 [deps]
 
 source_file="res://character/source/Школяр_student_with_backpack_3d_model_basecolor.jpg"
-dest_files=["res://.godot/imported/Школяр_student_with_backpack_3d_model_basecolor.jpg-46b0d156e9d6e4c2468d827f3ba8dd97.s3tc.ctex"]
+dest_files=["res://.godot/imported/Школяр_student_with_backpack_3d_model_basecolor.jpg-46b0d156e9d6e4c2468d827f3ba8dd97.s3tc.ctex", "res://.godot/imported/Школяр_student_with_backpack_3d_model_basecolor.jpg-46b0d156e9d6e4c2468d827f3ba8dd97.etc2.ctex"]
 
 [params]
 
