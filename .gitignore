@@ -1,6 +1,7 @@
 ### Godot template
 # Godot 4+ specific ignores
 .godot/
+builds
 
 # Godot-specific ignores
 .import/

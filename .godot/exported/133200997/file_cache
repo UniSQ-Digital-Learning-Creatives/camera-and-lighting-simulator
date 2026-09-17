@@ -1,4 +1,4 @@
-res://character.tscn::a808dce84630ae65f128ff1864570151::1788132904::res://.godot/exported/133200997/export-053c088fcfd156ea19f3d1ba53835dc9-character.scn
-res://in_game_ui.tscn::5a40257d5e61a269655985eca4f82ff8::1784272130::res://.godot/exported/133200997/export-19011799650163043e41ee36898fdba0-in_game_ui.scn
-res://main.tscn::2eed6b2866474c5dfb8cf41cd23f7a6f::1789253472::res://.godot/exported/133200997/export-3070c538c03ee49b7677ff960a3f5195-main.scn
-res://temp.tscn::45a669c8e9469396b117304cb4d52908::1787781976::res://.godot/exported/133200997/export-f20761d093e1b01f697078777f0bd3f5-temp.scn
+res://prefabs/character.tscn::a808dce84630ae65f128ff1864570151::1788132904::res://.godot/exported/133200997/export-7de0fb5f857b059c661f6f3894bb5533-character.scn
+res://scenes/in_game_ui.tscn::d83c717d3c0137bf2371b2e7c77bfaed::1789255403::res://.godot/exported/133200997/export-81d37e99bbc883ce8dfa1eeae9643407-in_game_ui.scn
+res://scenes/main.tscn::b5690805b3548f1ba824817354fa4369::1789526882::res://.godot/exported/133200997/export-3ad5c15c4f3250da0cc7c1af1770d85f-main.scn
+res://scenes/temp.tscn::45a669c8e9469396b117304cb4d52908::1787781976::res://.godot/exported/133200997/export-be0baca1c9ea1976980ad56e43cbc874-temp.scn

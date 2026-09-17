@@ -19,9 +19,7 @@ config/icon="res://icon.svg"
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
-window/energy_saving/keep_screen_on=false
 window/frame_pacing/android/enable_frame_pacing=false
-window/dpi/allow_hidpi=false
 window/ios/allow_high_refresh_rate=false
 window/ios/hide_home_indicator=false
 window/ios/hide_status_bar=false
@@ -42,5 +40,6 @@ renderer/rendering_method.mobile="forward_plus"
 renderer/rendering_method.web="forward_plus"
 textures/vram_compression/import_etc2_astc=true
 lights_and_shadows/directional_shadow/size=2048
+scaling_3d/mode=2
 scaling_3d/scale=0.85
 lights_and_shadows/positional_shadow/atlas_size=1024
