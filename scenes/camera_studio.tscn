@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://xlvcb647y6ov" path="res://scripts/main.gd" id="1_uwu47"]
 [ext_resource type="Resource" uid="uid://crt5srncsfphy" path="res://data/default_settings.tres" id="2_gbrcl"]
 [ext_resource type="Script" uid="uid://drpeuixfdousm" path="res://scenes/camera_controller.gd" id="3_pw41u"]
-[ext_resource type="PackedScene" uid="uid://dwkx6uld5ihes" path="res://prefabs/studio_setup.scn" id="4_jbx1w"]
+[ext_resource type="PackedScene" path="res://prefabs/studio_setup.scn" id="4_jbx1w"]
 [ext_resource type="Script" uid="uid://oi0gx752llfs" path="res://scripts/exposure_controller.gd" id="5_qxd8w"]
 [ext_resource type="Theme" uid="uid://niv0t0jdbdv1" path="res://UI/cinematography_theme.tres" id="6_wdn4e"]
 [ext_resource type="StyleBox" uid="uid://cpqa2ktkadepb" path="res://UI/panel_style.tres" id="7_p1eom"]
@@ -63,6 +63,21 @@ bottom_radius = 0.15
 height = 0.2
 radial_segments = 4
 rings = 0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_controls"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.07450981, 0.11764706, 0.13333334, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [node name="Main" type="Node3D" unique_id=351611395]
 script = ExtResource("1_uwu47")
@@ -599,13 +614,16 @@ theme = ExtResource("6_wdn4e")
 [node name="TextureRect" type="TextureRect" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv" unique_id=229285108 node_paths=PackedStringArray("viewport")]
 unique_name_in_owner = true
 material = SubResource("ShaderMaterial_0thei")
-custom_minimum_size = Vector2(850, 477)
-custom_maximum_size = Vector2(880, 490)
 layout_mode = 2
 mouse_filter = 2
 stretch_mode = 5
 script = ExtResource("13_vnwbm")
 viewport = NodePath("../../../../../../../SubViewport")
+custom_minimum_size = Vector2(804, 452)
+custom_maximum_size = Vector2(804, 452)
+size_flags_horizontal = 4
+size_flags_vertical = 0
+expand_mode = 1
 
 [node name="Overlays" type="Control" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/TextureRect" unique_id=477488582]
 unique_name_in_owner = true
@@ -619,20 +637,19 @@ mouse_filter = 2
 script = ExtResource("14_wb43u")
 
 [node name="Viewers" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv" unique_id=1608249621]
-custom_minimum_size = Vector2(0, 150)
-custom_maximum_size = Vector2(-1, 150)
 layout_mode = 2
-theme_override_styles/panel = ExtResource("7_p1eom")
+theme_override_styles/panel = SubResource("StyleBoxFlat_controls")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers" unique_id=1281607692]
 layout_mode = 2
+theme_override_constants/separation = 10
 
 [node name="MarginContainer2" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer" unique_id=170931534]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 15
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 15
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
 
 [node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer2" unique_id=168885948]
 clip_contents = true
@@ -656,11 +673,15 @@ custom_minimum_size = Vector2(150, 0)
 custom_maximum_size = Vector2(150, -1)
 propagate_maximum_size = false
 layout_mode = 2
-theme_override_constants/margin_top = 4
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer" unique_id=1825264317]
 custom_maximum_size = Vector2(150, -1)
 layout_mode = 2
+theme_override_constants/separation = 10
 
 [node name="RuleOfThirdsCheckbox" type="CheckBox" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer/VBoxContainer2" unique_id=1462021417]
 layout_mode = 2
@@ -708,12 +729,15 @@ layout_mode = 2
 custom_minimum_size = Vector2(150, 0)
 custom_maximum_size = Vector2(150, -1)
 layout_mode = 2
-theme_override_constants/margin_left = 3
-theme_override_constants/margin_top = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer3" unique_id=422390663]
 custom_maximum_size = Vector2(150, -1)
 layout_mode = 2
+theme_override_constants/separation = 10
 
 [node name="PresetOptions" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer3/VBoxContainer" unique_id=1104538205]
 visible = false
@@ -756,11 +780,14 @@ text = "Reset to Scene Defaults"
 custom_minimum_size = Vector2(150, 0)
 custom_maximum_size = Vector2(150, -1)
 layout_mode = 2
-theme_override_constants/margin_left = 3
-theme_override_constants/margin_top = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4" unique_id=1698658020]
 layout_mode = 2
+theme_override_constants/separation = 10
 
 [node name="DownloadImage" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer" unique_id=1189103442]
 layout_mode = 2
@@ -772,6 +799,45 @@ layout_mode = 2
 tooltip_text = "Saves a screenshot of the whole simulator window, including the controls and any guides."
 text = "Download Screenshot"
 
+[node name="AnimationSeparator" type="HSeparator" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer"]
+layout_mode = 2
+
+[node name="AnimationLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "Subject animation"
+horizontal_alignment = 1
+
+[node name="AnimationButtons" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PlayAnimation" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/AnimationButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Play the subject's idle animation (blinking, breathing and a slight sway)."
+theme_override_font_sizes/font_size = 11
+toggle_mode = true
+button_pressed = true
+text = "Play"
+
+[node name="PauseAnimation" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/AnimationButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Pause the subject where she is."
+theme_override_font_sizes/font_size = 11
+toggle_mode = true
+text = "Pause"
+
+[node name="ResetAnimation" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/AnimationButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Ease the subject back to her starting pose and pause there."
+theme_override_font_sizes/font_size = 11
+text = "Reset"
+
 [node name="OverlayStats" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel" unique_id=1769565706]
 custom_minimum_size = Vector2(170, 0)
 custom_maximum_size = Vector2(170, -1)
@@ -779,8 +845,8 @@ layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/OverlayStats" unique_id=295292308]
 layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 430
+theme_override_constants/margin_left = 43
+theme_override_constants/margin_top = 390
 
 [node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/OverlayStats/MarginContainer" unique_id=825242034]
 layout_mode = 2
@@ -1514,6 +1580,7 @@ light_energy = 1.5
 shadow_enabled = true
 shadow_bias = 0.01
 shadow_normal_bias = 0.5
+shadow_blur = 3.0
 spot_range = 10.0
 spot_angle = 55.0
 spot_angle_attenuation = 3.0
@@ -1531,6 +1598,7 @@ light_energy = 2.0
 shadow_enabled = true
 shadow_bias = 0.01
 shadow_normal_bias = 0.5
+shadow_blur = 3.0
 spot_range = 10.0
 spot_angle = 55.0
 spot_angle_attenuation = 3.0
@@ -1548,6 +1616,7 @@ light_energy = 0.75
 shadow_enabled = true
 shadow_bias = 0.01
 shadow_normal_bias = 0.5
+shadow_blur = 3.0
 spot_range = 10.0
 spot_angle = 55.0
 spot_angle_attenuation = 3.0
@@ -1571,7 +1640,7 @@ transform = Transform3D(0.07884042, 0, 0.9968862, 0, 1, 0, -0.9968862, 0, 0.0788
 unique_name_in_owner = true
 oversampling_override = 1.0
 title = "Save a new preset"
-size = Vector2i(391, 73)
+size = Vector2i(391, 80)
 max_size = Vector2i(500, 500)
 ok_button_text = "      OK      "
 
@@ -1751,6 +1820,9 @@ text = "[b]Camera Studio Simulator[/b] lets you set up a camera and studio light
 [connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer3/VBoxContainer/ResetPreset" to="." method="_on_reset_preset_pressed"]
 [connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/DownloadImage" to="." method="_on_download_image_pressed"]
 [connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/DownloadScreenshot" to="." method="_on_download_screenshot_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/AnimationButtons/PlayAnimation" to="." method="_on_play_animation_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/AnimationButtons/PauseAnimation" to="." method="_on_pause_animation_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/AnimationButtons/ResetAnimation" to="." method="_on_reset_animation_pressed"]
 [connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/PositionHeader" to="." method="_on_position_header_toggled"]
 [connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/LookAtToggle" to="." method="_on_look_at_toggle_toggled"]
 [connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/HBoxContainer/DistanceSlider" to="." method="_on_camera_distance_slider_value_changed"]

@@ -50,8 +50,13 @@ func get_focus_error() -> float:
 
 func _process(_delta):
 
+	# Autofocus follows the subject (her head drifts a little with the idle
+	# motion), refocusing once she has moved more than 2 mm, like a camera's AF
+	# rather than every frame.
 	if settings.autofocus_enabled:
-		settings.focus_distance = get_subject_distance()
+		var distance = get_subject_distance()
+		if absf(distance - settings.focus_distance) > 0.002:
+			settings.focus_distance = distance
 
 	else: settings.focus_distance = settings.manual_focus_distance
 

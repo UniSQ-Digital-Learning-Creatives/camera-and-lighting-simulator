@@ -102,6 +102,7 @@ var saved_manual_pitch := 0.0
 var saved_manual_yaw := 0.0
 
 var _last_dof_key = null
+var idle_animation # AvaIdle (scripts/ava_idle.gd), added in _ready
 
 
 func _process(_delta):
@@ -165,7 +166,7 @@ func update_dof_label(u_mm: float, f: float, n: float):
 	var far = hyperfocal * u_mm / (hyperfocal - (u_mm - f)) / 1000.0
 	var depth = far - near
 	# A shallow zone needs more digits, or it reads "1.5 m to 1.5 m".
-	var digits = "%.2f" if depth < 0.5 else "%.1f"
+	var digits = "%.3f" if depth < 0.05 else ("%.2f" if depth < 0.5 else "%.1f")
 	var depth_text = ("%d cm" % maxi(roundi(depth * 100.0), 1)) if depth < 1.0 else ("%.1f m" % depth)
 	%DOFLabel.text = ("Sharp from " + digits + " m to " + digits + " m (%s deep)") % [near, far, depth_text]
 
@@ -174,11 +175,21 @@ func _ready():
 
 	settings = load("res://data/default_settings.tres").duplicate(true)
 
-	# Ava stands still, so her hair simulation has nothing to move, and idle
-	# hair keeps exactly its groomed shape without it (godotwebgpu TASKS §2.33).
-	# Off, it saves ~0.9 ms of CPU a frame on the web build.
+	# Ava only moves by a degree or so (ava_idle.gd), too little for her hair
+	# simulation to add anything: without it the hair keeps its groomed shape
+	# and follows her head rigidly (godotwebgpu TASKS §2.33). Off, it saves
+	# ~0.9 ms of CPU a frame on the web build.
 	for hair_sim in $Subject.find_children("*", "MetaHumanHairSimulator", true, false):
 		hair_sim.active = false
+
+	# Blinks, breathing and a slight sway, so she doesn't look frozen (the
+	# motion is a degree or so, small enough for the hair to follow rigidly).
+	idle_animation = preload("res://scripts/ava_idle.gd").new()
+	idle_animation.name = "AvaIdle"
+	add_child(idle_animation)
+	idle_animation.setup($Subject/Ava2/Skeleton3D, head_target)
+	idle_animation.state_changed.connect(_on_idle_state_changed)
+	_on_idle_state_changed(idle_animation.playing)
 
 	# Phones get a lighter render: smaller shadow maps and no SSAO (the
 	# project settings lower subsurface scattering for them too).
@@ -864,6 +875,21 @@ func reset_camera_position():
 
 	settings.auto_look_at = defaults.auto_look_at
 	apply_settings()
+
+# Subject animation buttons
+func _on_play_animation_pressed() -> void:
+	idle_animation.play()
+
+func _on_pause_animation_pressed() -> void:
+	idle_animation.pause()
+
+func _on_reset_animation_pressed() -> void:
+	idle_animation.reset_pose()
+
+# Play and Pause show which one is in effect.
+func _on_idle_state_changed(is_playing: bool):
+	%PlayAnimation.set_pressed_no_signal(is_playing)
+	%PauseAnimation.set_pressed_no_signal(not is_playing)
 
 #Help and Attribution buttons
 func _on_attribution_button_pressed() -> void:
