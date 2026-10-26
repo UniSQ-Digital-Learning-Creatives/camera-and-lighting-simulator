@@ -822,7 +822,9 @@ func show_message(text: String):
 	background.set_content_margin_all(8)
 	label.add_theme_stylebox_override("normal", background)
 	$CanvasLayer.add_child(label)
-	label.position = Vector2(640 - label.get_minimum_size().x / 2, 650)
+	# Centred, just above the control panel's bottom edge, whatever the window size.
+	var window = get_viewport().get_visible_rect().size
+	label.position = Vector2((window.x - label.get_minimum_size().x) / 2, window.y - 70)
 
 	var tween = label.create_tween()
 	tween.tween_interval(3.0)

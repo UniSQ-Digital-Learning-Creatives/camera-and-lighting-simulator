@@ -138,16 +138,16 @@ theme = ExtResource("6_wdn4e")
 
 [node name="OverallUI" type="VBoxContainer" parent="CanvasLayer/Control" unique_id=508728449]
 layout_mode = 0
-offset_right = 1332.0
-offset_bottom = 813.0
 theme = ExtResource("6_wdn4e")
+offset_right = 1656.0
+offset_bottom = 968.0
 
 [node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Control/OverallUI" unique_id=1731092385]
-custom_minimum_size = Vector2(1280, 40)
-custom_maximum_size = Vector2(1280, 40)
 layout_mode = 2
 theme = ExtResource("6_wdn4e")
 theme_override_styles/panel = ExtResource("7_p1eom")
+custom_minimum_size = Vector2(1656, 40)
+custom_maximum_size = Vector2(1656, 40)
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/PanelContainer" unique_id=1517003660]
 layout_mode = 2
@@ -165,16 +165,16 @@ text = "Camera Studio Simulator"
 uppercase = true
 
 [node name="MainLayout" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI" unique_id=1135730544]
-custom_minimum_size = Vector2(1280, 646)
-custom_maximum_size = Vector2(1280, 646)
 clip_contents = true
 layout_mode = 2
+custom_minimum_size = Vector2(1656, 894)
+custom_maximum_size = Vector2(1656, 894)
 
 [node name="Left Panel" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout" unique_id=704429243]
-custom_minimum_size = Vector2(200, 646)
-custom_maximum_size = Vector2(210, 646)
 layout_mode = 2
 theme = ExtResource("6_wdn4e")
+custom_minimum_size = Vector2(200, 894)
+custom_maximum_size = Vector2(210, 894)
 
 [node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel" unique_id=1830532059]
 layout_mode = 2
@@ -187,7 +187,6 @@ size_flags_vertical = 3
 
 [node name="Camera Section" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox" unique_id=925492912]
 layout_mode = 2
-size_flags_vertical = 3
 theme_override_styles/panel = ExtResource("7_p1eom")
 
 [node name="MarginContainer_Camera" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section" unique_id=399347273]
@@ -339,7 +338,6 @@ layout_mode = 2
 
 [node name="Exposure Section" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox" unique_id=159726247]
 layout_mode = 2
-size_flags_vertical = 3
 theme_override_styles/panel = ExtResource("7_p1eom")
 
 [node name="MarginContainer_Exposure" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section" unique_id=1586799438]
@@ -495,6 +493,7 @@ text = "Num"
 [node name="Focus Section" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox" unique_id=339357323]
 layout_mode = 2
 theme_override_styles/panel = ExtResource("7_p1eom")
+size_flags_vertical = 3
 
 [node name="MarginContainer_Focus" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section" unique_id=514564074]
 layout_mode = 2
@@ -518,7 +517,6 @@ flat = true
 [node name="FocusContent" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section/MarginContainer_Focus/FocusVBox" unique_id=252289110]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 3
 
 [node name="AutoFocus" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section/MarginContainer_Focus/FocusVBox/FocusContent" unique_id=1835136849]
 unique_name_in_owner = true
@@ -600,11 +598,11 @@ layout_mode = 2
 text = "Num"
 
 [node name="CenterPanel" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout" unique_id=785337053]
-custom_minimum_size = Vector2(870, 646)
-custom_maximum_size = Vector2(870, 646)
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("6_wdn4e")
+custom_minimum_size = Vector2(1246, 894)
+custom_maximum_size = Vector2(1246, 894)
 
 [node name="TopBottomDiv" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel" unique_id=358387872]
 propagate_maximum_size = false
@@ -619,11 +617,11 @@ mouse_filter = 2
 stretch_mode = 5
 script = ExtResource("13_vnwbm")
 viewport = NodePath("../../../../../../../SubViewport")
-custom_minimum_size = Vector2(804, 452)
-custom_maximum_size = Vector2(804, 452)
 size_flags_horizontal = 4
 size_flags_vertical = 0
 expand_mode = 1
+custom_minimum_size = Vector2(1244, 700)
+custom_maximum_size = Vector2(1244, 700)
 
 [node name="Overlays" type="Control" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/TextureRect" unique_id=477488582]
 unique_name_in_owner = true
@@ -650,6 +648,7 @@ theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
+size_flags_horizontal = 3
 
 [node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer2" unique_id=168885948]
 clip_contents = true
@@ -845,8 +844,8 @@ layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/OverlayStats" unique_id=295292308]
 layout_mode = 2
-theme_override_constants/margin_left = 43
-theme_override_constants/margin_top = 390
+theme_override_constants/margin_left = 11
+theme_override_constants/margin_top = 638
 
 [node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/OverlayStats/MarginContainer" unique_id=825242034]
 layout_mode = 2
@@ -857,11 +856,11 @@ layout_mode = 2
 text = "info node"
 
 [node name="RightPanel" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout" unique_id=1730756574]
-custom_minimum_size = Vector2(200, 646)
-custom_maximum_size = Vector2(210, 646)
 layout_mode = 2
 size_flags_horizontal = 3
 theme = SubResource("Theme_g8dpu")
+custom_minimum_size = Vector2(200, 894)
+custom_maximum_size = Vector2(210, 894)
 
 [node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel" unique_id=281672805]
 custom_minimum_size = Vector2(200, 0)
@@ -1533,11 +1532,11 @@ layout_mode = 2
 text = "Temperature"
 
 [node name="BottomPanel" type="Panel" parent="CanvasLayer/Control/OverallUI" unique_id=1126146870]
-custom_minimum_size = Vector2(1280, 25)
-custom_maximum_size = Vector2(1280, 25)
 layout_mode = 2
 theme = ExtResource("6_wdn4e")
 theme_override_styles/panel = ExtResource("7_p1eom")
+custom_minimum_size = Vector2(1656, 25)
+custom_maximum_size = Vector2(1656, 25)
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/BottomPanel" unique_id=293991698]
 layout_mode = 0

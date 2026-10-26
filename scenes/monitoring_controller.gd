@@ -6,9 +6,12 @@ extends Node
 @onready var zebra_num = %ZebraNum
 
 # The histogram is worked out from a small copy of the camera image, scaled
-# down on the GPU: reading that back is 1/170th of the data of the full
-# 1280x720 image, and the loop below only has to visit 5,184 pixels.
-const ANALYSIS_SIZE := Vector2i(96, 54)
+# down on the GPU: reading that back is 1/100th of the data of the full
+# 1280x720 image, and the loop below only has to visit 9,216 pixels.
+# 128 wide on purpose: on the web build a row of a GPU readback must be a
+# multiple of 256 bytes (128 px x 4 bytes = 512). At 96 px wide (384 bytes)
+# the WebGPU readback came back garbled and the histogram showed nonsense.
+const ANALYSIS_SIZE := Vector2i(128, 72)
 var _analysis: SubViewport
 
 var histogram_bins = []
@@ -30,6 +33,13 @@ func _ready():
 
 	var small = TextureRect.new()
 	small.texture = %SubViewport.get_texture()
+	# Draw the camera image opaque: on the web build its alpha comes back as
+	# ~0, and a plain TextureRect would blend it into the grey clear colour
+	# (the same quirk the monitor shader works around).
+	var opaque = Shader.new()
+	opaque.code = "shader_type canvas_item;\nvoid fragment() { COLOR = vec4(texture(TEXTURE, UV).rgb, 1.0); }\n"
+	small.material = ShaderMaterial.new()
+	small.material.shader = opaque
 	small.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	small.stretch_mode = TextureRect.STRETCH_SCALE
 	small.size = ANALYSIS_SIZE
