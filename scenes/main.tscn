@@ -1,32 +1,40 @@
 [gd_scene format=3 uid="uid://etk7cti113sw"]
 
 [ext_resource type="Script" uid="uid://xlvcb647y6ov" path="res://scripts/main.gd" id="1_tefeu"]
+[ext_resource type="Script" uid="uid://vtlv1akal0n3" path="res://scenes/white_balance_controller.gd" id="2_choun"]
+[ext_resource type="Script" uid="uid://dut5pe02bgx3a" path="res://scenes/overlays.gd" id="2_eb6dy"]
 [ext_resource type="Script" uid="uid://oi0gx752llfs" path="res://scripts/exposure_controller.gd" id="2_o6xl0"]
 [ext_resource type="Script" uid="uid://douyrjghtbk24" path="res://scripts/sensor_diagram.gd" id="3_tipki"]
 [ext_resource type="Script" uid="uid://5yq7hddwqgvk" path="res://scripts/camera_diagram.gd" id="4_85g3d"]
+[ext_resource type="Shader" uid="uid://dch5elwgni76p" path="res://shaders/zebra.gdshader" id="4_ya4ey"]
 [ext_resource type="Script" uid="uid://wgvsgeww2r03" path="res://scripts/aperture_indicator.gd" id="5_choun"]
+[ext_resource type="Script" uid="uid://cqcrm4kueyhvh" path="res://scenes/histogram.gd" id="6_o6xl0"]
+[ext_resource type="Script" path="res://scenes/imageAnalyser.gd" id="6_tipki"]
 [ext_resource type="PackedScene" uid="uid://cvwv2r2uanjjx" path="res://character/source/Школяр.glb" id="6_ya4ey"]
-
-[sub_resource type="Environment" id="Environment_0thei"]
-background_mode = 1
-background_color = Color(1, 0.35913473, 0.66001046, 1)
-background_energy_multiplier = 0.0
-tonemap_exposure = 0.1
-ssr_enabled = true
-ssao_enabled = true
-ssil_enabled = true
-sdfgi_enabled = true
-sdfgi_bounce_feedback = 0.56
-glow_enabled = true
-fog_enabled = true
-volumetric_fog_enabled = true
-adjustment_enabled = true
+[ext_resource type="Script" uid="uid://dtu81ma3so76n" path="res://scenes/texture_rect.gd" id="7_ya4ey"]
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_povcam"]
 dof_blur_far_enabled = true
 dof_blur_far_distance = 3.17
 dof_blur_near_enabled = true
 dof_blur_near_distance = 2.86
+
+[sub_resource type="Environment" id="Environment_0thei"]
+background_mode = 1
+background_color = Color(1, 0.35913473, 0.66001046, 1)
+background_energy_multiplier = 0.0
+tonemap_exposure = 0.1
+sdfgi_bounce_feedback = 0.56
+adjustment_enabled = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0thei"]
+shader = ExtResource("4_ya4ey")
+shader_parameter/zebras_enabled = false
+shader_parameter/zebra_threshold = 0.95
+shader_parameter/false_colour_enabled = false
+shader_parameter/scene_kelvin = 5600.0
+shader_parameter/camera_kelvin = 5600.0
+shader_parameter/noise_strength = 0.0
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_0thei"]
 lightmap_size_hint = Vector2i(6, 6)
@@ -38,48 +46,72 @@ rings = 0
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_0xm2m"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_0thei"]
-size = Vector3(0.3, 0.3, 0.3)
-
 [node name="Main" type="Node3D" unique_id=351611395]
 script = ExtResource("1_tefeu")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=625592752]
+[node name="SubViewport" type="SubViewport" parent="." unique_id=1412458474]
+gui_disable_input = true
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="POV Cam" type="Camera3D" parent="SubViewport" unique_id=1997001179]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.126, 2.7585547)
+cull_mask = 1
+attributes = SubResource("CameraAttributesPractical_povcam")
+current = true
+fov = 37.849285
+near = 0.001
+far = 9.65
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewport" unique_id=625592752]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
 shadow_enabled = true
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=469414272]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewport" unique_id=469414272]
 environment = SubResource("Environment_0thei")
+
+[node name="WhiteBalanceController" type="Node" parent="." unique_id=637706810]
+script = ExtResource("2_choun")
 
 [node name="ExposureController" type="Node" parent="." unique_id=63031158]
 script = ExtResource("2_o6xl0")
-
-[node name="SensorDiagram" type="Node2D" parent="." unique_id=1831491059]
-position = Vector2(895.11993, 35.000004)
-scale = Vector2(0.3584, 0.3584)
-script = ExtResource("3_tipki")
-
-[node name="CameraDiagram" type="Node2D" parent="." unique_id=408330464]
-position = Vector2(761.99994, 163)
-scale = Vector2(0.4096, 0.4096)
-script = ExtResource("4_85g3d")
-
-[node name="ApertureIndicator" type="Node2D" parent="." unique_id=1465089650]
-position = Vector2(158, 939)
-scale = Vector2(0.512, 0.512)
-script = ExtResource("5_choun")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1165215695]
 scale = Vector2(0.512, 0.512)
 transform = Transform2D(0.512, 0, 0, 0.512, 0, 0)
 
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer" unique_id=229285108 node_paths=PackedStringArray("viewport")]
+material = SubResource("ShaderMaterial_0thei")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("7_ya4ey")
+viewport = NodePath("../../SubViewport")
+
+[node name="RuleOfThirdsOverlay" type="Control" parent="CanvasLayer/TextureRect" unique_id=477488582]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_eb6dy")
+
+[node name="ImageAnalysisManager" type="Node" parent="CanvasLayer" unique_id=122166337 node_paths=PackedStringArray("viewport")]
+script = ExtResource("6_tipki")
+viewport = NodePath("../../SubViewport")
+
 [node name="CameraPanel" type="Panel" parent="CanvasLayer" unique_id=1231028787]
 anchors_preset = 9
 anchor_bottom = 1.0
-offset_left = 21.484373
-offset_top = 15.624999
-offset_right = 375.00037
-offset_bottom = -203.375
+offset_left = 21.484
+offset_top = 494.14056
+offset_right = 375.0
+offset_bottom = 312.24414
 grow_vertical = 2
 scale = Vector2(1.755, 1.755)
 size_flags_horizontal = 3
@@ -105,6 +137,20 @@ size_flags_stretch_ratio = 4.01
 layout_mode = 2
 text = "CAMERA SETTINGS
 "
+
+[node name="CameraWBLabel" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=389556510]
+layout_mode = 2
+text = "White Balance"
+
+[node name="CameraWBSlider" type="HSlider" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=2014688945]
+layout_mode = 2
+min_value = 2000.0
+max_value = 10000.0
+value = 2000.0
+
+[node name="RuleOfThirdsCheckbox" type="CheckBox" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=1462021417]
+layout_mode = 2
+text = "Rule of Thirds / Safe Areas"
 
 [node name="Sensor" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=182583933]
 layout_mode = 2
@@ -235,10 +281,15 @@ visible = false
 layout_mode = 2
 text = "Auto Focus"
 
-[node name="Focus Distance Settings2" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=1265488895]
+[node name="CameraPositionSettingsLabel" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=1265488895]
 layout_mode = 2
 text = "
 Camera Position Settings"
+
+[node name="LookAtToggle" type="CheckBox" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=298121165]
+layout_mode = 2
+button_pressed = true
+text = "Look at Subject"
 
 [node name="CameraDistanceLabel" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=713554490]
 layout_mode = 2
@@ -254,12 +305,54 @@ value = 2.0
 
 [node name="CameraHeightLabel" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=284867459]
 layout_mode = 2
-text = "Camera Height"
+text = "Height"
 
 [node name="CameraHeightSlider" type="HSlider" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=680579700]
 layout_mode = 2
 max_value = 1.5
 step = 0.05
+
+[node name="CameraLeftRightLabel" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=434745321]
+layout_mode = 2
+text = "Left-Right Position"
+
+[node name="CameraLeftRightSlider" type="HSlider" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=903709554]
+layout_mode = 2
+min_value = -1.5
+max_value = 1.5
+step = 0.05
+value = 0.5
+
+[node name="CameraYawLabel" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=1797352727]
+layout_mode = 2
+text = "Yaw"
+
+[node name="CameraYawSlider" type="HSlider" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=2086124904]
+layout_mode = 2
+min_value = -45.0
+max_value = 45.0
+
+[node name="CameraPitchLabel" type="Label" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=1088238204]
+layout_mode = 2
+text = "Pitch"
+
+[node name="CameraPtichSlider" type="HSlider" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=482342103]
+layout_mode = 2
+min_value = -45.0
+max_value = 45.0
+
+[node name="ZebraToggle" type="CheckBox" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=1379027455]
+layout_mode = 2
+text = "Zebra Lines"
+
+[node name="ZebraSlider" type="HSlider" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=1377315281]
+layout_mode = 2
+min_value = 50.0
+value = 95.0
+
+[node name="FalseColourToggle" type="CheckBox" parent="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer" unique_id=660295896]
+layout_mode = 2
+text = "False Colour"
 
 [node name="LightingPanel" type="Panel" parent="CanvasLayer" unique_id=291720516]
 anchors_preset = 13
@@ -481,6 +574,54 @@ max_value = 10000.0
 step = 100.0
 value = 5600.0
 
+[node name="Histogram" type="Control" parent="CanvasLayer" unique_id=1283268403]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 62.500008
+offset_top = 46.874996
+offset_right = 562.5
+offset_bottom = 246.875
+mouse_filter = 2
+script = ExtResource("6_o6xl0")
+
+[node name="SensorDiagram" type="Control" parent="CanvasLayer" unique_id=510067283]
+custom_minimum_size = Vector2(350, 250)
+layout_mode = 3
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -350.0
+offset_top = -250.0
+grow_horizontal = 0
+grow_vertical = 0
+scale = Vector2(0.3584, 0.3584)
+mouse_filter = 2
+script = ExtResource("3_tipki")
+
+[node name="CameraDiagram" type="Control" parent="CanvasLayer" unique_id=1292417033]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 762.0
+offset_top = 163.0
+offset_right = 762.0
+offset_bottom = 163.0
+scale = Vector2(0.40959996, 0.40959996)
+mouse_filter = 2
+script = ExtResource("4_85g3d")
+
+[node name="ApertureIndicator" type="Control" parent="CanvasLayer" unique_id=990059114]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 158.0
+offset_top = 938.99994
+offset_right = 158.0
+offset_bottom = 938.99994
+scale = Vector2(0.51199996, 0.51199996)
+mouse_filter = 2
+script = ExtResource("5_choun")
+
 [node name="ARCHIVE" type="Control" parent="CanvasLayer" unique_id=1119934313]
 visible = false
 layout_mode = 3
@@ -622,15 +763,6 @@ offset_right = 2439.9998
 offset_bottom = 220.0
 grow_horizontal = 0
 
-[node name="POV Cam" type="Camera3D" parent="." unique_id=1997001179]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.126, 2.7585547)
-cull_mask = 1
-attributes = SubResource("CameraAttributesPractical_povcam")
-current = true
-fov = 37.849285
-near = 0.001
-far = 9.65
-
 [node name="KeyLight" type="SpotLight3D" parent="." unique_id=115507418]
 light_energy = 5.0
 shadow_enabled = true
@@ -669,19 +801,11 @@ transform = Transform3D(5, 0, 0, 0, -2.1855695e-07, -5, 0, 5, -2.1855695e-07, 0,
 cast_shadow = 0
 mesh = SubResource("PlaneMesh_0xm2m")
 
-[node name="Cube 1" type="MeshInstance3D" parent="." unique_id=184063576]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.565, -0.575, 0.5)
-cast_shadow = 0
-mesh = SubResource("BoxMesh_0thei")
-
-[node name="Cube 2" type="MeshInstance3D" parent="." unique_id=1385876625]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.53, -0.565, -0.635)
-cast_shadow = 0
-mesh = SubResource("BoxMesh_0thei")
-
 [node name="Subject" parent="." unique_id=444173362 instance=ExtResource("6_ya4ey")]
 transform = Transform3D(0.07884044, 0, -0.99688727, 0, 1, 0, 0.99688727, 0, 0.07884044, 0, -0.24, 0)
 
+[connection signal="value_changed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/CameraWBSlider" to="." method="_on_camera_wb_slider_value_changed"]
+[connection signal="toggled" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/RuleOfThirdsCheckbox" to="." method="_on_rule_of_thirds_checkbox_toggled"]
 [connection signal="pressed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/SensorContainer/FullFrame" to="." method="_on_full_frame_pressed"]
 [connection signal="pressed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/SensorContainer/APSC" to="." method="_on_apsc_pressed"]
 [connection signal="pressed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/SensorContainer/MFT" to="." method="_on_mft_pressed"]
@@ -694,8 +818,15 @@ transform = Transform3D(0.07884044, 0, -0.99688727, 0, 1, 0, 0.99688727, 0, 0.07
 [connection signal="value_changed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/ShutterSlider" to="ExposureController" method="_on_shutter_slider_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/FocusDistSlider" to="ExposureController" method="_on_focus_dist_slider_value_changed"]
 [connection signal="pressed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/AutoFocus" to="ExposureController" method="_on_auto_focus_pressed"]
+[connection signal="toggled" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/LookAtToggle" to="." method="_on_look_at_toggle_toggled"]
 [connection signal="value_changed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/CameraDistanceSlider" to="." method="_on_camera_distance_slider_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/CameraHeightSlider" to="." method="_on_camera_height_slider_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/CameraLeftRightSlider" to="." method="_on_camera_left_right_slider_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/CameraYawSlider" to="." method="_on_camera_yaw_slider_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/CameraPtichSlider" to="." method="_on_camera_ptich_slider_value_changed"]
+[connection signal="toggled" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/ZebraToggle" to="ExposureController" method="_on_zebra_toggle_toggled"]
+[connection signal="value_changed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/ZebraSlider" to="ExposureController" method="_on_zebra_slider_value_changed"]
+[connection signal="toggled" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/FalseColourToggle" to="ExposureController" method="_on_false_colour_toggle_toggled"]
 [connection signal="value_changed" from="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Key Angle Group/KeyAngleSlider" to="." method="_on_key_angle_slider_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Key Dist Group/KeyDist" to="." method="_on_key_dist_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Key Height Group/KeyHeight" to="." method="_on_key_height_value_changed"]

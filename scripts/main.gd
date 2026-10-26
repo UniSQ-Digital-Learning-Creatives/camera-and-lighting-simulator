@@ -1,168 +1,256 @@
 extends Node3D
 
+@export var settings : CinemaSettings
 
-@onready var label = $CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/LensLabel
-@onready var lens_slider = $CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/lensSlider
-@onready var subject = $Subject
-@onready var camera_distance_label = $CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/CameraDistanceLabel
+@onready var viewport = %SubViewport
 
-@onready var camera_distance_slider = $CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/CameraDistanceSlider
-@onready var camera_height_slider = $CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/CameraHeightSlider
+@onready var Acknowl_popup = %AcknowledgementsPopup
+@onready var HelpDocs_popup = %HelpDocsPopup
 
-@onready var key_angle_slider = $"CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Key Angle Group/KeyAngleSlider"
-@onready var key_dist_slider = $"CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Key Dist Group/KeyDist"
-@onready var key_height_slider = $"CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Key Height Group/KeyHeight"
-@onready var key_temp_slider = $"CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Key Temp Group/Keytemp"
+@onready var camera_controller = %CameraController
 
-@onready var fill_angle_slider = $"CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Fill Angle Group/FillAngleSlider"
-@onready var fill_dist_slider = $"CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Fill Dist Group/FillDist"
-@onready var fill_height_slider = $"CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Fill Height Group/FillHeight"
-@onready var fill_temp_slider = $"CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Fill Temp Group/Fill Temp"
+@onready var full_frame_btn = %FullFrame
+@onready var apsc_btn = %APSC
+@onready var mft_btn = %MFT
 
-@onready var rim_angle_slider = $"CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Rim Angle Group/RimAngleSlider"
-@onready var rim_dist_slider = $"CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Rim Dist Group/RimDist"
-@onready var rim_height_slider = $"CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Rim Height Group/RimHeight"
-@onready var rim_temp_slider = $"CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Rim Temp Group/Rim Temp"
+@onready var info_label = %InfoLabel
 
-@onready var camera = $"POV Cam"
-@onready var exposure_controller = $ExposureController
+@onready var camera_content = %CameraContent
+@onready var exposure_content = %ExposureContent
+@onready var focus_content = %FocusContent
+@onready var camera_position_content = %"Position Content"
+@onready var lights_content = %LightsContent
 
-var camera_distance := 5.0
-var camera_height := 0.4
-var sensor_width = 36.0
-var current_focal_length = 50
-var camera_angle = 90
+@onready var key_light_header = %KeyLightHeader
+@onready var fill_light_header = %FillLightHeader
+@onready var rim_light_header = %RimLightHeader
 
+@onready var lens_label = %LensLabel
+@onready var lens_slider = %LensSlider
+@onready var lens_num = %LensNum
+@onready var head_target = %Marker3D
 
-# Lighting variables
+@onready var camera_distance_num = %DistanceNum
+@onready var camera_distance_slider = %DistanceSlider
+@onready var camera_height_slider = %HeightSlider
+@onready var camera_height_num = %HeightNum
+@onready var camera_x_offset_slider = %LeftRightSlider
+@onready var camera_x_offset_num = %LeftRightNum
+@onready var auto_look_at_toggle = %LookAtToggle
+@onready var camera_yaw_slider = %YawSlider
+@onready var camera_yaw_num = %YawNum
+@onready var camera_pitch_slider = %PitchSlider
+@onready var camera_pitch_num = %PitchNum
 
-var key_angle = 45.0
-var fill_angle = 135.0
-var rim_angle = 180.0
+@onready var camera_WB_slider = %CameraWBSlider
+@onready var camera_WB_num = %Camera_WBNum
 
-var key_distance = 1.5
-var fill_distance = 1.5
-var rim_distance = 1.5
+@onready var camera_reset = %ResetButton
 
-var key_height = 0.8
-var fill_height = 0.8
-var rim_height = 0.8
+@onready var overlays = %Overlays
 
-var key_temperature = 5600.0
-var fill_temperature = 5600.0
-var rim_temperature = 5600.0
+@onready var key_light = %KeyLight
+@onready var fill_light = %FillLight
+@onready var rim_light = %RimLight
+# The scene's general "daylight" fill; white balanced as a 5600K source.
+@onready var sun_light = %DirectionalLight3D
+const SUN_TEMPERATURE := 5600.0
 
-var _last_dof_focus_distance = null
-var _last_dof_aperture = null
+@onready var key_angle_slider = %KeyAngleSlider
+@onready var key_dist_slider = %KeyDistSlider
+@onready var key_height_slider = %KeyHeightSlider
+@onready var key_temp_slider = %KeyTempSlider
+@onready var key_angle_num = %KeyAngleNum
+@onready var key_dist_num = %KeyDistNum
+@onready var key_height_num = %KeyHeightNum
+@onready var key_temp_num = %KeyTempNum
+
+@onready var fill_angle_slider = %FillAngleSlider
+@onready var fill_dist_slider = %FillDistSlider
+@onready var fill_height_slider = %FillHeightSlider
+@onready var fill_temp_slider = %FillTempSlider
+@onready var fill_angle_num = %FillAngleNum
+@onready var fill_dist_num = %FillDistNum
+@onready var fill_height_num = %FillHeightNum
+@onready var fill_temp_num = %FillTempNum
+
+@onready var rim_angle_slider = %RimAngleSlider
+@onready var rim_dist_slider = %RimDistSlider
+@onready var rim_height_slider = %RimHeightSlider
+@onready var rim_temp_slider = %RimTempSlider
+@onready var rim_angle_num = %RimAngleNum
+@onready var rim_dist_num = %RimDistNum
+@onready var rim_height_num = %RimHeightNum
+@onready var rim_temp_num = %RimTempNum
+
+@onready var key_int_slider = %KeyIntSlider
+@onready var key_int_num = %KeyIntNum
+@onready var fill_int_slider = %FillIntSlider
+@onready var fill_int_num = %FillIntNum
+@onready var rim_int_slider = %RimIntSlider
+@onready var rim_int_num = %RimIntNum
+
+@onready var camera = %"POV Cam"
+@onready var exposure_controller = %ExposureController
+@onready var viewport_monitor = %TextureRect
+@onready var camera_diagram = %CameraDiagram
+@onready var sensor_diagram = %SensorDiagram
+
+var saved_manual_x_offset := 0.0
+var saved_manual_height := 1.2
+var saved_manual_pitch := 0.0
+var saved_manual_yaw := 0.0
+
+var _last_dof_key = null
+
 
 func _process(_delta):
 	update_dof()
 
+# Depth of field from the thin-lens model, using the selected lens and sensor.
+#
+# A point at distance d, with the lens focused at distance u, blurs into a
+# circle on the sensor of diameter
+#     blur(d) = f² / (N·(u − f)) · |d − u| / d
+# so it grows from 0 at the focus plane towards f² / (N·(u − f)) far behind
+# it. Godot's bokeh shader has exactly this falloff built in: a negative
+# transition switches it to "physical" mode, where it scales its blur radius
+# (in pixels) by |d − u| / d on both sides of the focus plane. All that's left
+# to work out here is that maximum radius, converted from millimetres on the
+# sensor to pixels in the rendered image.
 func update_dof():
-	var focus_distance = exposure_controller.focus_distance
-	var aperture = exposure_controller.aperture
+	var focus_distance = settings.focus_distance
+	var aperture = settings.aperture
+	var focal_length = settings.focal_length
+	var sensor_width = settings.sensor_width
 
 	# Skip re-pushing the DOF attributes resource to the renderer when
 	# nothing changed since last frame -- on the web/WebGPU target every
 	# RenderingServer update crosses the JS/WASM command bridge, so a
 	# steady-state frame (nothing being dragged) should cost nothing here.
-	if focus_distance == _last_dof_focus_distance and aperture == _last_dof_aperture:
+	var key = [focus_distance, aperture, focal_length, sensor_width]
+	if key == _last_dof_key:
 		return
+	_last_dof_key = key
 
-	_last_dof_focus_distance = focus_distance
-	_last_dof_aperture = aperture
+	var u = maxf(focus_distance * 1000.0, focal_length + 1.0) # focus distance in mm
+	var max_blur_mm = (focal_length * focal_length) / (aperture * (u - focal_length))
+
+	# Blur diameter on the sensor -> blur radius in pixels across the image width.
+	var max_blur_px = 0.5 * max_blur_mm / sensor_width * viewport.size.x
 
 	var attributes = camera.attributes
+	attributes.dof_blur_far_distance = u / 1000.0
+	attributes.dof_blur_near_distance = u / 1000.0
+	attributes.dof_blur_far_transition = -1.0
+	attributes.dof_blur_near_transition = -1.0
+	attributes.dof_blur_amount = max_blur_px / 64.0 # the shader's blur amount is a fraction of a 64px radius
 
-	attributes.dof_blur_near_distance = focus_distance
-	attributes.dof_blur_far_distance = focus_distance
-
-	var transition = remap(aperture, 1.4, 22.0, 0.15, 2.5)
-	attributes.dof_blur_near_transition = transition
-	attributes.dof_blur_far_transition = transition
-
-	attributes.dof_blur_amount = remap(aperture, 1.4, 22.0, 0.5, 0.05)
 
 func _ready():
-	camera_distance = camera.global_position.distance_to(subject.global_position)
 
-	set_lens(current_focal_length)
-	update_lights()
-	update_camera_position()
+	settings = load("res://data/default_settings.tres").duplicate(true)
 
-	camera_distance_label.text = (
-		"Camera Distance: "
-		+ str(snapped(camera_distance, 0.1))
-		+ "m"
-	)
+	ensure_preset_directory()
+	refresh_preset_list()
+	ensure_screenshot_directory()
 
-	sync_sliders_to_data()
-	exposure_controller.sync_focus_distance_slider()
+	camera_content.visible = true
+	exposure_content.visible = true
+	focus_content.visible = true
+	camera_position_content.visible = true
+	lights_content.visible = true
+
+	# Each light starts on or off to match its header checkbox in the scene
+	# (only the key light is ticked to begin with).
+	_on_keylight_header_toggled(key_light_header.button_pressed)
+	_on_fill_light_header_toggled(fill_light_header.button_pressed)
+	_on_rim_light_header_toggled(rim_light_header.button_pressed)
+
+	apply_settings()
 
 
 func sync_sliders_to_data():
-	lens_slider.set_value_no_signal(current_focal_length)
-	camera_distance_slider.set_value_no_signal(camera_distance)
-	camera_height_slider.set_value_no_signal(camera_height)
+	lens_slider.set_value_no_signal(settings.focal_length)
+	camera_distance_slider.set_value_no_signal(settings.camera_distance)
+	camera_height_slider.set_value_no_signal(settings.camera_height)
+	camera_x_offset_slider.set_value_no_signal(settings.camera_x_offset)
+	camera_yaw_slider.set_value_no_signal(settings.camera_yaw)
+	camera_pitch_slider.set_value_no_signal(settings.camera_pitch)
+	camera_WB_slider.set_value_no_signal(settings.white_balance)
 
-	key_angle_slider.set_value_no_signal(key_angle)
-	key_dist_slider.set_value_no_signal(key_distance)
-	key_height_slider.set_value_no_signal(key_height)
-	key_temp_slider.set_value_no_signal(key_temperature)
+	auto_look_at_toggle.set_pressed_no_signal(settings.auto_look_at)
+	camera_yaw_slider.editable = !settings.auto_look_at
+	camera_pitch_slider.editable = !settings.auto_look_at
 
-	fill_angle_slider.set_value_no_signal(fill_angle)
-	fill_dist_slider.set_value_no_signal(fill_distance)
-	fill_height_slider.set_value_no_signal(fill_height)
-	fill_temp_slider.set_value_no_signal(fill_temperature)
+	full_frame_btn.set_pressed_no_signal(settings.sensor_width == 36.0)
+	apsc_btn.set_pressed_no_signal(settings.sensor_width == 23.6)
+	mft_btn.set_pressed_no_signal(settings.sensor_width == 17.3)
 
-	rim_angle_slider.set_value_no_signal(rim_angle)
-	rim_dist_slider.set_value_no_signal(rim_distance)
-	rim_height_slider.set_value_no_signal(rim_height)
-	rim_temp_slider.set_value_no_signal(rim_temperature)
+	key_angle_slider.set_value_no_signal(settings.key_angle)
+	key_dist_slider.set_value_no_signal(settings.key_distance)
+	key_height_slider.set_value_no_signal(settings.key_height)
+	key_temp_slider.set_value_no_signal(settings.key_temperature)
+	key_int_slider.set_value_no_signal(settings.key_intensity)
+
+	fill_angle_slider.set_value_no_signal(settings.fill_angle)
+	fill_dist_slider.set_value_no_signal(settings.fill_distance)
+	fill_height_slider.set_value_no_signal(settings.fill_height)
+	fill_temp_slider.set_value_no_signal(settings.fill_temperature)
+	fill_int_slider.set_value_no_signal(settings.fill_intensity)
+
+	rim_angle_slider.set_value_no_signal(settings.rim_angle)
+	rim_dist_slider.set_value_no_signal(settings.rim_distance)
+	rim_height_slider.set_value_no_signal(settings.rim_height)
+	rim_temp_slider.set_value_no_signal(settings.rim_temperature)
+	rim_int_slider.set_value_no_signal(settings.rim_intensity)
+
+	camera_WB_num.text = str(int(settings.white_balance)) + "K"
+	lens_num.text = str(settings.focal_length) + "mm"
 
 
 func set_lens(focal_length):
-	
-	current_focal_length = round(focal_length)
-	
+
+	settings.focal_length = round(focal_length)
+
+	# Horizontal field of view: the camera keeps its width (keep_aspect =
+	# KEEP_WIDTH), so the 16:9 frame is a crop of the sensor's full width.
 	var fov = rad_to_deg(
-		2.0 * atan(sensor_width / (2.0 * focal_length))
+		2.0 * atan(settings.sensor_width/ (2.0 * settings.focal_length))
 	)
-	
-	print("Focal:", focal_length, " FOV:", fov)
-	print("Sensor: ", sensor_width, " FOV:", fov)
-	
-	var sensor_name = ""
 
 	camera.fov = fov
-	
-	$CameraDiagram.current_fov = fov
-	$CameraDiagram.queue_redraw()
 
+	camera_diagram.current_fov = fov
+	camera_diagram.queue_redraw()
 
-# Label Code
+#Label
+	var lens_type = ""
 
-	if focal_length <= 24:
-		label.text = "24mm\nWide Angle Lens"
+	if settings.focal_length <= 24:
+		lens_type = "Wide Angle Lens"
 
-	elif focal_length == 50:
-		label.text = "50mm\nStandard Lens"
+	elif settings.focal_length <= 70:
+		lens_type = "Standard Lens"
 
-	elif focal_length == 200:
-		label.text = "200mm\nTelephoto Lens"
-		
-	if sensor_width == 36.0:
-		sensor_name = "Full Frame"
+	else:
+		lens_type = "Telephoto Lens"
 
-	elif sensor_width == 23.6:
-		sensor_name = "APS-C"
+	if settings.sensor_width == 36.0:
+		settings.sensor_name = "Full Frame"
 
-	elif sensor_width == 17.3:
-		sensor_name = "Micro Four Thirds"
-		
-	label.text = str(current_focal_length) + "mm"
-	
-	label.text += "\nSensor: " + sensor_name
+	elif settings.sensor_width == 23.6:
+		settings.sensor_name = "APS-C"
+
+	elif settings.sensor_width == 17.3:
+		settings.sensor_name = "Micro Four Thirds"
+
+	lens_label.text = (
+		str(settings.focal_length) + "mm"
+		+ "\n" + lens_type
+		+ "\nSensor: " + settings.sensor_name
+	)
+	sensor_diagram.queue_redraw()
 
 
 # Button code
@@ -176,206 +264,577 @@ func _on_50mm_pressed():
 func _on_200mm_pressed():
 	lens_slider.value = 200
 
+func _set_sensor(width: float):
+	settings.sensor_width = width
+	full_frame_btn.set_pressed_no_signal(width == 36.0)
+	apsc_btn.set_pressed_no_signal(width == 23.6)
+	mft_btn.set_pressed_no_signal(width == 17.3)
+	set_lens(settings.focal_length)
+	exposure_controller.update_noise() # smaller sensor, noisier pixels
+	update_info_label()
+
 func _on_full_frame_pressed():
-	sensor_width = 36.0
-	
-	$SensorDiagram.sensor_width = sensor_width
-	$SensorDiagram.queue_redraw()
-	
-	set_lens(current_focal_length)
+	_set_sensor(36.0)
 
 func _on_apsc_pressed():
-
-	sensor_width = 23.6
-
-	$SensorDiagram.sensor_width = sensor_width
-	$SensorDiagram.queue_redraw()
-
-	set_lens(current_focal_length)
+	_set_sensor(23.6)
 
 func _on_mft_pressed():
-	sensor_width = 17.3
-	
-	$SensorDiagram.sensor_width = sensor_width
-	$SensorDiagram.queue_redraw()
-	
-	set_lens(current_focal_length)
+	_set_sensor(17.3)
 
 func _on_lens_slider_value_changed(value):
 	set_lens(value)
-	print("Lens changed:", value)
+	lens_num.text = str(settings.focal_length) +"mm"
+	update_info_label()
 
 func get_light_position(subject_position, angle_deg, distance, height):
 
 	var angle_rad = deg_to_rad(angle_deg)
 
-	return subject_position + Vector3(
-		cos(angle_rad) * distance,
-		height,
-		sin(angle_rad) * distance
+	return Vector3(
+	subject_position.x + cos(angle_rad) * distance,
+	height,
+	subject_position.z + sin(angle_rad) * distance
 	)
+
 
 func update_lights():
 
-	var subject_position = subject.global_position
+	var subject_position = head_target.global_position
 
-	$KeyLight.position = get_light_position(
+	key_light.global_position = get_light_position(
 		subject_position,
-		key_angle,
-		key_distance,
-		key_height
+		settings.key_angle,
+		settings.key_distance,
+		settings.key_height
 	)
 
-	$FillLight.position = get_light_position(
+	fill_light.global_position = get_light_position(
 		subject_position,
-		fill_angle,
-		fill_distance,
-		fill_height
+		settings.fill_angle,
+		settings.fill_distance,
+		settings.fill_height
 	)
 
-	$RimLight.position = get_light_position(
+	rim_light.global_position = get_light_position(
 		subject_position,
-		rim_angle,
-		rim_distance,
-		rim_height
+		settings.rim_angle,
+		settings.rim_distance,
+		settings.rim_height
 	)
 
-	$KeyLight.look_at(subject_position)
-	$FillLight.look_at(subject_position)
-	$RimLight.look_at(subject_position)
-	
-	$CameraDiagram.key_angle = key_angle
-	$CameraDiagram.fill_angle = fill_angle
-	$CameraDiagram.rim_angle = rim_angle
+	key_light.look_at(subject_position)
+	fill_light.look_at(subject_position)
+	rim_light.look_at(subject_position)
 
-	$CameraDiagram.key_distance = key_distance
-	$CameraDiagram.fill_distance = fill_distance
-	$CameraDiagram.rim_distance = rim_distance
+	camera_diagram.key_angle = settings.key_angle
+	camera_diagram.fill_angle = settings.fill_angle
+	camera_diagram.rim_angle = settings.rim_angle
 
-	$CameraDiagram.queue_redraw()
+	camera_diagram.key_distance = settings.key_distance
+	camera_diagram.fill_distance = settings.fill_distance
+	camera_diagram.rim_distance = settings.rim_distance
+
+	key_height_num.text = str(settings.key_height)
+	fill_height_num.text = str(settings.fill_height)
+	rim_height_num.text = str(settings.rim_height)
+	key_dist_num.text = str(settings.key_distance)
+	fill_dist_num.text = str(settings.fill_distance)
+	rim_dist_num.text = str(settings.rim_distance)
+	key_angle_num.text = str(settings.key_angle)
+	fill_angle_num.text = str(settings.fill_angle)
+	rim_angle_num.text = str(settings.rim_angle)
+
+	camera_diagram.queue_redraw()
+
+
+func update_light_intensities():
+	key_light.light_energy = settings.key_intensity
+	fill_light.light_energy = settings.fill_intensity
+	rim_light.light_energy = settings.rim_intensity
+	key_int_num.text = str(settings.key_intensity)
+	fill_int_num.text = str(settings.fill_intensity)
+	rim_int_num.text = str(settings.rim_intensity)
 
 
 func _on_key_angle_slider_value_changed(value):
 
-	key_angle = value
+	settings.key_angle = value
 	update_lights()
 
 
 func _on_fill_angle_slider_value_changed(value):
 
-	fill_angle = value
+	settings.fill_angle = value
 	update_lights()
 
 
 func _on_rim_angle_slider_value_changed(value):
 
-	rim_angle = value
+	settings.rim_angle = value
 	update_lights()
 
 
 
 func _on_key_dist_value_changed(value: float) -> void:
-	#print("Key distance:", value)
-
-	key_distance = value
+	settings.key_distance = value
 	update_lights()
 
 
 func _on_fill_dist_value_changed(value: float) -> void:
-	#print("Fill distance:", value)
-
-	fill_distance = value
+	settings.fill_distance = value
 	update_lights()
 
 
 func _on_rim_dist_value_changed(value: float) -> void:
-	#print("Rim distance:", value)
-
-	rim_distance = value
+	settings.rim_distance = value
 	update_lights()
 
 
 func _on_key_height_value_changed(value: float) -> void:
-	key_height = value
+	settings.key_height = value
 	update_lights()
 
 func _on_fill_height_value_changed(value: float) -> void:
-	fill_height = value
+	settings.fill_height = value
 	update_lights()
 
 func _on_rim_height_value_changed(value: float) -> void:
-	rim_height = value
+	settings.rim_height = value
 	update_lights()
 
 func update_camera_position():
 
-	var angle_rad = deg_to_rad(camera_angle)
-
-	camera.global_position = subject.global_position + Vector3(
-		cos(angle_rad) * camera_distance,
-		camera_height,
-		sin(angle_rad) * camera_distance
+	camera.global_position = Vector3(
+		head_target	.global_position.x + settings.camera_x_offset,
+		settings.camera_height,
+		head_target.global_position.z + settings.camera_distance
 	)
 
-	camera.rotation_degrees.x = 0
-	camera.rotation_degrees.y = camera_angle - 90
-	camera.rotation_degrees.z = 0
+	if settings.auto_look_at:
+		camera.look_at(head_target.global_position)
+	else:
+		camera.rotation_degrees = Vector3(
+			settings.camera_pitch,
+			settings.camera_yaw,
+			0
+		)
 
-	$CameraDiagram.camera_distance = camera_distance * 20
-	$CameraDiagram.queue_redraw()
+	camera_diagram.camera_distance = settings.camera_distance * 20
+	camera_diagram.queue_redraw()
+	camera_height_num.text = str(settings.camera_height) +"m"
+	camera_distance_num.text = str(settings.camera_distance) + "m"
+	camera_yaw_num.text = str(settings.camera_yaw)
+	camera_pitch_num.text = str(settings.camera_pitch)
+	camera_x_offset_num.text = str(settings.camera_x_offset)
+	update_info_label()
 
 
 func _on_camera_distance_slider_value_changed(value: float) -> void:
-
-	camera_distance = value
-
+	settings.camera_distance = value
 	update_camera_position()
-
-	camera_distance_label.text = (
-		"Camera Distance: "
-		+ str(snapped(camera_distance, 0.1))
-		+ "m"
-	)
 
 
 func _on_camera_height_slider_value_changed(value: float) -> void:
-	camera_height = value
-	print("Camera height: ", camera_height)
-	
+	settings.camera_height = value
 	update_camera_position()
 
-func kelvin_to_color(kelvin: float) -> Color:
-	var temp = kelvin / 100.0
-
-	var r
-	var g
-	var b
-
-	if temp <= 66:
-		r = 255
-		g = clamp(99.47 * log(temp) - 161.12, 0, 255)
-
-		if temp <= 19:
-			b = 0
-		else:
-			b = clamp(138.52 * log(temp - 10) - 305.04, 0, 255)
-	else:
-		r = clamp(329.70 * pow(temp - 60, -0.133), 0, 255)
-		g = clamp(288.12 * pow(temp - 60, -0.0755), 0, 255)
-		b = 255
-
-	return Color(r / 255.0, g / 255.0, b / 255.0)
-
 func _on_keytemp_value_changed(value: float) -> void:
-	key_temperature = value
-	$KeyLight.light_color = kelvin_to_color(value)
-
+	settings.key_temperature = value
+	update_white_balance()
 
 func _on_fill_temp_value_changed(value: float) -> void:
-	fill_temperature = value
-	$FillLight.light_color = kelvin_to_color(value)
-
+	settings.fill_temperature = value
+	update_white_balance()
 
 func _on_rim_temp_value_changed(value: float) -> void:
-	rim_temperature = value
-	$RimLight.light_color = kelvin_to_color(value)
+	settings.rim_temperature = value
+	update_white_balance()
+
+func _on_camera_left_right_slider_value_changed(value: float) -> void:
+	settings.camera_x_offset = value
+	update_camera_position()
+
+
+func _on_look_at_toggle_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		saved_manual_x_offset = settings.camera_x_offset
+		saved_manual_height = settings.camera_height
+		saved_manual_pitch = settings.camera_pitch
+		saved_manual_yaw = settings.camera_yaw
+
+	settings.auto_look_at = toggled_on
+
+	if !toggled_on:
+		settings.camera_x_offset = saved_manual_x_offset
+		settings.camera_height = saved_manual_height
+		settings.camera_pitch = saved_manual_pitch
+		settings.camera_yaw = saved_manual_yaw
+
+	camera_yaw_slider.editable = !toggled_on
+	camera_pitch_slider.editable = !toggled_on
+
+	update_camera_position()
+
+
+func _on_camera_yaw_slider_value_changed(value: float) -> void:
+	settings.camera_yaw = value
+	update_camera_position()
+
+
+func _on_camera_ptich_slider_value_changed(value: float) -> void:
+	settings.camera_pitch = value
+	update_camera_position()
+
+
+
+func _on_camera_wb_slider_value_changed(value: float) -> void:
+	settings.white_balance = value
+	camera_WB_num.text = str(int(settings.white_balance)) + "K"
+	update_white_balance()
+	update_info_label()
+
+# White balance works the way a camera's does: each light's colour is
+# divided by the colour the camera treats as white, so a light that matches
+# the white balance setting records as neutral, a warmer light records orange
+# and a cooler one blue. Applying it to the lights themselves (rather than to
+# the finished 8-bit image) does the correction in linear HDR light, before
+# tonemapping, so nothing clips or bands.
+func update_white_balance():
+	var wb = settings.white_balance
+	key_light.light_color = CinemaSettings.white_balanced_color(settings.key_temperature, wb)
+	fill_light.light_color = CinemaSettings.white_balanced_color(settings.fill_temperature, wb)
+	rim_light.light_color = CinemaSettings.white_balanced_color(settings.rim_temperature, wb)
+	sun_light.light_color = CinemaSettings.white_balanced_color(SUN_TEMPERATURE, wb)
+	key_temp_num.text = str(int(settings.key_temperature)) + "K"
+	fill_temp_num.text = str(int(settings.fill_temperature)) + "K"
+	rim_temp_num.text = str(int(settings.rim_temperature)) + "K"
+
+#Setting Intensity values on lights
+func _on_key_int_slider_value_changed(value: float) -> void:
+	settings.key_intensity = value
+	update_light_intensities()
+
+
+func _on_fill_int_slider_value_changed(value: float) -> void:
+	settings.fill_intensity = value
+	update_light_intensities()
+
+
+func _on_rim_int_slider_value_changed(value: float) -> void:
+	settings.rim_intensity = value
+	update_light_intensities()
+
+	#Collapsable headings
+func _on_camera_header_toggled(toggled_on: bool) -> void:
+	camera_content.visible = toggled_on
+
+func _on_exposure_header_toggled(toggled_on: bool) -> void:
+	exposure_content.visible = toggled_on
+
+func _on_focus_header_toggled(toggled_on: bool) -> void:
+	focus_content.visible = toggled_on
+
+func _on_position_header_toggled(toggled_on: bool) -> void:
+	camera_position_content.visible = toggled_on
+
+func _on_lights_header_toggled(toggled_on: bool) -> void:
+	lights_content.visible = toggled_on
+
+
+
+# Preset and Save Image options
+func get_preset_path(preset_name : String) -> String:
+	return "user://presets/" + preset_name + ".tres"
+
+
+func save_preset(preset_name : String):
+	ResourceSaver.save(settings.duplicate(true), get_preset_path(preset_name))
+	refresh_preset_list()
+
+
+func _on_save_preset_pressed():
+	%PresetNameInput.text = ""
+	%PresetNameInput.placeholder_text = ""
+	%SavePresetDialog.popup_centered()
+
+	await get_tree().process_frame
+	%PresetNameInput.grab_focus()
+
+
+func get_selected_preset_name() -> String:
+	var selected = %PresetMenu.selected
+
+	if selected < 0:
+		return ""
+
+	return %PresetMenu.get_item_text(selected)
+
+
+func _on_load_preset_button_pressed() -> void:
+	var preset_name = get_selected_preset_name()
+
+	if preset_name.is_empty():
+		return
+
+	load_preset(get_preset_path(preset_name))
+
+
+
+func load_preset(path : String):
+	var loaded = load(path) as CinemaSettings
+
+	if loaded == null:
+		push_warning("Could not load preset: " + path)
+		return
+
+	# Every controller reads main.settings, so swapping the whole resource
+	# applies every field at once (no list of fields to keep in sync).
+	settings = loaded.duplicate(true)
+	apply_settings()
+
+
+
+func apply_settings():
+	sync_sliders_to_data()
+	set_lens(settings.focal_length)
+	update_camera_position()
+	update_lights()
+	update_light_intensities()
+	update_white_balance()
+	exposure_controller.sync_from_settings()
+	camera_controller.sync_focus_distance_slider()
+	update_info_label()
+
+
+
+
+func reset_to_default():
+	load_preset("res://data/default_settings.tres")
+
+
+func _on_reset_preset_pressed() -> void:
+	reset_to_default()
+
+func ensure_preset_directory():
+
+	if !DirAccess.dir_exists_absolute("user://presets"):
+		DirAccess.make_dir_absolute(
+		"user://presets"
+	)
+
+
+func refresh_preset_list():
+
+	%PresetMenu.clear()
+
+	var dir = DirAccess.open(
+		"user://presets"
+	)
+
+	if dir == null:
+		return
+
+	dir.list_dir_begin()
+
+	while true:
+
+		var file = dir.get_next()
+
+		if file == "":
+			break
+
+		if file.ends_with(".tres"):
+
+			%PresetMenu.add_item(
+				file.get_basename()
+			)
+
+func delete_preset(preset_name : String):
+	DirAccess.remove_absolute(get_preset_path(preset_name))
+	refresh_preset_list()
+
+
+func _on_delete_presets_pressed() -> void:
+	var preset_name = get_selected_preset_name()
+
+	if preset_name.is_empty():
+		return
+
+	delete_preset(preset_name)
+
+
+func _on_download_image_pressed() -> void:
+	save_current_image()
+
+func _on_download_screenshot_pressed() -> void:
+	save_screenshot()
+
+func ensure_screenshot_directory():
+
+	if !DirAccess.dir_exists_absolute(
+		"user://screenshots"
+	):
+		DirAccess.make_dir_absolute(
+			"user://screenshots"
+		)
+
+# "Download Image": the photo the camera records. That's the 3D view (which
+# already has the exposure, depth of field and white balance in it) put
+# through the monitor shader for the sensor noise, at the camera's full
+# resolution, but with the monitoring aids (zebras, false colour) switched off
+# and without the guide overlays, which are drawn separately on top.
+func save_current_image():
+	var image = await capture_camera_image()
+
+	if image == null:
+		return
+
+	download_png(image, "camera-sim-photo")
+
+
+# "Download Screenshot": exactly what's on screen, controls and guides included.
+func save_screenshot():
+	# Wait for the frame being drawn, so the capture is the current one.
+	await RenderingServer.frame_post_draw
+	download_png(get_viewport().get_texture().get_image(), "camera-sim-screenshot")
+
+
+# Renders the camera image once into an off-screen viewport the size of the
+# camera's: a copy of the monitor (same shader and noise settings) with the
+# monitoring aids off. Built on demand and freed again, so it costs nothing
+# until a student presses the button.
+func capture_camera_image() -> Image:
+	var mat = viewport_monitor.material.duplicate() as ShaderMaterial
+	mat.set_shader_parameter("zebras_enabled", false)
+	mat.set_shader_parameter("false_colour_enabled", false)
+
+	var rect = TextureRect.new()
+	rect.texture = viewport.get_texture()
+	rect.material = mat
+
+	var recorder = SubViewport.new()
+	recorder.size = viewport.size
+	recorder.disable_3d = true
+	recorder.render_target_update_mode = SubViewport.UPDATE_ONCE
+	recorder.add_child(rect)
+	add_child(recorder)
+
+	await RenderingServer.frame_post_draw
+	var image = recorder.get_texture().get_image()
+	recorder.queue_free()
+	return image
+
+
+func download_png(image: Image, prefix: String):
+	var timestamp = Time.get_datetime_string_from_system().replace(":", "-")
+	var file_name = prefix + "-" + timestamp + ".png"
+
+	# In the browser, user:// is IndexedDB, which the student can't get at:
+	# hand the PNG to the browser as a real download instead.
+	if OS.has_feature("web"):
+		JavaScriptBridge.download_buffer(image.save_png_to_buffer(), file_name, "image/png")
+		return
+
+	image.save_png("user://screenshots/" + file_name)
+
+
+func _on_save_preset_dialog_confirmed():
+
+	var preset_name = %PresetNameInput.text.strip_edges()
+
+	if preset_name.is_empty():
+		return
+
+	if FileAccess.file_exists(get_preset_path(preset_name)):
+		_confirm_overwrite(preset_name)
+		return
+
+	save_preset(preset_name)
+
+
+func _confirm_overwrite(preset_name : String):
+	var dialog = ConfirmationDialog.new()
+	dialog.title = "Overwrite preset?"
+	dialog.dialog_text = "A preset called \"%s\" already exists.\nReplace it?" % preset_name
+	dialog.ok_button_text = "Replace"
+	dialog.confirmed.connect(save_preset.bind(preset_name))
+	dialog.visibility_changed.connect(func(): if !dialog.visible: dialog.queue_free())
+	add_child(dialog)
+	dialog.popup_centered()
+
+
+# Reset camera settings only
+func _on_reset_button_pressed() -> void:
+	reset_camera_position()
+
+
+func reset_camera_position():
+	var defaults = load("res://data/default_settings.tres") as CinemaSettings
+
+	if defaults == null:
+		return
+
+	settings.camera_distance = defaults.camera_distance
+	settings.camera_height = defaults.camera_height
+	settings.camera_x_offset = defaults.camera_x_offset
+
+	settings.camera_yaw = defaults.camera_yaw
+	settings.camera_pitch = defaults.camera_pitch
+
+	settings.auto_look_at = defaults.auto_look_at
+	apply_settings()
+
+#Help and Attribution buttons
+func _on_attribution_button_pressed() -> void:
+	Acknowl_popup.show()
+
+func _on_popup_window_close_requested() -> void:
+	Acknowl_popup.hide()
+
+func _on_help_button_pressed() -> void:
+	HelpDocs_popup.show()
+
+func _on_help_docs_popup_close_requested() -> void:
+	HelpDocs_popup.hide()
+
+# Turning a light on/off also enables/disables its sliders.
+func _set_light_enabled(light: Light3D, sliders: Array, on: bool):
+	light.visible = on
+	for slider in sliders:
+		slider.editable = on
+
+func _on_keylight_header_toggled(toggled_on: bool) -> void:
+	_set_light_enabled(key_light, [key_angle_slider, key_dist_slider, key_height_slider, key_temp_slider, key_int_slider], toggled_on)
+	camera_diagram.show_key_light = toggled_on
+	camera_diagram.queue_redraw()
+
+func _on_fill_light_header_toggled(toggled_on: bool) -> void:
+	_set_light_enabled(fill_light, [fill_angle_slider, fill_dist_slider, fill_height_slider, fill_temp_slider, fill_int_slider], toggled_on)
+	camera_diagram.show_fill_light = toggled_on
+	camera_diagram.queue_redraw()
+
+func _on_rim_light_header_toggled(toggled_on: bool) -> void:
+	_set_light_enabled(rim_light, [rim_angle_slider, rim_dist_slider, rim_height_slider, rim_temp_slider, rim_int_slider], toggled_on)
+	camera_diagram.show_rim_light = toggled_on
+	camera_diagram.queue_redraw()
+
+
+func _on_safe_areas_toggled(toggled_on: bool) -> void:
+	overlays.show_action_safe = toggled_on
+	overlays.queue_redraw()
+
+func _on_rule_of_thirds_checkbox_toggled(toggled_on: bool) -> void:
+	overlays.show_grid = toggled_on
+	overlays.queue_redraw()
+
+func _on_title_safe_toggled(toggled_on: bool) -> void:
+	overlays.show_title_safe = toggled_on
+	overlays.queue_redraw()
+
+
+# The one place the info box gets written. The Camera and Exposure
+# controllers call main.update_info_label() too, and the text itself comes
+# from CinemaSettings.get_summary().
+func update_info_label():
+	info_label.text = settings.get_summary()

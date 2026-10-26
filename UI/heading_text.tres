@@ -1,0 +1,8 @@
+[gd_resource type="LabelSettings" format=3 uid="uid://bg7ohljhxi6ag"]
+
+[sub_resource type="SystemFont" id="SystemFont_7fgau"]
+
+[resource]
+font = SubResource("SystemFont_7fgau")
+font_size = 22
+font_color = Color(0.8666667, 0.93333334, 1, 1)
