@@ -83,3 +83,4 @@ lights_and_shadows/positional_shadow/atlas_size.web_android=2048
 lights_and_shadows/positional_shadow/atlas_size.web_ios=2048
 environment/subsurface_scattering/subsurface_scattering_quality.web_android=1
 environment/subsurface_scattering/subsurface_scattering_quality.web_ios=1
+scaling_3d/mode.android=0

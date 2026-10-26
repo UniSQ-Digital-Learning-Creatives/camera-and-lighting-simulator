@@ -54,16 +54,6 @@ shader_parameter/read_noise = 3.0
 shader_parameter/animate_noise = true
 shader_parameter/noise_boost = 1.0
 
-[sub_resource type="Theme" id="Theme_g8dpu"]
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_0thei"]
-lightmap_size_hint = Vector2i(6, 6)
-top_radius = 0.0
-bottom_radius = 0.15
-height = 0.2
-radial_segments = 4
-rings = 0
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_controls"]
 content_margin_left = 10.0
 content_margin_top = 10.0
@@ -78,6 +68,16 @@ corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
+
+[sub_resource type="Theme" id="Theme_g8dpu"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_0thei"]
+lightmap_size_hint = Vector2i(6, 6)
+top_radius = 0.0
+bottom_radius = 0.15
+height = 0.2
+radial_segments = 4
+rings = 0
 
 [node name="Main" type="Node3D" unique_id=351611395]
 script = ExtResource("1_uwu47")
@@ -138,16 +138,16 @@ theme = ExtResource("6_wdn4e")
 
 [node name="OverallUI" type="VBoxContainer" parent="CanvasLayer/Control" unique_id=508728449]
 layout_mode = 0
-theme = ExtResource("6_wdn4e")
 offset_right = 1656.0
 offset_bottom = 968.0
+theme = ExtResource("6_wdn4e")
 
 [node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Control/OverallUI" unique_id=1731092385]
+custom_minimum_size = Vector2(1656, 40)
+custom_maximum_size = Vector2(1656, 40)
 layout_mode = 2
 theme = ExtResource("6_wdn4e")
 theme_override_styles/panel = ExtResource("7_p1eom")
-custom_minimum_size = Vector2(1656, 40)
-custom_maximum_size = Vector2(1656, 40)
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/PanelContainer" unique_id=1517003660]
 layout_mode = 2
@@ -165,16 +165,16 @@ text = "Camera Studio Simulator"
 uppercase = true
 
 [node name="MainLayout" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI" unique_id=1135730544]
-clip_contents = true
-layout_mode = 2
 custom_minimum_size = Vector2(1656, 894)
 custom_maximum_size = Vector2(1656, 894)
+clip_contents = true
+layout_mode = 2
 
 [node name="Left Panel" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout" unique_id=704429243]
-layout_mode = 2
-theme = ExtResource("6_wdn4e")
 custom_minimum_size = Vector2(200, 894)
 custom_maximum_size = Vector2(210, 894)
+layout_mode = 2
+theme = ExtResource("6_wdn4e")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel" unique_id=1830532059]
 layout_mode = 2
@@ -492,8 +492,8 @@ text = "Num"
 
 [node name="Focus Section" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox" unique_id=339357323]
 layout_mode = 2
-theme_override_styles/panel = ExtResource("7_p1eom")
 size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("7_p1eom")
 
 [node name="MarginContainer_Focus" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section" unique_id=514564074]
 layout_mode = 2
@@ -598,11 +598,11 @@ layout_mode = 2
 text = "Num"
 
 [node name="CenterPanel" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout" unique_id=785337053]
+custom_minimum_size = Vector2(1246, 894)
+custom_maximum_size = Vector2(1246, 894)
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("6_wdn4e")
-custom_minimum_size = Vector2(1246, 894)
-custom_maximum_size = Vector2(1246, 894)
 
 [node name="TopBottomDiv" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel" unique_id=358387872]
 propagate_maximum_size = false
@@ -612,16 +612,16 @@ theme = ExtResource("6_wdn4e")
 [node name="TextureRect" type="TextureRect" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv" unique_id=229285108 node_paths=PackedStringArray("viewport")]
 unique_name_in_owner = true
 material = SubResource("ShaderMaterial_0thei")
+custom_minimum_size = Vector2(1244, 700)
+custom_maximum_size = Vector2(1244, 700)
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
 mouse_filter = 2
+expand_mode = 1
 stretch_mode = 5
 script = ExtResource("13_vnwbm")
 viewport = NodePath("../../../../../../../SubViewport")
-size_flags_horizontal = 4
-size_flags_vertical = 0
-expand_mode = 1
-custom_minimum_size = Vector2(1244, 700)
-custom_maximum_size = Vector2(1244, 700)
 
 [node name="Overlays" type="Control" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/TextureRect" unique_id=477488582]
 unique_name_in_owner = true
@@ -644,11 +644,11 @@ theme_override_constants/separation = 10
 
 [node name="MarginContainer2" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer" unique_id=170931534]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
-size_flags_horizontal = 3
 
 [node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer2" unique_id=168885948]
 clip_contents = true
@@ -798,20 +798,20 @@ layout_mode = 2
 tooltip_text = "Saves a screenshot of the whole simulator window, including the controls and any guides."
 text = "Download Screenshot"
 
-[node name="AnimationSeparator" type="HSeparator" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer"]
+[node name="AnimationSeparator" type="HSeparator" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer" unique_id=323147703]
 layout_mode = 2
 
-[node name="AnimationLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer"]
+[node name="AnimationLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer" unique_id=106899511]
 layout_mode = 2
 theme_override_font_sizes/font_size = 11
 text = "Subject animation"
 horizontal_alignment = 1
 
-[node name="AnimationButtons" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer"]
+[node name="AnimationButtons" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer" unique_id=1201745671]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="PlayAnimation" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/AnimationButtons"]
+[node name="PlayAnimation" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/AnimationButtons" unique_id=1405652892]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -821,7 +821,7 @@ toggle_mode = true
 button_pressed = true
 text = "Play"
 
-[node name="PauseAnimation" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/AnimationButtons"]
+[node name="PauseAnimation" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/AnimationButtons" unique_id=1826794182]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -830,7 +830,7 @@ theme_override_font_sizes/font_size = 11
 toggle_mode = true
 text = "Pause"
 
-[node name="ResetAnimation" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/AnimationButtons"]
+[node name="ResetAnimation" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/AnimationButtons" unique_id=2100754804]
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Ease the subject back to her starting pose and pause there."
@@ -856,11 +856,11 @@ layout_mode = 2
 text = "info node"
 
 [node name="RightPanel" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout" unique_id=1730756574]
+custom_minimum_size = Vector2(200, 894)
+custom_maximum_size = Vector2(210, 894)
 layout_mode = 2
 size_flags_horizontal = 3
 theme = SubResource("Theme_g8dpu")
-custom_minimum_size = Vector2(200, 894)
-custom_maximum_size = Vector2(210, 894)
 
 [node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel" unique_id=281672805]
 custom_minimum_size = Vector2(200, 0)
@@ -1532,11 +1532,11 @@ layout_mode = 2
 text = "Temperature"
 
 [node name="BottomPanel" type="Panel" parent="CanvasLayer/Control/OverallUI" unique_id=1126146870]
+custom_minimum_size = Vector2(1656, 25)
+custom_maximum_size = Vector2(1656, 25)
 layout_mode = 2
 theme = ExtResource("6_wdn4e")
 theme_override_styles/panel = ExtResource("7_p1eom")
-custom_minimum_size = Vector2(1656, 25)
-custom_maximum_size = Vector2(1656, 25)
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/BottomPanel" unique_id=293991698]
 layout_mode = 0
@@ -1749,7 +1749,7 @@ unique_name_in_owner = true
 oversampling_override = 1.0
 title = "Help Documentation"
 initial_position = 1
-size = Vector2i(600, 460)
+size = Vector2i(720, 700)
 visible = false
 
 [node name="MarginContainer" type="MarginContainer" parent="HelpDocsPopup" unique_id=1947289764]
@@ -1767,7 +1767,7 @@ theme_override_constants/margin_bottom = 20
 layout_mode = 2
 
 [node name="HelpDocs" type="RichTextLabel" parent="HelpDocsPopup/MarginContainer/VBoxContainer" unique_id=1296612603]
-custom_minimum_size = Vector2(560, 420)
+custom_minimum_size = Vector2(680, 660)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_fonts/bold_font = ExtResource("8_ii1va")
@@ -1780,15 +1780,19 @@ text = "[b]Camera Studio Simulator[/b] lets you set up a camera and studio light
 
 [b]Exposure[/b]: the exposure triangle. A lower f-number (wider aperture) lets in more light and makes the depth of field shallower. A faster shutter lets in less light. A higher ISO brightens the image by amplifying it, and the grain grows with it. Tick Exaggerate noise to see the grain more easily. Set the white balance to the colour temperature of your light so that white looks white: about 3200K for tungsten, 5600K for daylight.
 
-[b]Focus[/b]: Auto Focus keeps the subject sharp. Drag Distance to focus by hand. The panel shows the range that will look sharp.
+[b]Light meter[/b]: the Meter line in the box on the picture shows how your exposure compares with what a light meter at the subject's face recommends, in stops: 0.0 is correct, + is brighter (over) and - is darker (under). It changes with the camera settings and with the lights.
+
+[b]Focus[/b]: Auto Focus keeps the subject's face sharp, even as she moves. Drag Distance to focus by hand. The panel shows the range that will look sharp, and how deep it is.
 
 [b]Camera Position[/b]: distance, height and side offset. Look at Subject aims the camera for you; untick it to set the yaw and pitch yourself.
 
-[b]Lights[/b]: a key, fill and rim light. Angle moves a light around the subject, Distance and Height place it, Temp sets its colour and Intensity its brightness. A classic portrait puts the key at about 45 degrees and the fill on the other side at about half the key's intensity.
+[b]Lights[/b]: a key, fill and rim light. Tick a light to switch it on. Angle moves a light around the subject, Distance and Height place it, Temp sets its colour and Intensity its brightness. A classic portrait puts the key at about 45 degrees and the fill on the other side at about half the key's intensity.
 
 [b]Monitoring[/b]: the histogram shows the photo's brightness from dark (left) to bright (right). Its border turns red when highlights clip and blue when shadows are crushed. Zebra Lines stripe areas that are close to clipping, False Colour paints brightness in bands, and the guides help with framing.
 
-[b]Presets and downloads[/b]: save a set-up and load it again later. Download Image saves the photo the camera takes; Download Screenshot saves the whole screen."
+[b]Subject animation[/b]: Play, Pause and Reset control her idle movement (blinking, breathing and a slight sway). Pause holds her still; Reset eases her back to her starting pose.
+
+[b]Presets and downloads[/b]: save a set-up and load it again later. Download Image saves the photo the camera takes, without the guides; Download Screenshot saves the whole screen."
 
 [connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraHeader" to="." method="_on_camera_header_toggled"]
 [connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent/SensorContainer/FullFrame" to="." method="_on_full_frame_pressed"]
