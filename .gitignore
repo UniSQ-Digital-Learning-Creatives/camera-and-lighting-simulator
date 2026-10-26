@@ -1,12 +1,15 @@
-### Godot template
+# Godot 4.2+ specific ignores
+~*.dll
+
 # Godot 4+ specific ignores
 .godot/
-builds
+.nomedia
 
 # Godot-specific ignores
 .import/
 export.cfg
-export_presets.cfg
+export_credentials.cfg
+*.tmp
 
 # Imported translations (automatically generated from CSV files)
 *.translation
@@ -16,10 +19,27 @@ export_presets.cfg
 data_*/
 mono_crash.*.json
 
-builds
+# Export outputs
+*.exe
+builds/
+# Uncomment if your project does not version PCK files as runtime dependencies.
+# *.pck
 
 # Local instructions file, kept out of history on purpose
 CLAUDE.md
 
 # macOS Finder metadata
 .DS_Store
+
+# GodotHub's local project marker (time tracking)
+.godothub/
+
+# The original MetaHuman export; scenes/Ava/ holds the same files, extracted
+scenes/Ava.zip
+
+# Old snapshots of the main scene (the live one is scenes/camera_studio.tscn)
+scenes/main_19October.*
+scenes/main_20October.scn
+scenes/main_NewUI.scn
+scenes/main_scene22October*.scn
+*.depren
