@@ -146,10 +146,39 @@ func update_dof():
 	attributes.dof_blur_near_transition = -1.0
 	attributes.dof_blur_amount = max_blur_px / 64.0 # the shader's blur amount is a fraction of a 64px radius
 
+	update_dof_label(u, focal_length, aperture)
+
+
+# The near and far limits of acceptable sharpness, shown in the Focus panel.
+# "Sharp" means a blur smaller than the circle of confusion: 0.03 mm on a
+# full-frame sensor, smaller in proportion on a smaller one. Beyond the
+# hyperfocal distance everything to infinity is sharp.
+const FULL_FRAME_COC_MM := 0.03
+
+func update_dof_label(u_mm: float, f: float, n: float):
+	var coc = FULL_FRAME_COC_MM / settings.get_crop_factor()
+	var hyperfocal = f + f * f / (n * coc)
+	var near = hyperfocal * u_mm / (hyperfocal + (u_mm - f)) / 1000.0
+	if u_mm >= hyperfocal:
+		%DOFLabel.text = "Sharp from %.1f m to infinity" % near
+		return
+	var far = hyperfocal * u_mm / (hyperfocal - (u_mm - f)) / 1000.0
+	var depth = far - near
+	# A shallow zone needs more digits, or it reads "1.5 m to 1.5 m".
+	var digits = "%.2f" if depth < 0.5 else "%.1f"
+	var depth_text = ("%d cm" % maxi(roundi(depth * 100.0), 1)) if depth < 1.0 else ("%.1f m" % depth)
+	%DOFLabel.text = ("Sharp from " + digits + " m to " + digits + " m (%s deep)") % [near, far, depth_text]
+
 
 func _ready():
 
 	settings = load("res://data/default_settings.tres").duplicate(true)
+
+	# Ava stands still, so her hair simulation has nothing to move, and idle
+	# hair keeps exactly its groomed shape without it (godotwebgpu TASKS §2.33).
+	# Off, it saves ~0.9 ms of CPU a frame on the web build.
+	for hair_sim in $Subject.find_children("*", "MetaHumanHairSimulator", true, false):
+		hair_sim.active = false
 
 	# Phones get a lighter render: smaller shadow maps and no SSAO (the
 	# project settings lower subsurface scattering for them too).
@@ -352,6 +381,7 @@ func update_lights():
 	rim_angle_num.text = str(settings.rim_angle)
 
 	camera_diagram.queue_redraw()
+	update_info_label()
 
 
 func update_light_intensities():
@@ -361,6 +391,7 @@ func update_light_intensities():
 	key_int_num.text = str(settings.key_intensity)
 	fill_int_num.text = str(settings.fill_intensity)
 	rim_int_num.text = str(settings.rim_intensity)
+	update_info_label()
 
 
 func _on_key_angle_slider_value_changed(value):
@@ -847,24 +878,28 @@ func _on_help_button_pressed() -> void:
 func _on_help_docs_popup_close_requested() -> void:
 	HelpDocs_popup.hide()
 
-# Turning a light on/off also enables/disables its sliders.
-func _set_light_enabled(light: Light3D, sliders: Array, on: bool):
+# Turning a light on/off also enables/disables its sliders, and dims them
+# while it's off (a disabled slider looks the same as a live one in this theme).
+func _set_light_enabled(light: Light3D, sliders: Array, content: Control, on: bool):
 	light.visible = on
 	for slider in sliders:
 		slider.editable = on
+	content.modulate.a = 1.0 if on else 0.4
+	if is_node_ready():
+		update_info_label()
 
 func _on_keylight_header_toggled(toggled_on: bool) -> void:
-	_set_light_enabled(key_light, [key_angle_slider, key_dist_slider, key_height_slider, key_temp_slider, key_int_slider], toggled_on)
+	_set_light_enabled(key_light, [key_angle_slider, key_dist_slider, key_height_slider, key_temp_slider, key_int_slider], %KeylightContent, toggled_on)
 	camera_diagram.show_key_light = toggled_on
 	camera_diagram.queue_redraw()
 
 func _on_fill_light_header_toggled(toggled_on: bool) -> void:
-	_set_light_enabled(fill_light, [fill_angle_slider, fill_dist_slider, fill_height_slider, fill_temp_slider, fill_int_slider], toggled_on)
+	_set_light_enabled(fill_light, [fill_angle_slider, fill_dist_slider, fill_height_slider, fill_temp_slider, fill_int_slider], %FilllightContent, toggled_on)
 	camera_diagram.show_fill_light = toggled_on
 	camera_diagram.queue_redraw()
 
 func _on_rim_light_header_toggled(toggled_on: bool) -> void:
-	_set_light_enabled(rim_light, [rim_angle_slider, rim_dist_slider, rim_height_slider, rim_temp_slider, rim_int_slider], toggled_on)
+	_set_light_enabled(rim_light, [rim_angle_slider, rim_dist_slider, rim_height_slider, rim_temp_slider, rim_int_slider], %RimlightContent, toggled_on)
 	camera_diagram.show_rim_light = toggled_on
 	camera_diagram.queue_redraw()
 
@@ -886,4 +921,4 @@ func _on_title_safe_toggled(toggled_on: bool) -> void:
 # controllers call main.update_info_label() too, and the text itself comes
 # from CinemaSettings.get_summary().
 func update_info_label():
-	info_label.text = settings.get_summary()
+	info_label.text = settings.get_summary() + "\nMeter: " + exposure_controller.get_meter_text()

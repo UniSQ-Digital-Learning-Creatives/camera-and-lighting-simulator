@@ -35,6 +35,31 @@ func get_final_ev() -> float:
 func get_exposure_difference() -> float:
 	return get_final_ev() - scene_ev
 
+# What an incident light meter held at the subject's face would recommend:
+# it adds up the light reaching the face from each light that's on
+# (intensity / distance², the falloff Godot's lights use) and reads EV 13 for
+# the default rig, the exposure the scene is calibrated to. So dimming or
+# moving a light changes the reading, the way it does in a real studio.
+# (The fixed room fill and ambient light are left out, as a meter in the
+# subject's position would mostly see the studio lights.)
+const DEFAULT_KEY_ILLUMINANCE := 0.6457 # 1.5 / (1.5² + (1.9 - 1.63)²): the default key at the default face height
+
+func get_incident_ev() -> float:
+	var illuminance := 0.0
+	for light in [main.key_light, main.fill_light, main.rim_light]:
+		if light.visible:
+			illuminance += light.light_energy / maxf(light.global_position.distance_squared_to(main.head_target.global_position), 0.01)
+	return scene_ev + log(maxf(illuminance, 1e-4) / DEFAULT_KEY_ILLUMINANCE) / log(2.0)
+
+# The meter reading as shown: how far the camera's exposure is from what the
+# meter recommends, in stops. + is brighter (over), - is darker (under).
+# Rounded to 1/3 stop, the steps a camera's meter scale shows.
+func get_meter_text() -> String:
+	var stops = round((get_incident_ev() - get_final_ev()) * 3.0) / 3.0
+	if stops == 0.0:
+		return "0.0 EV (correct)"
+	return "%+.1f EV (%s)" % [stops, "over" if stops > 0.0 else "under"]
+
 # Sensor noise model (the shader does the per-pixel part, see zebra.gdshader).
 # A full-frame pixel of a ~24MP camera holds about 50,000 electrons at base
 # ISO. At the same pixel count a smaller sensor has smaller pixels, so its

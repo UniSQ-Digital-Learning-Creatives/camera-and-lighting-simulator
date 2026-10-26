@@ -539,8 +539,9 @@ text = "Num"
 
 [node name="DOFLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section/MarginContainer_Focus/FocusVBox/FocusContent" unique_id=204793944]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
+theme_override_font_sizes/font_size = 10
+autowrap_mode = 3
 
 [node name="FocusDistLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section/MarginContainer_Focus/FocusVBox/FocusContent" unique_id=223504545]
 unique_name_in_owner = true
@@ -1680,7 +1681,7 @@ unique_name_in_owner = true
 oversampling_override = 1.0
 title = "Help Documentation"
 initial_position = 1
-size = Vector2i(550, 300)
+size = Vector2i(600, 460)
 visible = false
 
 [node name="MarginContainer" type="MarginContainer" parent="HelpDocsPopup" unique_id=1947289764]
@@ -1697,9 +1698,29 @@ theme_override_constants/margin_bottom = 20
 [node name="VBoxContainer" type="VBoxContainer" parent="HelpDocsPopup/MarginContainer" unique_id=1786426077]
 layout_mode = 2
 
-[node name="HelpDocs" type="Label" parent="HelpDocsPopup/MarginContainer/VBoxContainer" unique_id=1296612603]
+[node name="HelpDocs" type="RichTextLabel" parent="HelpDocsPopup/MarginContainer/VBoxContainer" unique_id=1296612603]
+custom_minimum_size = Vector2(560, 420)
 layout_mode = 2
-text = "Information about this tool goes here. "
+size_flags_vertical = 3
+theme_override_fonts/bold_font = ExtResource("8_ii1va")
+theme_override_font_sizes/normal_font_size = 13
+theme_override_font_sizes/bold_font_size = 13
+bbcode_enabled = true
+text = "[b]Camera Studio Simulator[/b] lets you set up a camera and studio lights and see the photo they would make.
+
+[b]Camera[/b]: choose a sensor size and a focal length. A smaller sensor crops the view (it acts like a longer lens) and is noisier. 24mm is wide, 50mm is standard and 200mm is telephoto.
+
+[b]Exposure[/b]: the exposure triangle. A lower f-number (wider aperture) lets in more light and makes the depth of field shallower. A faster shutter lets in less light. A higher ISO brightens the image by amplifying it, and the grain grows with it. Tick Exaggerate noise to see the grain more easily. Set the white balance to the colour temperature of your light so that white looks white: about 3200K for tungsten, 5600K for daylight.
+
+[b]Focus[/b]: Auto Focus keeps the subject sharp. Drag Distance to focus by hand. The panel shows the range that will look sharp.
+
+[b]Camera Position[/b]: distance, height and side offset. Look at Subject aims the camera for you; untick it to set the yaw and pitch yourself.
+
+[b]Lights[/b]: a key, fill and rim light. Angle moves a light around the subject, Distance and Height place it, Temp sets its colour and Intensity its brightness. A classic portrait puts the key at about 45 degrees and the fill on the other side at about half the key's intensity.
+
+[b]Monitoring[/b]: the histogram shows the photo's brightness from dark (left) to bright (right). Its border turns red when highlights clip and blue when shadows are crushed. Zebra Lines stripe areas that are close to clipping, False Colour paints brightness in bands, and the guides help with framing.
+
+[b]Presets and downloads[/b]: save a set-up and load it again later. Download Image saves the photo the camera takes; Download Screenshot saves the whole screen."
 
 [connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraHeader" to="." method="_on_camera_header_toggled"]
 [connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent/SensorContainer/FullFrame" to="." method="_on_full_frame_pressed"]

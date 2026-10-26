@@ -1331,7 +1331,7 @@ bind/341/pose = Transform3D(-0.046726536, -0.02063798, 0.9986945, -0.98799956, -
 
 [node name="Ava" unique_id=1895001219 instance=ExtResource("1_ic8n8")]
 
-[node name="outfits" parent="Skeleton3D" parent_id_path=PackedInt32Array(256431903) index="0" unique_id=1892203070 instance=ExtResource("2_da74n")]
+[node name="outfits" parent="Skeleton3D" parent_id_path=PackedInt32Array(2029229332) index="0" unique_id=1892203070 instance=ExtResource("2_da74n")]
 
 [node name="Ava_Outfits" parent="Skeleton3D/outfits" index="0" unique_id=1490672938]
 visible = false
@@ -1465,7 +1465,7 @@ bones/338/rotation = Quaternion(1, 6.135344e-10, -1.8626454e-09, -6.938894e-18)
 bones/340/rotation = Quaternion(-1.5773195e-09, 1.8626454e-09, 6.135344e-10, 1)
 bones/341/rotation = Quaternion(0.70710677, 1.7509237e-09, -8.8325497e-10, 0.70710677)
 
-[node name="left-arm" type="SpringBoneSimulator3D" parent="Skeleton3D" parent_id_path=PackedInt32Array(256431903) index="1" unique_id=91541495]
+[node name="left-arm" type="SpringBoneSimulator3D" parent="Skeleton3D" parent_id_path=PackedInt32Array(2029229332) index="1" unique_id=91541495]
 setting_count = 1
 settings/0/root_bone_name = "upperarm_l"
 settings/0/root_bone = 11
@@ -1493,7 +1493,7 @@ settings/0/joints/2/bone = 18
 settings/0/enable_all_child_collisions = true
 settings/0/exclude_collision_count = 0
 
-[node name="right-arm" type="SpringBoneSimulator3D" parent="Skeleton3D" parent_id_path=PackedInt32Array(256431903) index="2" unique_id=703681967]
+[node name="right-arm" type="SpringBoneSimulator3D" parent="Skeleton3D" parent_id_path=PackedInt32Array(2029229332) index="2" unique_id=703681967]
 setting_count = 1
 settings/0/root_bone_name = "upperarm_r"
 settings/0/root_bone = 142
@@ -1521,28 +1521,28 @@ settings/0/joints/2/bone = 149
 settings/0/enable_all_child_collisions = true
 settings/0/exclude_collision_count = 0
 
-[node name="hair_strands" parent="Skeleton3D" parent_id_path=PackedInt32Array(256431903) index="12" unique_id=82329511]
+[node name="hair_strands" parent="Skeleton3D" parent_id_path=PackedInt32Array(2029229332) index="11" unique_id=1136004790]
 visibility_range_end = 0.0
 surface_material_override/0 = SubResource("ShaderMaterial_ddbpe")
 
-[node name="hair_shadow" parent="Skeleton3D" parent_id_path=PackedInt32Array(256431903) index="13" unique_id=759478061]
+[node name="hair_shadow" parent="Skeleton3D" parent_id_path=PackedInt32Array(2029229332) index="12" unique_id=1033051498]
 visibility_range_end = 0.0
 surface_material_override/0 = SubResource("ShaderMaterial_bh1vg")
 
-[node name="hair_shell" parent="Skeleton3D" parent_id_path=PackedInt32Array(256431903) index="14" unique_id=118076047]
+[node name="hair_shell" parent="Skeleton3D" parent_id_path=PackedInt32Array(2029229332) index="13" unique_id=37833984]
 visible = false
 surface_material_override/0 = SubResource("ShaderMaterial_omcn7")
 
-[node name="MetaHumanRig" parent="Skeleton3D" parent_id_path=PackedInt32Array(256431903) index="15" unique_id=1444456075]
+[node name="MetaHumanRig" parent="Skeleton3D" parent_id_path=PackedInt32Array(2029229332) index="15" unique_id=400574826]
 visible = false
 control_mode = 1
 body_lod = 0
 face_lod = 0
 
-[node name="HairSimulator" parent="Skeleton3D" parent_id_path=PackedInt32Array(256431903) index="16" unique_id=915811240]
+[node name="HairSimulator" parent="Skeleton3D" parent_id_path=PackedInt32Array(2029229332) index="16" unique_id=900857377]
 simulating = false
 
-[node name="Ava_Outfits3" type="MeshInstance3D" parent="Skeleton3D" parent_id_path=PackedInt32Array(256431903) index="17" unique_id=1281497496]
+[node name="Ava_Outfits3" type="MeshInstance3D" parent="Skeleton3D" parent_id_path=PackedInt32Array(2029229332) index="17" unique_id=1281497496]
 mesh = SubResource("ArrayMesh_p6uxt")
 skin = SubResource("Skin_ed6hd")
 skeleton = NodePath("..")
