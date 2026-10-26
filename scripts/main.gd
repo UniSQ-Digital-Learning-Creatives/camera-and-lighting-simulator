@@ -151,6 +151,12 @@ func _ready():
 
 	settings = load("res://data/default_settings.tres").duplicate(true)
 
+	# Phones get a lighter render: smaller shadow maps and no SSAO (the
+	# project settings lower subsurface scattering for them too).
+	if OS.has_feature("web_android") or OS.has_feature("web_ios"):
+		viewport.positional_shadow_atlas_size = 2048
+		%WorldEnvironment.environment.ssao_enabled = false
+
 	ensure_preset_directory()
 	refresh_preset_list()
 	ensure_screenshot_directory()
@@ -494,18 +500,17 @@ func _on_camera_wb_slider_value_changed(value: float) -> void:
 	update_white_balance()
 	update_info_label()
 
-# White balance works the way a camera's does: each light's colour is
-# divided by the colour the camera treats as white, so a light that matches
-# the white balance setting records as neutral, a warmer light records orange
-# and a cooler one blue. Applying it to the lights themselves (rather than to
-# the finished 8-bit image) does the correction in linear HDR light, before
-# tonemapping, so nothing clips or bands.
+# Each light gets the colour of its colour temperature, and the camera's white
+# balance is the engine's own (CameraAttributes.white_balance_temperature): a
+# von Kries adaptation in linear light after exposure and before tonemapping,
+# like a camera's raw processing. A light that matches the white balance
+# records as neutral, a warmer one orange and a cooler one blue.
 func update_white_balance():
-	var wb = settings.white_balance
-	key_light.light_color = CinemaSettings.white_balanced_color(settings.key_temperature, wb)
-	fill_light.light_color = CinemaSettings.white_balanced_color(settings.fill_temperature, wb)
-	rim_light.light_color = CinemaSettings.white_balanced_color(settings.rim_temperature, wb)
-	sun_light.light_color = CinemaSettings.white_balanced_color(SUN_TEMPERATURE, wb)
+	key_light.light_color = CinemaSettings.light_color_for_temperature(settings.key_temperature)
+	fill_light.light_color = CinemaSettings.light_color_for_temperature(settings.fill_temperature)
+	rim_light.light_color = CinemaSettings.light_color_for_temperature(settings.rim_temperature)
+	sun_light.light_color = CinemaSettings.light_color_for_temperature(SUN_TEMPERATURE)
+	camera.attributes.white_balance_temperature = settings.white_balance
 	key_temp_num.text = str(int(settings.key_temperature)) + "K"
 	fill_temp_num.text = str(int(settings.fill_temperature)) + "K"
 	rim_temp_num.text = str(int(settings.rim_temperature)) + "K"
@@ -686,10 +691,6 @@ func ensure_screenshot_directory():
 # and without the guide overlays, which are drawn separately on top.
 func save_current_image():
 	var image = await capture_camera_image()
-
-	if image == null:
-		return
-
 	download_png(image, "camera-sim-photo")
 
 
@@ -697,46 +698,94 @@ func save_current_image():
 func save_screenshot():
 	# Wait for the frame being drawn, so the capture is the current one.
 	await RenderingServer.frame_post_draw
-	download_png(get_viewport().get_texture().get_image(), "camera-sim-screenshot")
+	download_png(await read_back(get_viewport().get_texture()), "camera-sim-screenshot")
 
 
-# Renders the camera image once into an off-screen viewport the size of the
-# camera's: a copy of the monitor (same shader and noise settings) with the
-# monitoring aids off. Built on demand and freed again, so it costs nothing
-# until a student presses the button.
+# An off-screen viewport the size of the camera's, holding a copy of the
+# monitor (same shader and noise settings) with the monitoring aids off. It
+# only renders when a photo is taken. It's kept, rather than built per photo,
+# so its texture stays the same one across the frames a web readback takes.
+var _recorder: SubViewport
+var _recorder_rect: TextureRect
+
 func capture_camera_image() -> Image:
+	if _recorder == null:
+		_recorder_rect = TextureRect.new()
+		_recorder_rect.texture = viewport.get_texture()
+		_recorder = SubViewport.new()
+		_recorder.size = viewport.size
+		_recorder.disable_3d = true
+		_recorder.render_target_update_mode = SubViewport.UPDATE_DISABLED
+		_recorder.add_child(_recorder_rect)
+		add_child(_recorder)
+
 	var mat = viewport_monitor.material.duplicate() as ShaderMaterial
 	mat.set_shader_parameter("zebras_enabled", false)
 	mat.set_shader_parameter("false_colour_enabled", false)
-
-	var rect = TextureRect.new()
-	rect.texture = viewport.get_texture()
-	rect.material = mat
-
-	var recorder = SubViewport.new()
-	recorder.size = viewport.size
-	recorder.disable_3d = true
-	recorder.render_target_update_mode = SubViewport.UPDATE_ONCE
-	recorder.add_child(rect)
-	add_child(recorder)
+	_recorder_rect.material = mat
+	_recorder.render_target_update_mode = SubViewport.UPDATE_ONCE
 
 	await RenderingServer.frame_post_draw
-	var image = recorder.get_texture().get_image()
-	recorder.queue_free()
-	return image
+	return await read_back(_recorder.get_texture())
+
+
+# Reads a rendered texture back to the CPU. On the web build that's
+# asynchronous: the first read of a texture comes back empty (or zero-filled)
+# and its pixels arrive a frame or so later (godotwebgpu TASKS.md §4.2), so
+# keep asking for a few frames. Both images are opaque, so a fully
+# transparent result means "not here yet". On desktop the first read works.
+func read_back(texture: Texture2D) -> Image:
+	for attempt in 30:
+		var image = texture.get_image()
+		if image != null and not image.is_empty() and image.get_pixel(image.get_width() / 2, image.get_height() / 2).a > 0.0:
+			return image
+		await RenderingServer.frame_post_draw
+	return null
 
 
 func download_png(image: Image, prefix: String):
+	if image == null:
+		show_message("Couldn't capture the image, please try again.")
+		return
+
 	var timestamp = Time.get_datetime_string_from_system().replace(":", "-")
 	var file_name = prefix + "-" + timestamp + ".png"
 
-	# In the browser, user:// is IndexedDB, which the student can't get at:
-	# hand the PNG to the browser as a real download instead.
+	# In the browser, hand the PNG to the browser as a real download (user://
+	# is IndexedDB there, which the student can't get at).
 	if OS.has_feature("web"):
 		JavaScriptBridge.download_buffer(image.save_png_to_buffer(), file_name, "image/png")
 		return
 
-	image.save_png("user://screenshots/" + file_name)
+	# On desktop, save it where a download would go.
+	var folder = OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS)
+	if folder.is_empty() or not DirAccess.dir_exists_absolute(folder):
+		folder = ProjectSettings.globalize_path("user://screenshots")
+	var path = folder.path_join(file_name)
+	if image.save_png(path) == OK:
+		show_message("Saved " + file_name + " to " + folder)
+	else:
+		show_message("Couldn't save " + path)
+
+
+# A short message above the bottom bar that fades away.
+func show_message(text: String):
+	var label = Label.new()
+	label.text = text
+	label.add_theme_color_override("font_color", Color.WHITE)
+	label.add_theme_font_size_override("font_size", 12)
+	var background = StyleBoxFlat.new()
+	background.bg_color = Color(0, 0, 0, 0.75)
+	background.set_corner_radius_all(4)
+	background.set_content_margin_all(8)
+	label.add_theme_stylebox_override("normal", background)
+	$CanvasLayer.add_child(label)
+	label.position = Vector2(640 - label.get_minimum_size().x / 2, 650)
+
+	var tween = label.create_tween()
+	tween.tween_interval(3.0)
+	tween.tween_property(label, "modulate:a", 0.0, 0.5)
+	tween.tween_callback(label.queue_free)
 
 
 func _on_save_preset_dialog_confirmed():

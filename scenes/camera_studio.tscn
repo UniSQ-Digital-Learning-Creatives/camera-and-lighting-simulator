@@ -29,6 +29,16 @@ dof_blur_near_transition = -1.0
 dof_blur_amount = 0.05
 
 [sub_resource type="Environment" id="Environment_40dvd"]
+background_mode = 1
+background_color = Color(0.02, 0.02, 0.022, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.5, 0.5, 0.52, 1)
+ambient_light_energy = 0.15
+ssao_enabled = true
+ssao_radius = 0.6
+ssao_intensity = 1.5
+ssao_detail = 0.8
+ssao_light_affect = 0.15
 
 [sub_resource type="FontVariation" id="FontVariation_e7jo2"]
 base_font = ExtResource("8_ii1va")
@@ -66,24 +76,31 @@ script = ExtResource("3_pw41u")
 unique_name_in_owner = true
 screen_space_aa = 1
 gui_disable_input = true
+positional_shadow_atlas_size = 4096
+positional_shadow_atlas_quad_0 = 1
+positional_shadow_atlas_quad_1 = 1
+positional_shadow_atlas_quad_2 = 1
+positional_shadow_atlas_quad_3 = 1
 size = Vector2i(1280, 720)
 render_target_update_mode = 4
 
 [node name="POV Cam" type="Camera3D" parent="SubViewport" unique_id=1997001179]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 3)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.14966322, 1.63, 5)
 keep_aspect = 0
 cull_mask = 1
 attributes = SubResource("CameraAttributesPractical_povcam")
 current = true
-fov = 37.849285
+fov = 39.59775
 near = 0.001
 far = 15.0
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewport" unique_id=625592752]
 unique_name_in_owner = true
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+light_energy = 0.15
 shadow_enabled = true
+shadow_reverse_cull_face = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewport" unique_id=469414272]
 unique_name_in_owner = true
@@ -406,7 +423,7 @@ propagate_maximum_size = true
 layout_mode = 2
 text = "Num"
 
-[node name="ExaggerateNoise" type="CheckBox" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent"]
+[node name="ExaggerateNoise" type="CheckBox" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent" unique_id=463904779]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Shows sensor noise four times stronger than a real camera would, to make it easier to see."
@@ -749,7 +766,7 @@ layout_mode = 2
 tooltip_text = "Saves the photo the camera records: exposure, focus, white balance and noise, without zebras, false colour or guides."
 text = "Download Image"
 
-[node name="DownloadScreenshot" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer"]
+[node name="DownloadScreenshot" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer" unique_id=350200325]
 layout_mode = 2
 tooltip_text = "Saves a screenshot of the whole simulator window, including the controls and any guides."
 text = "Download Screenshot"
@@ -1491,10 +1508,14 @@ text = "Help"
 
 [node name="KeyLight" type="SpotLight3D" parent="." unique_id=115507418]
 unique_name_in_owner = true
-transform = Transform3D(0.9998477, 0, 0.017452406, 0, 1, 0, -0.017452406, 0, 0.9998477, 0, 1.55, 2.46)
-light_energy = 5.0
+transform = Transform3D(0.7071067, -0.12526612, 0.6959228, 0, 0.9841834, 0.17715304, -0.7071068, -0.1252661, 0.6959227, 1.2103235, 1.9, 1.0606601)
+light_energy = 1.5
 shadow_enabled = true
+shadow_bias = 0.01
+shadow_normal_bias = 0.5
 spot_range = 10.0
+spot_angle = 55.0
+spot_angle_attenuation = 3.0
 
 [node name="Mesh" type="MeshInstance3D" parent="KeyLight" unique_id=636445641]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
@@ -1503,9 +1524,15 @@ mesh = SubResource("CylinderMesh_0thei")
 
 [node name="RimLight" type="SpotLight3D" parent="." unique_id=271086274]
 unique_name_in_owner = true
-light_energy = 5.0
+transform = Transform3D(-4.371139e-08, 0.177153, -0.9841833, 0, 0.9841834, 0.177153, 1, 7.743604e-09, -4.302002e-08, -1.3503368, 1.9, 9.313228e-10)
+visible = false
+light_energy = 2.0
 shadow_enabled = true
+shadow_bias = 0.01
+shadow_normal_bias = 0.5
 spot_range = 10.0
+spot_angle = 55.0
+spot_angle_attenuation = 3.0
 
 [node name="Mesh3" type="MeshInstance3D" parent="RimLight" unique_id=1501152486]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
@@ -1514,9 +1541,15 @@ mesh = SubResource("CylinderMesh_0thei")
 
 [node name="FillLight" type="SpotLight3D" parent="." unique_id=1945025475]
 unique_name_in_owner = true
-light_energy = 5.0
+transform = Transform3D(0.7071067, 0.12526612, -0.6959228, 0, 0.9841834, 0.17715304, 0.7071068, -0.1252661, 0.6959227, -0.910997, 1.9, 1.0606601)
+visible = false
+light_energy = 0.75
 shadow_enabled = true
+shadow_bias = 0.01
+shadow_normal_bias = 0.5
 spot_range = 10.0
+spot_angle = 55.0
+spot_angle_attenuation = 3.0
 
 [node name="Mesh2" type="MeshInstance3D" parent="FillLight" unique_id=327402929]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
@@ -1531,22 +1564,27 @@ transform = Transform3D(0.07884044, 0, 0.99688697, 0, 1, 0, -0.99688697, 0, 0.07
 
 [node name="Marker3D" type="Marker3D" parent="Subject" unique_id=143947559]
 unique_name_in_owner = true
-transform = Transform3D(0.07884042, 0, 0.99688625, 0, 1, 0, -0.99688625, 0, 0.07884042, 0.011799515, 1.63, -0.14919735)
+transform = Transform3D(0.07884042, 0, 0.9968862, 0, 1, 0, -0.9968862, 0, 0.07884042, 0.011799514, 1.6827664, -0.14919734)
 
 [node name="SavePresetDialog" type="AcceptDialog" parent="." unique_id=134801878]
 unique_name_in_owner = true
+oversampling_override = 1.0
 title = "Save a new preset"
-size = Vector2i(158, 400)
-dialog_text = "Save a new preset?"
+size = Vector2i(391, 73)
+max_size = Vector2i(500, 500)
+ok_button_text = "      OK      "
 
 [node name="VBoxContainer" type="VBoxContainer" parent="SavePresetDialog" unique_id=985251524]
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 383.0
+offset_bottom = 39.0
 
 [node name="PresetNameInput" type="LineEdit" parent="SavePresetDialog/VBoxContainer" unique_id=782019947]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 30)
 layout_mode = 2
+placeholder_text = "Save a new preset?"
 
 [node name="AcknowledgementsPopup" type="Window" parent="." unique_id=4560040]
 unique_name_in_owner = true
@@ -1554,6 +1592,7 @@ oversampling_override = 1.0
 title = "Acknowledgements"
 initial_position = 1
 size = Vector2i(550, 300)
+visible = false
 
 [node name="MarginContainer" type="MarginContainer" parent="AcknowledgementsPopup" unique_id=802128364]
 anchors_preset = 15
@@ -1673,6 +1712,7 @@ text = "Information about this tool goes here. "
 [connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureHeader" to="." method="_on_exposure_header_toggled"]
 [connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent/HBoxContainer/ApertureSlider" to="ExposureController" method="_on_aperture_slider_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent/HBoxContainer2/ISOSlider" to="ExposureController" method="_on_iso_slider_value_changed"]
+[connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent/ExaggerateNoise" to="ExposureController" method="_on_exaggerate_noise_toggled"]
 [connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent/HBoxContainer3/ShutterSlider" to="ExposureController" method="_on_shutter_slider_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent/HBoxContainer4/CameraWBSlider" to="." method="_on_camera_wb_slider_value_changed"]
 [connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section/MarginContainer_Focus/FocusVBox/FocusHeader" to="." method="_on_focus_header_toggled"]
@@ -1690,7 +1730,6 @@ text = "Information about this tool goes here. "
 [connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer3/VBoxContainer/ResetPreset" to="." method="_on_reset_preset_pressed"]
 [connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/DownloadImage" to="." method="_on_download_image_pressed"]
 [connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/DownloadScreenshot" to="." method="_on_download_screenshot_pressed"]
-[connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent/ExaggerateNoise" to="ExposureController" method="_on_exaggerate_noise_toggled"]
 [connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/PositionHeader" to="." method="_on_position_header_toggled"]
 [connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/LookAtToggle" to="." method="_on_look_at_toggle_toggled"]
 [connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/HBoxContainer/DistanceSlider" to="." method="_on_camera_distance_slider_value_changed"]

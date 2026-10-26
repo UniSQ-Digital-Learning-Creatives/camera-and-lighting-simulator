@@ -23,13 +23,7 @@ config/mode=0
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
-window/subwindows/embed_subwindows=false
-window/frame_pacing/android/enable_frame_pacing=false
 window/stretch/mode="canvas_items"
-window/ios/allow_high_refresh_rate=false
-window/ios/hide_home_indicator=false
-window/ios/hide_status_bar=false
-window/ios/suppress_ui_gesture=false
 
 [gui]
 
@@ -65,11 +59,27 @@ my_action={
 rendering_device/driver.windows="d3d12"
 textures/vram_compression/import_etc2_astc=true
 lights_and_shadows/contact_shadow/enabled=true
+lights_and_shadows/contact_shadow/shadow_length=2
+lights_and_shadows/contact_shadow/surface_thickness=0.1
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality=1
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality.mobile=1
 lights_and_shadows/multi_bounce_occlusion/enabled=true
 lights_and_shadows/positional_shadow/soft_shadow_filter_quality=5
 lights_and_shadows/positional_shadow/soft_shadow_filter_quality.mobile=5
+camera/depth_of_field/depth_of_field_bokeh_quality=3
+camera/depth_of_field/depth_of_field_use_jitter=true
 anti_aliasing/screen_space_roughness_limiter/amount=1.0
 anti_aliasing/screen_space_roughness_limiter/limit=0.2
+scaling_3d/mode=2
+scaling_3d/mode.ios=2
+scaling_3d/mode.macos=2
+environment/subsurface_scattering/subsurface_scattering_quality=2
 anti_aliasing/quality/use_taa=true
+lights_and_shadows/positional_shadow/atlas_quadrant_0_subdiv=1
+lights_and_shadows/positional_shadow/atlas_quadrant_1_subdiv=1
+lights_and_shadows/positional_shadow/atlas_quadrant_2_subdiv=1
+lights_and_shadows/positional_shadow/atlas_quadrant_3_subdiv=1
+lights_and_shadows/positional_shadow/atlas_size.web_android=2048
+lights_and_shadows/positional_shadow/atlas_size.web_ios=2048
+environment/subsurface_scattering/subsurface_scattering_quality.web_android=1
+environment/subsurface_scattering/subsurface_scattering_quality.web_ios=1
