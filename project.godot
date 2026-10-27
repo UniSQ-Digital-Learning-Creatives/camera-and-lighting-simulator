@@ -13,14 +13,14 @@ config_version=5
 config/name="Camera Studio Simulator"
 run/main_scene="uid://2hkyi7q01hqa"
 config/features=PackedStringArray("4.8", "GL Compatibility")
+boot_splash/bg_color=Color(1, 0.7058824, 0.28235295, 1)
+boot_splash/stretch_mode=4
+boot_splash/image="res://UI/splash.png"
 config/icon="res://icon.svg"
 config/scale=1.0
 config/mode.ios=0
 config/mode.macos=0
 config/mode=0
-boot_splash/stretch_mode=4
-boot_splash/bg_color=Color(1, 0.7058824, 0.28235295, 1)
-boot_splash/image="res://UI/splash.png"
 
 [display]
 
@@ -73,9 +73,6 @@ camera/depth_of_field/depth_of_field_bokeh_quality=3
 camera/depth_of_field/depth_of_field_use_jitter=true
 anti_aliasing/screen_space_roughness_limiter/amount=1.0
 anti_aliasing/screen_space_roughness_limiter/limit=0.2
-scaling_3d/mode=2
-scaling_3d/mode.ios=2
-scaling_3d/mode.macos=2
 environment/subsurface_scattering/subsurface_scattering_quality=2
 anti_aliasing/quality/use_taa=true
 lights_and_shadows/positional_shadow/atlas_quadrant_0_subdiv=1

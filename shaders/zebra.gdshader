@@ -15,9 +15,19 @@ uniform bool false_colour_enabled = false;
 // only took full_well / g electrons of real light. Counting photons is random
 // (Poisson), giving a noise of sqrt(electrons), plus a fixed `read_noise` in
 // electrons from the readout electronics.
+//
+// Those are per sensor pixel, and the 3D view has far fewer pixels than the
+// sensor: each of its pixels stands for a patch of sensor pixels and holds
+// all their electrons, as when a photo is scaled down to view it. So the grain
+// belongs to the picture, not to the render resolution: at a higher render
+// resolution each pixel is smaller and noisier, and the picture as a whole
+// looks the same. (Before, every render pixel had one sensor pixel's noise, so
+// the noise changed with the render resolution and a 720p view showed about
+// five times what the camera's own photo, scaled to 720p, would.)
 uniform float iso_gain = 1.0;        // ISO / 100
-uniform float full_well = 50000.0;   // electrons in a full pixel at base ISO
-uniform float read_noise = 3.0;      // electrons, RMS
+uniform float full_well = 50000.0;   // electrons in a full sensor pixel at base ISO
+uniform float read_noise = 3.0;      // electrons per sensor pixel, RMS
+uniform float sensor_pixels_across = 6000.0; // a 24MP 3:2 sensor; the view is its full width
 uniform bool animate_noise = true;   // new noise every frame, like live view
 uniform float noise_boost = 1.0;     // >1 exaggerates the noise for teaching ("Exaggerate noise")
 
@@ -48,11 +58,18 @@ vec3 gaussian3(uint h)
 }
 
 // Colour noise after demosaicing and in-camera processing is blotchier than
-// the brightness noise: a smooth random field with ~3 px cells, interpolated
-// between cell corners. Rescaled to keep unit variance.
-vec3 chroma_noise(vec2 px, uint frame)
+// the brightness noise: a smooth random field with cells of ~3 sensor pixels,
+// interpolated between cell corners. Rescaled to keep unit variance. Scaled
+// down to the view, a cell is usually smaller than a pixel, and the colour
+// noise is as fine as the brightness noise.
+const float CHROMA_CELL = 3.0; // sensor pixels
+
+vec3 chroma_noise(vec2 px, uint frame, float cell_px)
 {
-	vec2 cell = px / 3.0;
+	if (cell_px <= 1.0) {
+		return gaussian3(hash3(uvec3(uvec2(ivec2(px) + 4096), frame * 2u + 1u)));
+	}
+	vec2 cell = px / cell_px;
 	vec2 i = floor(cell);
 	vec2 f = cell - i;
 	f = f * f * (3.0 - 2.0 * f);
@@ -76,15 +93,19 @@ vec3 linear_to_srgb(vec3 c)
 	return mix(c * 12.92, 1.055 * pow(c, vec3(1.0 / 2.4)) - 0.055, step(vec3(0.0031308), c));
 }
 
-vec3 add_sensor_noise(vec3 srgb, vec2 px)
+vec3 add_sensor_noise(vec3 srgb, vec2 px, float view_pixels_across)
 {
 	if (iso_gain <= 0.0) {
 		return srgb;
 	}
 	vec3 s = srgb_to_linear(srgb);
-	// Electrons behind a full pixel at this ISO, and the noise in units of a full pixel.
-	float electrons_full = full_well / iso_gain;
-	vec3 sigma = sqrt(s * electrons_full + read_noise * read_noise) / electrons_full;
+	// Sensor pixels behind each view pixel. Their electrons add up, and so do
+	// their read noises' variances.
+	float span = max(sensor_pixels_across / view_pixels_across, 1.0);
+	float pooled = span * span;
+	// Electrons behind a full view pixel at this ISO, and the noise in units of a full pixel.
+	float electrons_full = full_well / iso_gain * pooled;
+	vec3 sigma = sqrt(s * electrons_full + read_noise * read_noise * pooled) / electrons_full;
 	// A clipped pixel is a full well: it has no noise left to show.
 	sigma *= 1.0 - step(0.999, s);
 	sigma *= noise_boost;
@@ -92,7 +113,7 @@ vec3 add_sensor_noise(vec3 srgb, vec2 px)
 	uint frame = animate_noise ? uint(TIME * 60.0) : 0u;
 	uvec2 p = uvec2(ivec2(px) + 4096);
 	float luma_n = gaussian2(hash3(uvec3(p, frame * 2u))).x;
-	vec3 n = 0.6 * vec3(luma_n) + 0.8 * chroma_noise(px, frame); // 0.6² + 0.8² = 1
+	vec3 n = 0.6 * vec3(luma_n) + 0.8 * chroma_noise(px, frame, CHROMA_CELL / span); // 0.6² + 0.8² = 1
 	return linear_to_srgb(clamp(s + sigma * n, 0.0, 1.0));
 }
 
@@ -101,8 +122,8 @@ void fragment()
 	vec4 source = texture(TEXTURE, UV);
 	vec3 corrected = source.rgb;
 
-	// One noise sample per pixel of the 3D view (a 100% view of the sensor).
-	corrected = add_sensor_noise(corrected, UV / TEXTURE_PIXEL_SIZE);
+	// One noise sample per pixel of the 3D view, each pooling the sensor pixels it covers.
+	corrected = add_sensor_noise(corrected, UV / TEXTURE_PIXEL_SIZE, 1.0 / TEXTURE_PIXEL_SIZE.x);
 
 	corrected = clamp(
 		corrected,

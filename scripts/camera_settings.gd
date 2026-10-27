@@ -22,7 +22,7 @@ class_name CinemaSettings
 @export var shutter_speed := 1.0 / 125.0
 @export var iso := 100
 @export var white_balance := 5600.0
-@export var exaggerate_noise := false # teaching aid: 4x the realistic sensor noise
+@export var exaggerate_noise := false # teaching aid: 8x the realistic sensor noise
 
 # Focus
 @export_group("Focus")

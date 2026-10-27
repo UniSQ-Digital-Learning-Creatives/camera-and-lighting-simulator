@@ -65,17 +65,28 @@ func get_meter_text() -> String:
 # ISO. At the same pixel count a smaller sensor has smaller pixels, so its
 # full well shrinks with the sensor's area (1 / crop factor²): APS-C is about
 # 1.2 stops and MFT 2 stops noisier than full frame for the same exposure.
+# (The shader pools these sensor pixels into the view's larger pixels, so the
+# noise looks the same at any render resolution.)
 const FULL_FRAME_FULL_WELL := 50000.0
 
 # "Exaggerate noise" scales the realistic noise up by this much, for showing it
 # on a projector or a small window, where real full-frame noise is subtle.
-const NOISE_EXAGGERATION := 4.0
+const NOISE_EXAGGERATION := 8.0
+
+## Baseline grain: scales the sensor noise everywhere, 1 being the physical
+## model above. "Exaggerate noise" multiplies on top of it. Also tunable live
+## from the remote Inspector while the scene runs.
+@export_range(0.0, 4.0, 0.01, "or_greater") var grain_multiplier := 1.0:
+	set(value):
+		grain_multiplier = value
+		if is_node_ready():
+			update_noise()
 
 @onready var exaggerate_noise_toggle = %ExaggerateNoise
 
 func update_noise():
 	var full_well = FULL_FRAME_FULL_WELL / pow(settings.get_crop_factor(), 2.0)
-	var boost = NOISE_EXAGGERATION if settings.exaggerate_noise else 1.0
+	var boost = grain_multiplier * (NOISE_EXAGGERATION if settings.exaggerate_noise else 1.0)
 	texture_rect.set_sensor_noise(settings.iso / 100.0, full_well, boost)
 
 func _on_exaggerate_noise_toggled(toggled_on: bool) -> void:

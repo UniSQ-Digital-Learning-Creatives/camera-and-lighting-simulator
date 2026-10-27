@@ -105,8 +105,9 @@ var _last_dof_key = null
 var idle_animation # AvaIdle (scripts/ava_idle.gd), added in _ready
 
 
-func _process(_delta):
+func _process(delta):
 	update_dof()
+	update_auto_resolution(delta)
 
 # Depth of field from the thin-lens model, using the selected lens and sensor.
 #
@@ -129,7 +130,7 @@ func update_dof():
 	# nothing changed since last frame -- on the web/WebGPU target every
 	# RenderingServer update crosses the JS/WASM command bridge, so a
 	# steady-state frame (nothing being dragged) should cost nothing here.
-	var key = [focus_distance, aperture, focal_length, sensor_width]
+	var key = [focus_distance, aperture, focal_length, sensor_width, viewport.size.x]
 	if key == _last_dof_key:
 		return
 	_last_dof_key = key
@@ -196,6 +197,8 @@ func _ready():
 	if OS.has_feature("web_android") or OS.has_feature("web_ios"):
 		viewport.positional_shadow_atlas_size = 2048
 		%WorldEnvironment.environment.ssao_enabled = false
+
+	setup_display_options()
 
 	ensure_preset_directory()
 	refresh_preset_list()
@@ -760,6 +763,7 @@ func capture_camera_image() -> Image:
 		_recorder.render_target_update_mode = SubViewport.UPDATE_DISABLED
 		_recorder.add_child(_recorder_rect)
 		add_child(_recorder)
+	_recorder.size = viewport.size # the render resolution can change
 
 	var mat = viewport_monitor.material.duplicate() as ShaderMaterial
 	mat.set_shader_parameter("zebras_enabled", false)
@@ -954,3 +958,202 @@ func _on_title_safe_toggled(toggled_on: bool) -> void:
 # from CinemaSettings.get_summary().
 func update_info_label():
 	info_label.text = settings.get_summary() + "\nMeter: " + exposure_controller.get_meter_text()
+
+
+# Display: the render resolution (desktop and laptop only) and fullscreen.
+#
+# The camera renders into %SubViewport, which the monitor shows scaled to fit
+# its 1244x700 panel, so the panel's look depends on how many pixels that is
+# on the actual screen. "Match screen" renders exactly those pixels, so the
+# image stays sharp at any window size; the fixed sizes trade sharpness for
+# speed. Going fullscreen switches to "Match screen" (the panel gets bigger,
+# and a fixed size would be stretched and blurry), and leaving it puts the
+# previous choice back. Phones keep the 720p render: their screens are dense
+# enough that matching them would be slow for little gain.
+#
+# "Auto", the default, picks the sharpest of those that keeps 60 fps: it tries
+# "Match screen" first, times a second or so of frames, and steps down a size
+# at a time until one is fast enough (720p is as low as it goes). With Auto,
+# fullscreen goes as sharp as the computer can manage rather than all the way.
+#
+# The result is remembered (in user://, so per computer and browser), one for
+# windowed and one for fullscreen, as the most pixels that kept 60 fps; next
+# time, and whenever the window changes size, Auto uses the sharpest size
+# within that straight away instead of testing. Choosing Auto from the menu
+# tests again (and remembers the new result), for after a change of computer
+# or settings.
+const RESOLUTIONS := [
+	["Auto", Vector2i(-1, -1)],
+	["Match screen", Vector2i.ZERO],
+	["720p", Vector2i(1280, 720)],
+	["900p", Vector2i(1600, 900)],
+	["1080p", Vector2i(1920, 1080)],
+	["1440p", Vector2i(2560, 1440)],
+]
+const AUTO_RESOLUTION := 0
+const MATCH_SCREEN := 1
+const HANDHELD_RESOLUTION := 2 # 720p, what the scene renders at
+const MAX_RENDER_SIZE := Vector2i(3840, 2160)
+# Auto's timing: it waits out the hitch after each change (and the shader
+# compiles and loading at startup), then times a run of frames. A size passes
+# when its typical (median) frame makes 55 fps and no more than a quarter of
+# its frames miss a 60 Hz refresh (take over 25 ms), so a stray hitch doesn't
+# fail it; once a quarter have missed it fails at once, so a slow computer
+# doesn't sit through a full run at each size.
+const AUTO_SETTLE_TIME := 1.0 # s
+# Startup is busier (shader compiles, the rest of the page loading) than a
+# later size change, and a result that's remembered had better not be one
+# that startup dragged down: nothing is timed until this long after it.
+const AUTO_STARTUP_SETTLE := 3.0 # s
+const AUTO_SETTLE_FRAMES := 10
+const AUTO_SAMPLE_FRAMES := 60
+const AUTO_MEDIAN_FRAME := 1.0 / 55.0 # s
+const AUTO_MISSED_FRAME := 0.025 # s
+const AUTO_MAX_MISSED := AUTO_SAMPLE_FRAMES / 4
+const AUTO_RESULTS_FILE := "user://display.cfg"
+
+var _windowed_resolution := AUTO_RESOLUTION
+var _auto_candidates: Array[Vector2i] = [] # sharpest first; empty when not testing
+var _auto_waited := 0.0
+var _auto_settle_frames := 0
+var _auto_frame_times: Array[float] = []
+var _auto_missed := 0
+var _auto_mode := "" # "windowed" or "fullscreen", whichever is being tested
+var _display_started_at := 0 # ms
+
+func setup_display_options():
+	var menu: OptionButton = %ResolutionMenu
+	for option in RESOLUTIONS:
+		menu.add_item(option[0])
+	_display_started_at = Time.get_ticks_msec()
+	var handheld = OS.has_feature("web_android") or OS.has_feature("web_ios") or OS.has_feature("mobile")
+	menu.select(HANDHELD_RESOLUTION if handheld else AUTO_RESOLUTION)
+	%ResolutionLabel.visible = not handheld
+	menu.visible = not handheld
+	get_tree().root.size_changed.connect(_on_window_resized)
+	# Picking Auto again while it's already chosen doesn't count as a change
+	# for item_selected, but it should still test again.
+	menu.get_popup().index_pressed.connect(func(index):
+		if index == AUTO_RESOLUTION and menu.selected == AUTO_RESOLUTION:
+			apply_render_resolution(true))
+	apply_render_resolution()
+
+func _on_resolution_menu_item_selected(index: int) -> void:
+	apply_render_resolution(index == AUTO_RESOLUTION)
+
+func _on_fullscreen_button_toggled(toggled_on: bool) -> void:
+	var menu: OptionButton = %ResolutionMenu
+	if toggled_on:
+		_windowed_resolution = menu.selected
+		if menu.visible and menu.selected != AUTO_RESOLUTION:
+			menu.select(MATCH_SCREEN)
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+	else:
+		menu.select(_windowed_resolution)
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+	%FullscreenButton.text = "Exit Fullscreen" if toggled_on else "Fullscreen"
+	apply_render_resolution()
+
+func _on_window_resized():
+	apply_render_resolution()
+	# Esc (or the browser) can leave fullscreen without the button. A browser
+	# may resize the page before it reports the change, so look a moment later.
+	await get_tree().create_timer(0.3).timeout
+	var fullscreen = DisplayServer.window_get_mode() in [DisplayServer.WINDOW_MODE_FULLSCREEN, DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN]
+	if %FullscreenButton.button_pressed != fullscreen:
+		%FullscreenButton.button_pressed = fullscreen # runs the toggled handler
+
+# retest: Auto measures again rather than using its remembered result.
+func apply_render_resolution(retest := false):
+	var menu: OptionButton = %ResolutionMenu
+	_auto_candidates.clear()
+	menu.set_item_text(AUTO_RESOLUTION, RESOLUTIONS[AUTO_RESOLUTION][0])
+	var render_size: Vector2i = RESOLUTIONS[menu.selected][1]
+	if render_size == Vector2i.ZERO:
+		render_size = match_screen_size()
+	elif menu.selected == AUTO_RESOLUTION:
+		start_auto_resolution(retest)
+		return
+	set_render_size(render_size)
+
+# The monitor panel's size in real screen pixels: the UI is laid out at
+# 1656x968 and scaled (keeping its aspect) to fill the window.
+func match_screen_size() -> Vector2i:
+	var window = Vector2(DisplayServer.window_get_size())
+	var base = Vector2(ProjectSettings.get_setting("display/window/size/viewport_width"), ProjectSettings.get_setting("display/window/size/viewport_height"))
+	var ui_scale = minf(window.x / base.x, window.y / base.y)
+	var render_size = Vector2i((viewport_monitor.size * ui_scale).round())
+	return render_size.min(MAX_RENDER_SIZE).max(Vector2i(320, 180))
+
+func set_render_size(render_size: Vector2i):
+	if viewport.size != render_size:
+		viewport.size = render_size
+
+# Auto's candidates, sharpest first: the screen's own size, then each fixed
+# size below it down to 720p. (A screen smaller than 720p is just matched.)
+func start_auto_resolution(retest: bool):
+	var screen = match_screen_size()
+	var candidates: Array[Vector2i] = [screen]
+	var fixed: Array[Vector2i] = []
+	for option in RESOLUTIONS:
+		if option[1].x > 0 and option[1].x < screen.x:
+			fixed.append(option[1])
+	fixed.sort_custom(func(a, b): return a.x > b.x)
+	candidates.append_array(fixed)
+
+	_auto_mode = "fullscreen" if %FullscreenButton.button_pressed else "windowed"
+	var results = ConfigFile.new()
+	results.load(AUTO_RESULTS_FILE) # missing the first time, which is fine
+	var max_pixels: int = results.get_value("auto", _auto_mode, 0)
+	if max_pixels > 0 and not retest:
+		var chosen = candidates[-1]
+		for candidate in candidates:
+			if candidate.x * candidate.y <= max_pixels:
+				chosen = candidate
+				break
+		set_render_size(chosen)
+		%ResolutionMenu.set_item_text(AUTO_RESOLUTION, "Auto (%dp)" % chosen.y)
+		return
+
+	_auto_candidates = candidates
+	%ResolutionMenu.set_item_text(AUTO_RESOLUTION, "Auto (testing...)")
+	_try_auto_candidate()
+
+func _save_auto_result(chosen: Vector2i):
+	var results = ConfigFile.new()
+	results.load(AUTO_RESULTS_FILE)
+	results.set_value("auto", _auto_mode, chosen.x * chosen.y)
+	results.save(AUTO_RESULTS_FILE)
+
+func _try_auto_candidate():
+	set_render_size(_auto_candidates[0])
+	_auto_waited = 0.0
+	_auto_settle_frames = 0
+	_auto_frame_times.clear()
+	_auto_missed = 0
+
+func update_auto_resolution(delta: float):
+	if _auto_candidates.is_empty():
+		return
+	var since_startup = (Time.get_ticks_msec() - _display_started_at) / 1000.0
+	if _auto_waited < AUTO_SETTLE_TIME or _auto_settle_frames < AUTO_SETTLE_FRAMES or since_startup < AUTO_STARTUP_SETTLE:
+		_auto_waited += delta
+		_auto_settle_frames += 1
+		return
+	_auto_frame_times.append(delta)
+	if delta > AUTO_MISSED_FRAME:
+		_auto_missed += 1
+	var failed = _auto_missed > AUTO_MAX_MISSED
+	if not failed and _auto_frame_times.size() < AUTO_SAMPLE_FRAMES:
+		return
+	if not failed:
+		_auto_frame_times.sort()
+		failed = _auto_frame_times[_auto_frame_times.size() / 2] > AUTO_MEDIAN_FRAME
+	if not failed or _auto_candidates.size() == 1:
+		var chosen = _auto_candidates[0]
+		_auto_candidates.clear()
+		%ResolutionMenu.set_item_text(AUTO_RESOLUTION, "Auto (%dp)" % chosen.y)
+		_save_auto_result(chosen)
+		return
+	_auto_candidates.pop_front()
+	_try_auto_candidate()

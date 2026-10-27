@@ -1,8 +1,0 @@
-[gd_scene format=3 uid="uid://blpkldpgcqjuu"]
-
-[ext_resource type="PackedScene" uid="uid://cvwv2r2uanjjx" path="res://character/source/Школяр.glb" id="1_glpr6"]
-
-[node name="Школяр" unique_id=444173362 instance=ExtResource("1_glpr6")]
-
-[node name="tripo_node_61efd39b-6950-4456-b2dc-cd0d82e76233" parent="." index="0" unique_id=679650005]
-layers = 3

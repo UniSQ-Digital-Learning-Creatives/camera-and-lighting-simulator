@@ -51,6 +51,7 @@ shader_parameter/false_colour_enabled = false
 shader_parameter/iso_gain = 1.0
 shader_parameter/full_well = 50000.0
 shader_parameter/read_noise = 3.0
+shader_parameter/sensor_pixels_across = 6000.0
 shader_parameter/animate_noise = true
 shader_parameter/noise_boost = 1.0
 
@@ -163,6 +164,36 @@ theme_override_fonts/font = SubResource("FontVariation_e7jo2")
 theme_override_font_sizes/font_size = 13
 text = "Camera Studio Simulator"
 uppercase = true
+
+[node name="DisplayOptions" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/PanelContainer" unique_id=1748203391]
+layout_mode = 2
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/PanelContainer/DisplayOptions" unique_id=1748203392]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+theme_override_constants/separation = 8
+
+[node name="ResolutionLabel" type="Label" parent="CanvasLayer/Control/OverallUI/PanelContainer/DisplayOptions/HBoxContainer" unique_id=1748203393]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "Resolution"
+
+[node name="ResolutionMenu" type="OptionButton" parent="CanvasLayer/Control/OverallUI/PanelContainer/DisplayOptions/HBoxContainer" unique_id=1748203394]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "How many pixels the camera renders. Match Screen is sharpest at any window size; a lower setting runs faster on a slower computer."
+theme_override_font_sizes/font_size = 11
+
+[node name="FullscreenButton" type="Button" parent="CanvasLayer/Control/OverallUI/PanelContainer/DisplayOptions/HBoxContainer" unique_id=1748203395]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Fill the screen. The camera renders at the screen's resolution while fullscreen, so the bigger picture stays sharp."
+theme_override_font_sizes/font_size = 11
+toggle_mode = true
+text = "Fullscreen"
 
 [node name="MainLayout" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI" unique_id=1135730544]
 custom_minimum_size = Vector2(1656, 894)
@@ -441,7 +472,7 @@ unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Shows sensor noise four times stronger than a real camera would, to make it easier to see."
 theme_override_font_sizes/font_size = 10
-text = "Exaggerate noise (4x)"
+text = "Exaggerate noise (8x)"
 
 [node name="Shutter Speed Settings" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent" unique_id=1185902804]
 layout_mode = 2
@@ -1798,8 +1829,12 @@ text = "[b]Camera Studio Simulator[/b] lets you set up a camera and studio light
 
 [b]Subject animation[/b]: Play, Pause and Reset control her idle movement (blinking, breathing and a slight sway). Pause holds her still; Reset eases her back to her starting pose. Swap Shirt cycles her UniSQ shirt through gold, purple, orchid and coal.
 
+[b]Display[/b]: Resolution sets how sharp the camera's picture is; choose a lower one if the simulator runs slowly. Fullscreen fills the screen and renders at the screen's resolution.
+
 [b]Presets and downloads[/b]: save a set-up and load it again later. Download Image saves the photo the camera takes, without the guides; Download Screenshot saves the whole screen."
 
+[connection signal="item_selected" from="CanvasLayer/Control/OverallUI/PanelContainer/DisplayOptions/HBoxContainer/ResolutionMenu" to="." method="_on_resolution_menu_item_selected"]
+[connection signal="toggled" from="CanvasLayer/Control/OverallUI/PanelContainer/DisplayOptions/HBoxContainer/FullscreenButton" to="." method="_on_fullscreen_button_toggled"]
 [connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraHeader" to="." method="_on_camera_header_toggled"]
 [connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent/SensorContainer/FullFrame" to="." method="_on_full_frame_pressed"]
 [connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent/SensorContainer/APSC" to="." method="_on_apsc_pressed"]
