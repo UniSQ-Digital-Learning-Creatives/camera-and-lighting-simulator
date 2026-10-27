@@ -888,6 +888,10 @@ func _on_pause_animation_pressed() -> void:
 func _on_reset_animation_pressed() -> void:
 	idle_animation.reset_pose()
 
+func _on_swap_shirt_pressed() -> void:
+	var shirt = $Subject/Ava2/Skeleton3D/Ava_Outfits3 # scripts/unisq_shirt.gd
+	shirt.colourway = (shirt.colourway + 1) % shirt.Colourway.size()
+
 # Play and Pause show which one is in effect.
 func _on_idle_state_changed(is_playing: bool):
 	%PlayAnimation.set_pressed_no_signal(is_playing)

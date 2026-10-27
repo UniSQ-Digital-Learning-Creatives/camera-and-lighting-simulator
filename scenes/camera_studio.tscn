@@ -837,6 +837,12 @@ tooltip_text = "Ease the subject back to her starting pose and pause there."
 theme_override_font_sizes/font_size = 11
 text = "Reset"
 
+[node name="SwapShirt" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer" unique_id=1630482917]
+layout_mode = 2
+tooltip_text = "Swap the subject's UniSQ shirt between gold with a purple logo and purple with a gold logo."
+theme_override_font_sizes/font_size = 11
+text = "Swap Shirt"
+
 [node name="OverlayStats" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel" unique_id=1769565706]
 custom_minimum_size = Vector2(170, 0)
 custom_maximum_size = Vector2(170, -1)
@@ -1790,7 +1796,7 @@ text = "[b]Camera Studio Simulator[/b] lets you set up a camera and studio light
 
 [b]Monitoring[/b]: the histogram shows the photo's brightness from dark (left) to bright (right). Its border turns red when highlights clip and blue when shadows are crushed. Zebra Lines stripe areas that are close to clipping, False Colour paints brightness in bands, and the guides help with framing.
 
-[b]Subject animation[/b]: Play, Pause and Reset control her idle movement (blinking, breathing and a slight sway). Pause holds her still; Reset eases her back to her starting pose.
+[b]Subject animation[/b]: Play, Pause and Reset control her idle movement (blinking, breathing and a slight sway). Pause holds her still; Reset eases her back to her starting pose. Swap Shirt changes her shirt between UniSQ gold and purple.
 
 [b]Presets and downloads[/b]: save a set-up and load it again later. Download Image saves the photo the camera takes, without the guides; Download Screenshot saves the whole screen."
 
@@ -1826,6 +1832,7 @@ text = "[b]Camera Studio Simulator[/b] lets you set up a camera and studio light
 [connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/AnimationButtons/PlayAnimation" to="." method="_on_play_animation_pressed"]
 [connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/AnimationButtons/PauseAnimation" to="." method="_on_pause_animation_pressed"]
 [connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/AnimationButtons/ResetAnimation" to="." method="_on_reset_animation_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/SwapShirt" to="." method="_on_swap_shirt_pressed"]
 [connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/PositionHeader" to="." method="_on_position_header_toggled"]
 [connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/LookAtToggle" to="." method="_on_look_at_toggle_toggled"]
 [connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/HBoxContainer/DistanceSlider" to="." method="_on_camera_distance_slider_value_changed"]

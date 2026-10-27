@@ -2,6 +2,8 @@
 
 [ext_resource type="PackedScene" uid="uid://bsicutjmut8y0" path="res://scenes/Ava/head.dna" id="1_ic8n8"]
 [ext_resource type="PackedScene" uid="uid://be3600dydcsdm" path="res://scenes/Ava/Clothing/outfits.fbx" id="2_da74n"]
+[ext_resource type="Script" path="res://scripts/unisq_shirt.gd" id="3_shirt"]
+[ext_resource type="Texture2D" uid="uid://deuxdfk4udumd" path="res://scenes/Ava/Maps/Shirt_UniSQ_Gold_Basecolor.png" id="4_shirt"]
 
 [sub_resource type="Shader" id="Shader_c1a2t"]
 resource_name = "MetaHuman_hair_strands_opaque"
@@ -260,9 +262,8 @@ emission_enabled = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_45s0b"]
 resource_name = "MI_WI_DefaultGarment_M_DG_bodyShapeA_Shirt"
-vertex_color_use_as_albedo = true
-albedo_color = Color(0, 0, 0, 1)
-emission_enabled = true
+albedo_texture = ExtResource("4_shirt")
+roughness = 0.9
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_p6uxt"]
 resource_name = "Ava_Outfits"
@@ -1546,5 +1547,6 @@ simulating = false
 mesh = SubResource("ArrayMesh_p6uxt")
 skin = SubResource("Skin_ed6hd")
 skeleton = NodePath("..")
+script = ExtResource("3_shirt")
 
 [editable path="Skeleton3D/outfits"]
