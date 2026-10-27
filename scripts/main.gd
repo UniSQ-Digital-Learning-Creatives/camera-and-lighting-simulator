@@ -640,7 +640,11 @@ func load_preset(path : String):
 
 	# Every controller reads main.settings, so swapping the whole resource
 	# applies every field at once (no list of fields to keep in sync).
+	# The baseline noise is a calibration of the noise model, not part of a
+	# shot, so it stays as tuned in the defaults whatever a preset saved.
+	var baseline_noise = settings.baseline_noise_multiplier
 	settings = loaded.duplicate(true)
+	settings.baseline_noise_multiplier = baseline_noise
 	apply_settings()
 
 
@@ -1055,6 +1059,13 @@ func _on_fullscreen_button_toggled(toggled_on: bool) -> void:
 	apply_render_resolution()
 
 func _on_window_resized():
+	# In the browser the page scales the canvas to fill the window on each
+	# resize event (fitCanvasToViewport in the web template), but on leaving
+	# fullscreen that event comes before the engine shrinks the canvas back to
+	# its 1656x968, so the page scales the fullscreen size and the game is left
+	# small in the middle. By now the engine has resized it: ask again.
+	if OS.has_feature("web"):
+		JavaScriptBridge.eval("window.dispatchEvent(new Event('resize'))")
 	apply_render_resolution()
 	# Esc (or the browser) can leave fullscreen without the button. A browser
 	# may resize the page before it reports the change, so look a moment later.

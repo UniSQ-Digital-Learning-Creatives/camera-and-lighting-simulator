@@ -22,6 +22,11 @@ class_name CinemaSettings
 @export var shutter_speed := 1.0 / 125.0
 @export var iso := 100
 @export var white_balance := 5600.0
+## Scales the sensor noise everywhere, 1 being the physical model (see
+## exposure_controller.gd); "Exaggerate noise" multiplies on top of it. A
+## calibration rather than part of a shot: tune it in data/default_settings.tres,
+## and loading a preset keeps that value (main.load_preset).
+@export_range(0.0, 4.0, 0.01, "or_greater") var baseline_noise_multiplier := 1.0
 @export var exaggerate_noise := false # teaching aid: 8x the realistic sensor noise
 
 # Focus
