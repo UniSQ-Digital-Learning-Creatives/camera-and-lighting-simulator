@@ -4,6 +4,8 @@
 [ext_resource type="PackedScene" uid="uid://be3600dydcsdm" path="res://scenes/Ava/Clothing/outfits.fbx" id="2_da74n"]
 [ext_resource type="Script" path="res://scripts/unisq_shirt.gd" id="3_shirt"]
 [ext_resource type="Texture2D" uid="uid://deuxdfk4udumd" path="res://scenes/Ava/Maps/Shirt_UniSQ_Gold_Basecolor.png" id="4_shirt"]
+[ext_resource type="Texture2D" uid="uid://dnrqsujm77org" path="res://scenes/Ava/Maps/Shorts_Denim_Basecolor.png" id="5_shorts"]
+[ext_resource type="Texture2D" uid="uid://bvf6q1x8hcc50" path="res://scenes/Ava/Maps/Clothes_M_DG_bodyShapeA_Short_Normal.png" id="6_shorts"]
 
 [sub_resource type="Shader" id="Shader_c1a2t"]
 resource_name = "MetaHuman_hair_strands_opaque"
@@ -256,9 +258,10 @@ shader_parameter/guide_point_count = 16
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dcpu2"]
 resource_name = "MI_WI_DefaultGarment_M_DG_bodyShapeA_Short"
-vertex_color_use_as_albedo = true
-albedo_color = Color(0, 0, 0, 1)
-emission_enabled = true
+albedo_texture = ExtResource("5_shorts")
+roughness = 0.95
+normal_enabled = true
+normal_texture = ExtResource("6_shorts")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_45s0b"]
 resource_name = "MI_WI_DefaultGarment_M_DG_bodyShapeA_Shirt"
