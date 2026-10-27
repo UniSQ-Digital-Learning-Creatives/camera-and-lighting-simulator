@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bvdjg7spntogn"
-path="res://.godot/imported/usq-student-merch-tshirt-orchid.png-8e976ab940b6045640426cf2ae301ec8.ctex"
+uid="uid://wn8g60hnafrn"
+path="res://.godot/imported/Image_1_2.png-af60a6f6869d896571872ff5aa98df13.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://res/usq-student-merch-tshirt-orchid.png"
-dest_files=["res://.godot/imported/usq-student-merch-tshirt-orchid.png-8e976ab940b6045640426cf2ae301ec8.ctex"]
+source_file="res://Character_Sketchfab/sequined-burgundy-top-portrait/textures/Image_1_2.png"
+dest_files=["res://.godot/imported/Image_1_2.png-af60a6f6869d896571872ff5aa98df13.ctex"]
 
 [params]
 

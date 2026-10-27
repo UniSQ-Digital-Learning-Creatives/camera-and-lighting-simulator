@@ -18,6 +18,9 @@ config/scale=1.0
 config/mode.ios=0
 config/mode.macos=0
 config/mode=0
+boot_splash/stretch_mode=4
+boot_splash/bg_color=Color(1, 0.7058824, 0.28235295, 1)
+boot_splash/image="res://UI/splash.png"
 
 [display]
 

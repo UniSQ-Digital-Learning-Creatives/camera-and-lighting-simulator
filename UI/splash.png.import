@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ctes0kucqslj7"
-path="res://.godot/imported/unisq-logo-acronym.svg-9846c3964e8d4c671522078b7de08c37.ctex"
+uid="uid://bgaspp1j7b3ux"
+path="res://.godot/imported/splash.png-c4afbfa66478f3d585898aae3c68eed4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://res/unisq-logo-acronym.svg"
-dest_files=["res://.godot/imported/unisq-logo-acronym.svg-9846c3964e8d4c671522078b7de08c37.ctex"]
+source_file="res://UI/splash.png"
+dest_files=["res://.godot/imported/splash.png-c4afbfa66478f3d585898aae3c68eed4.ctex"]
 
 [params]
 
@@ -41,6 +41,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false

@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://etk7cti113sw"]
+[gd_scene format=3 uid="uid://b7eiphajhxge5"]
 
 [ext_resource type="Script" uid="uid://xlvcb647y6ov" path="res://scripts/main.gd" id="1_tefeu"]
 [ext_resource type="Script" uid="uid://vtlv1akal0n3" path="res://scenes/white_balance_controller.gd" id="2_choun"]
@@ -9,8 +9,6 @@
 [ext_resource type="Shader" uid="uid://dch5elwgni76p" path="res://shaders/zebra.gdshader" id="4_ya4ey"]
 [ext_resource type="Script" uid="uid://wgvsgeww2r03" path="res://scripts/aperture_indicator.gd" id="5_choun"]
 [ext_resource type="Script" uid="uid://cqcrm4kueyhvh" path="res://scenes/histogram.gd" id="6_o6xl0"]
-[ext_resource type="Script" path="res://scenes/imageAnalyser.gd" id="6_tipki"]
-[ext_resource type="PackedScene" uid="uid://cvwv2r2uanjjx" path="res://character/source/Школяр.glb" id="6_ya4ey"]
 [ext_resource type="Script" uid="uid://dtu81ma3so76n" path="res://scenes/texture_rect.gd" id="7_ya4ey"]
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_povcam"]
@@ -32,9 +30,11 @@ shader = ExtResource("4_ya4ey")
 shader_parameter/zebras_enabled = false
 shader_parameter/zebra_threshold = 0.95
 shader_parameter/false_colour_enabled = false
-shader_parameter/scene_kelvin = 5600.0
-shader_parameter/camera_kelvin = 5600.0
-shader_parameter/noise_strength = 0.0
+shader_parameter/iso_gain = 1.0
+shader_parameter/full_well = 50000.0
+shader_parameter/read_noise = 3.0
+shader_parameter/animate_noise = true
+shader_parameter/noise_boost = 1.0
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_0thei"]
 lightmap_size_hint = Vector2i(6, 6)
@@ -101,9 +101,7 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("2_eb6dy")
 
-[node name="ImageAnalysisManager" type="Node" parent="CanvasLayer" unique_id=122166337 node_paths=PackedStringArray("viewport")]
-script = ExtResource("6_tipki")
-viewport = NodePath("../../SubViewport")
+[node name="ImageAnalysisManager" type="Node" parent="CanvasLayer" unique_id=122166337]
 
 [node name="CameraPanel" type="Panel" parent="CanvasLayer" unique_id=1231028787]
 anchors_preset = 9
@@ -801,7 +799,7 @@ transform = Transform3D(5, 0, 0, 0, -2.1855695e-07, -5, 0, 5, -2.1855695e-07, 0,
 cast_shadow = 0
 mesh = SubResource("PlaneMesh_0xm2m")
 
-[node name="Subject" parent="." unique_id=444173362 instance=ExtResource("6_ya4ey")]
+[node name="Subject" parent="." unique_id=444173362]
 transform = Transform3D(0.07884044, 0, -0.99688727, 0, 1, 0, 0.99688727, 0, 0.07884044, 0, -0.24, 0)
 
 [connection signal="value_changed" from="CanvasLayer/CameraPanel/MarginContainer/VBoxContainer/CameraWBSlider" to="." method="_on_camera_wb_slider_value_changed"]
@@ -841,5 +839,3 @@ transform = Transform3D(0.07884044, 0, -0.99688727, 0, 1, 0, 0.99688727, 0, 0.07
 [connection signal="value_changed" from="CanvasLayer/LightingPanel/MarginContainer/VBoxContainer/Rim Temp Group/Rim Temp" to="." method="_on_rim_temp_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/ARCHIVE/ControlsPanel/brightnessSlider" to="." method="_on_h_slider_value_changed"]
 [connection signal="pressed" from="CanvasLayer/ARCHIVE/ControlsPanel/SwapCams Button" to="." method="_on_swap_cams_button_pressed"]
-
-[editable path="Subject"]
