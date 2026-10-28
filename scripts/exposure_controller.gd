@@ -7,7 +7,7 @@ var settings:
 		return main.settings
 
 @onready var world_env = %WorldEnvironment
-@onready var texture_rect = %TextureRect
+@onready var camera = %"POV Cam"
 
 @onready var aperture_slider = %ApertureSlider
 @onready var aperture_num = %ApertureNum
@@ -60,14 +60,13 @@ func get_meter_text() -> String:
 		return "0.0 EV (correct)"
 	return "%+.1f EV (%s)" % [stops, "over" if stops > 0.0 else "under"]
 
-# Sensor noise model (the shader does the per-pixel part, see zebra.gdshader).
-# A full-frame pixel of a ~24MP camera holds about 50,000 electrons at base
-# ISO. At the same pixel count a smaller sensor has smaller pixels, so its
-# full well shrinks with the sensor's area (1 / crop factor²): APS-C is about
-# 1.2 stops and MFT 2 stops noisier than full frame for the same exposure.
-# (The shader pools these sensor pixels into the view's larger pixels, so the
-# noise looks the same at any render resolution.)
-const FULL_FRAME_FULL_WELL := 50000.0
+# Sensor noise is the engine's (CameraAttributes grain, type Digital): a
+# full-frame sensor holding 50,000 electrons per 24MP pixel at base ISO, with
+# shot and read noise, and the ISO as its gain. At the same pixel count a
+# smaller sensor has smaller pixels: its full well shrinks with the sensor's
+# area (1 / crop factor²), so its noise grows with the crop factor. APS-C is
+# about 1.2 stops and MFT 2 stops noisier than full frame for the same exposure.
+# baseline_noise_multiplier (in the default settings) tunes how strong it looks.
 
 # "Exaggerate noise" scales the realistic noise up by this much, for showing it
 # on a projector or a small window, where real full-frame noise is subtle.
@@ -76,9 +75,8 @@ const NOISE_EXAGGERATION := 8.0
 @onready var exaggerate_noise_toggle = %ExaggerateNoise
 
 func update_noise():
-	var full_well = FULL_FRAME_FULL_WELL / pow(settings.get_crop_factor(), 2.0)
-	var boost = settings.baseline_noise_multiplier * (NOISE_EXAGGERATION if settings.exaggerate_noise else 1.0)
-	texture_rect.set_sensor_noise(settings.iso / 100.0, full_well, boost)
+	camera.attributes.exposure_sensitivity = settings.iso
+	camera.attributes.grain_intensity = settings.get_crop_factor() * settings.baseline_noise_multiplier * (NOISE_EXAGGERATION if settings.exaggerate_noise else 1.0)
 
 func _on_exaggerate_noise_toggled(toggled_on: bool) -> void:
 	settings.exaggerate_noise = toggled_on

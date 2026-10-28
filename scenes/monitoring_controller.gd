@@ -1,7 +1,7 @@
 extends Node
 
 @onready var main = get_tree().root.find_child("Main", true, false)
-@onready var texture_rect = %TextureRect
+@onready var camera = %"POV Cam"
 @onready var zebra_slider = %ZebraSlider
 @onready var zebra_num = %ZebraNum
 
@@ -13,6 +13,13 @@ extends Node
 # the WebGPU readback came back garbled and the histogram showed nonsense.
 const ANALYSIS_SIZE := Vector2i(128, 72)
 var _analysis: SubViewport
+# The zebras and false colour are drawn by the engine into the camera's own
+# image (Camera3D monitoring), so while either is on that image isn't the
+# photo any more. The histogram then reads a small clean render of the studio
+# instead (main.make_clean_view), which costs an extra 3D render 4 times a
+# second, only while they're on.
+var _clean_analysis: SubViewport
+var _reading: SubViewport # the view the last update was requested from
 
 var histogram_bins = []
 var brightest_pixel := 0.0
@@ -33,13 +40,6 @@ func _ready():
 
 	var small = TextureRect.new()
 	small.texture = %SubViewport.get_texture()
-	# Draw the camera image opaque: on the web build its alpha comes back as
-	# ~0, and a plain TextureRect would blend it into the grey clear colour
-	# (the same quirk the monitor shader works around).
-	var opaque = Shader.new()
-	opaque.code = "shader_type canvas_item;\nvoid fragment() { COLOR = vec4(texture(TEXTURE, UV).rgb, 1.0); }\n"
-	small.material = ShaderMaterial.new()
-	small.material.shader = opaque
 	small.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	small.stretch_mode = TextureRect.STRETCH_SCALE
 	small.size = ANALYSIS_SIZE
@@ -54,8 +54,14 @@ func calculate_histogram():
 	# This reads the copy rendered at the previous update, so the histogram
 	# lags a quarter of a second, and it suits the web build, where a readback
 	# always returns an earlier frame (godotwebgpu TASKS §4.2).
-	var image = _analysis.get_texture().get_image()
-	_analysis.render_target_update_mode = SubViewport.UPDATE_ONCE
+	var image = _reading.get_texture().get_image() if _reading != null else null
+	_reading = _analysis
+	if camera.monitoring_zebras_enabled or camera.monitoring_false_color_enabled:
+		if _clean_analysis == null:
+			_clean_analysis = main.make_clean_view(ANALYSIS_SIZE, false)
+		_reading = _clean_analysis
+		main.sync_clean_view(_clean_analysis)
+	_reading.render_target_update_mode = SubViewport.UPDATE_ONCE
 
 	if image == null or image.is_empty():
 		return
@@ -85,14 +91,15 @@ func calculate_histogram():
 	shadows_clipping = darkest_pixel < 0.02
 
 func _on_zebra_toggle_toggled(toggled_on):
-	texture_rect.set_zebras_enabled(toggled_on)
+	camera.monitoring_zebras_enabled = toggled_on
 
+# The zebra level is a video level in IRE (percent of full brightness).
 func _on_zebra_slider_value_changed(value):
-	texture_rect.set_zebra_threshold(value / 100.0)
+	camera.monitoring_zebras_level = value
 	zebra_num.text = str(int(value)) + "%"
 
 func _on_false_colour_toggle_toggled(toggled_on):
-	texture_rect.set_false_colour_enabled(toggled_on)
+	camera.monitoring_false_color_enabled = toggled_on
 
 func _process(delta):
 

@@ -11,7 +11,6 @@
 [ext_resource type="Script" uid="uid://douyrjghtbk24" path="res://scripts/sensor_diagram.gd" id="9_r42o2"]
 [ext_resource type="LabelSettings" uid="uid://bg7ohljhxi6ag" path="res://UI/heading_text.tres" id="10_4x11s"]
 [ext_resource type="Script" uid="uid://wgvsgeww2r03" path="res://scripts/aperture_indicator.gd" id="11_g5f7e"]
-[ext_resource type="Shader" uid="uid://dch5elwgni76p" path="res://shaders/zebra.gdshader" id="12_ortlt"]
 [ext_resource type="Script" uid="uid://dtu81ma3so76n" path="res://scenes/texture_rect.gd" id="13_vnwbm"]
 [ext_resource type="Script" uid="uid://dut5pe02bgx3a" path="res://scenes/overlays.gd" id="14_wb43u"]
 [ext_resource type="Script" uid="uid://by25y3pu3yofl" path="res://scenes/monitoring_controller.gd" id="15_ts4rx"]
@@ -22,9 +21,19 @@
 [ext_resource type="PackedScene" uid="uid://b5nb83n4nkijp" path="res://prefabs/ava.tscn" id="20_d88y4"]
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_povcam"]
+white_balance_temperature = 5600.0
+grain_enabled = true
+grain_type = 2
+grain_intensity = 4.0
+chromatic_aberration_strength = 10.0
+starburst_strength = 100.0
+longitudinal_chromatic_aberration_strength = 0.0
+panini_enabled = true
 dof_blur_far_enabled = true
+dof_blur_far_distance = 5.0
 dof_blur_far_transition = -1.0
 dof_blur_near_enabled = true
+dof_blur_near_distance = 5.0
 dof_blur_near_transition = -1.0
 dof_blur_amount = 0.05
 
@@ -34,26 +43,16 @@ background_color = Color(0.02, 0.02, 0.022, 1)
 ambient_light_source = 2
 ambient_light_color = Color(0.5, 0.5, 0.52, 1)
 ambient_light_energy = 0.15
-ssao_enabled = true
 ssao_radius = 0.6
 ssao_intensity = 1.5
 ssao_detail = 0.8
 ssao_light_affect = 0.15
+ssil_enabled = true
+grading_enabled = true
+grading_vibrance = 0.39
 
 [sub_resource type="FontVariation" id="FontVariation_e7jo2"]
 base_font = ExtResource("8_ii1va")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_0thei"]
-shader = ExtResource("12_ortlt")
-shader_parameter/zebras_enabled = false
-shader_parameter/zebra_threshold = 0.95
-shader_parameter/false_colour_enabled = false
-shader_parameter/iso_gain = 1.0
-shader_parameter/full_well = 50000.0
-shader_parameter/read_noise = 3.0
-shader_parameter/sensor_pixels_across = 6000.0
-shader_parameter/animate_noise = true
-shader_parameter/noise_boost = 1.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_controls"]
 content_margin_left = 10.0
@@ -110,6 +109,9 @@ current = true
 fov = 39.59775
 near = 0.001
 far = 15.0
+monitoring_visible_in_output = true
+autofocus_mode = 2
+autofocus_target = NodePath("../../Subject/Marker3D")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewport" unique_id=625592752]
 unique_name_in_owner = true
@@ -175,25 +177,10 @@ size_flags_horizontal = 8
 size_flags_vertical = 4
 theme_override_constants/separation = 8
 
-[node name="ResolutionLabel" type="Label" parent="CanvasLayer/Control/OverallUI/PanelContainer/DisplayOptions/HBoxContainer" unique_id=1748203393]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_font_sizes/font_size = 11
-text = "Resolution"
-
-[node name="ResolutionMenu" type="OptionButton" parent="CanvasLayer/Control/OverallUI/PanelContainer/DisplayOptions/HBoxContainer" unique_id=1748203394]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-tooltip_text = "How many pixels the camera renders. Match Screen is sharpest at any window size; a lower setting runs faster on a slower computer."
-mouse_default_cursor_shape = 2
-theme = ExtResource("6_wdn4e")
-theme_override_font_sizes/font_size = 11
-
 [node name="FullscreenButton" type="Button" parent="CanvasLayer/Control/OverallUI/PanelContainer/DisplayOptions/HBoxContainer" unique_id=1748203395]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Fill the screen. The camera renders at the screen's resolution while fullscreen, so the bigger picture stays sharp."
+tooltip_text = "Fill the screen."
 mouse_default_cursor_shape = 2
 theme_type_variation = &"TitleBarButton"
 theme_override_font_sizes/font_size = 11
@@ -486,7 +473,7 @@ text = "Num"
 [node name="ExaggerateNoise" type="CheckBox" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent" unique_id=463904779]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Shows sensor noise four times stronger than a real camera would, to make it easier to see."
+tooltip_text = "Shows sensor noise eight times stronger than a real camera would, to make it easier to see."
 mouse_default_cursor_shape = 2
 theme_override_font_sizes/font_size = 10
 text = "Exaggerate noise (8x)"
@@ -664,7 +651,6 @@ theme = ExtResource("6_wdn4e")
 
 [node name="TextureRect" type="TextureRect" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv" unique_id=229285108 node_paths=PackedStringArray("viewport")]
 unique_name_in_owner = true
-material = SubResource("ShaderMaterial_0thei")
 custom_minimum_size = Vector2(1244, 700)
 custom_maximum_size = Vector2(1244, 700)
 layout_mode = 2
@@ -1903,11 +1889,10 @@ text = "[b]Camera Studio Simulator[/b] lets you set up a camera and studio light
 
 [b]Subject animation[/b]: Play, Pause and Reset control her idle movement (blinking, breathing and a slight sway). Pause holds her still; Reset eases her back to her starting pose. Swap Shirt cycles her UniSQ shirt through gold, purple, orchid and coal.
 
-[b]Display[/b]: Resolution sets how sharp the camera's picture is; choose a lower one if the simulator runs slowly. Fullscreen fills the screen and renders at the screen's resolution.
+[b]Display[/b]: Fullscreen fills the screen.
 
 [b]Presets and downloads[/b]: save a set-up and load it again later. Download Image saves the photo the camera takes, without the guides; Download Screenshot saves the whole screen."
 
-[connection signal="item_selected" from="CanvasLayer/Control/OverallUI/PanelContainer/DisplayOptions/HBoxContainer/ResolutionMenu" to="." method="_on_resolution_menu_item_selected"]
 [connection signal="toggled" from="CanvasLayer/Control/OverallUI/PanelContainer/DisplayOptions/HBoxContainer/FullscreenButton" to="." method="_on_fullscreen_button_toggled"]
 [connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraHeader" to="." method="_on_camera_header_toggled"]
 [connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent/SensorContainer/FullFrame" to="." method="_on_full_frame_pressed"]

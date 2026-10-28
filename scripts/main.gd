@@ -92,7 +92,6 @@ const SUN_TEMPERATURE := 5600.0
 
 @onready var camera = %"POV Cam"
 @onready var exposure_controller = %ExposureController
-@onready var viewport_monitor = %TextureRect
 @onready var camera_diagram = %CameraDiagram
 @onready var sensor_diagram = %SensorDiagram
 
@@ -105,9 +104,8 @@ var _last_dof_key = null
 var idle_animation # AvaIdle (scripts/ava_idle.gd), added in _ready
 
 
-func _process(delta):
+func _process(_delta):
 	update_dof()
-	update_auto_resolution(delta)
 
 # Depth of field from the thin-lens model, using the selected lens and sensor.
 #
@@ -120,6 +118,11 @@ func _process(delta):
 # (in pixels) by |d − u| / d on both sides of the focus plane. All that's left
 # to work out here is that maximum radius, converted from millimetres on the
 # sensor to pixels in the rendered image.
+#
+# (CameraAttributesPhysical would do this itself, but its blur is a fixed
+# fraction of f² / (N·(u − f)) whatever the sensor size or render resolution,
+# so a smaller sensor wouldn't show more blur for the same lens. The focus
+# plane itself is the engine's autofocus, see camera_controller.gd.)
 func update_dof():
 	var focus_distance = settings.focus_distance
 	var aperture = settings.aperture
@@ -130,7 +133,9 @@ func update_dof():
 	# nothing changed since last frame -- on the web/WebGPU target every
 	# RenderingServer update crosses the JS/WASM command bridge, so a
 	# steady-state frame (nothing being dragged) should cost nothing here.
-	var key = [focus_distance, aperture, focal_length, sensor_width, viewport.size.x]
+	# Autofocus moves the focus a fraction of a millimetre every frame as
+	# she sways; that doesn't change the blur.
+	var key = [snappedf(focus_distance, 0.002), aperture, focal_length, sensor_width, viewport.size.x, settings.autofocus_enabled]
 	if key == _last_dof_key:
 		return
 	_last_dof_key = key
@@ -142,10 +147,10 @@ func update_dof():
 	var max_blur_px = 0.5 * max_blur_mm / sensor_width * viewport.size.x
 
 	var attributes = camera.attributes
-	attributes.dof_blur_far_distance = u / 1000.0
-	attributes.dof_blur_near_distance = u / 1000.0
-	attributes.dof_blur_far_transition = -1.0
-	attributes.dof_blur_near_transition = -1.0
+	if not settings.autofocus_enabled:
+		# Focused by hand. (Autofocus moves both distances itself.)
+		attributes.dof_blur_far_distance = u / 1000.0
+		attributes.dof_blur_near_distance = u / 1000.0
 	attributes.dof_blur_amount = max_blur_px / 64.0 # the shader's blur amount is a fraction of a 64px radius
 
 	update_dof_label(u, focal_length, aperture)
@@ -199,7 +204,6 @@ func _ready():
 		%WorldEnvironment.environment.ssao_enabled = false
 
 	setup_display_options()
-	setup_embed_fullscreen()
 
 	ensure_preset_directory()
 	refresh_preset_list()
@@ -734,11 +738,10 @@ func ensure_screenshot_directory():
 			"user://screenshots"
 		)
 
-# "Download Image": the photo the camera records. That's the 3D view (which
-# already has the exposure, depth of field and white balance in it) put
-# through the monitor shader for the sensor noise, at the camera's full
-# resolution, but with the monitoring aids (zebras, false colour) switched off
-# and without the guide overlays, which are drawn separately on top.
+# "Download Image": the photo the camera records. That's the 3D view (with the
+# exposure, depth of field, white balance and noise in it), at the camera's
+# full resolution, without the monitoring aids (zebras, false colour) or the
+# guide overlays.
 func save_current_image():
 	var image = await capture_camera_image()
 	download_png(image, "camera-sim-photo")
@@ -751,32 +754,64 @@ func save_screenshot():
 	download_png(await read_back(get_viewport().get_texture()), "camera-sim-screenshot")
 
 
-# An off-screen viewport the size of the camera's, holding a copy of the
-# monitor (same shader and noise settings) with the monitoring aids off. It
-# only renders when a photo is taken. It's kept, rather than built per photo,
-# so its texture stays the same one across the frames a web readback takes.
+# The engine draws the zebras and false colour into the camera's own image, so
+# a photo can't be read from it while they're on. A clean view is a second,
+# off-screen view of the studio through a copy of the camera without them: it
+# shares the camera's attributes (focus, depth of field, white balance, noise),
+# copies its position and lens before each render, and only renders when asked to. The photo
+# uses one at the camera's resolution; the histogram a small one
+# (monitoring_controller.gd).
 var _recorder: SubViewport
-var _recorder_rect: TextureRect
+
+# temporal: keep the camera view's upscaler and TAA, which need a few frames
+# to settle; without them a single frame is enough.
+func make_clean_view(view_size: Vector2i, temporal := true) -> SubViewport:
+	var view = SubViewport.new()
+	view.size = view_size
+	view.world_3d = viewport.find_world_3d()
+	view.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	for property in ["positional_shadow_atlas_size", "positional_shadow_atlas_16_bits",
+			"positional_shadow_atlas_quad_0", "positional_shadow_atlas_quad_1",
+			"positional_shadow_atlas_quad_2", "positional_shadow_atlas_quad_3",
+			"screen_space_aa", "msaa_3d", "use_debanding", "mesh_lod_threshold"]:
+		view.set(property, viewport.get(property))
+	if temporal:
+		view.use_taa = viewport.use_taa
+		view.scaling_3d_mode = viewport.scaling_3d_mode
+		view.scaling_3d_scale = viewport.scaling_3d_scale
+	else:
+		view.use_taa = false
+		view.scaling_3d_mode = Viewport.SCALING_3D_MODE_BILINEAR
+		view.scaling_3d_scale = 1.0
+	var clean_camera = Camera3D.new()
+	clean_camera.attributes = camera.attributes
+	clean_camera.cull_mask = camera.cull_mask
+	clean_camera.keep_aspect = camera.keep_aspect
+	clean_camera.near = camera.near
+	clean_camera.far = camera.far
+	view.add_child(clean_camera)
+	add_child(view)
+	clean_camera.current = true
+	return view
+
+func sync_clean_view(view: SubViewport):
+	var clean_camera: Camera3D = view.get_child(0)
+	clean_camera.global_transform = camera.global_transform
+	clean_camera.fov = camera.fov
+
+# Frames the photo's view renders before it's read: enough for the
+# temporal upscaler (FSR 2) to settle from a standing start.
+const RECORDER_FRAMES := 8
 
 func capture_camera_image() -> Image:
 	if _recorder == null:
-		_recorder_rect = TextureRect.new()
-		_recorder_rect.texture = viewport.get_texture()
-		_recorder = SubViewport.new()
-		_recorder.size = viewport.size
-		_recorder.disable_3d = true
-		_recorder.render_target_update_mode = SubViewport.UPDATE_DISABLED
-		_recorder.add_child(_recorder_rect)
-		add_child(_recorder)
-	_recorder.size = viewport.size # the render resolution can change
-
-	var mat = viewport_monitor.material.duplicate() as ShaderMaterial
-	mat.set_shader_parameter("zebras_enabled", false)
-	mat.set_shader_parameter("false_colour_enabled", false)
-	_recorder_rect.material = mat
-	_recorder.render_target_update_mode = SubViewport.UPDATE_ONCE
-
-	await RenderingServer.frame_post_draw
+		_recorder = make_clean_view(viewport.size)
+	_recorder.size = viewport.size
+	sync_clean_view(_recorder)
+	_recorder.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	for frame in RECORDER_FRAMES:
+		await RenderingServer.frame_post_draw
+	_recorder.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	return await read_back(_recorder.get_texture())
 
 
@@ -965,288 +1000,37 @@ func update_info_label():
 	info_label.text = settings.get_summary() + "\nMeter: " + exposure_controller.get_meter_text()
 
 
-# Display: the render resolution (desktop and laptop only) and fullscreen.
-#
-# The camera renders into %SubViewport, which the monitor shows scaled to fit
-# its 1244x700 panel, so the panel's look depends on how many pixels that is
-# on the actual screen. "Match screen" renders exactly those pixels, so the
-# image stays sharp at any window size; the fixed sizes trade sharpness for
-# speed. Going fullscreen switches to "Match screen" (the panel gets bigger,
-# and a fixed size would be stretched and blurry), and leaving it puts the
-# previous choice back. Phones keep the 720p render: their screens are dense
-# enough that matching them would be slow for little gain.
-#
-# "Auto", the default, picks the sharpest of those that keeps 60 fps: it tries
-# "Match screen" first, times a second or so of frames, and steps down a size
-# at a time until one is fast enough (720p is as low as it goes). With Auto,
-# fullscreen goes as sharp as the computer can manage rather than all the way.
-#
-# The result is remembered (in user://, so per computer and browser), one for
-# windowed and one for fullscreen, as the most pixels that kept 60 fps; next
-# time, and whenever the window changes size, Auto uses the sharpest size
-# within that straight away instead of testing. Choosing Auto from the menu
-# tests again (and remembers the new result), for after a change of computer
-# or settings.
-const RESOLUTIONS := [
-	["Auto", Vector2i(-1, -1)],
-	["Match screen", Vector2i.ZERO],
-	["720p", Vector2i(1280, 720)],
-	["900p", Vector2i(1600, 900)],
-	["1080p", Vector2i(1920, 1080)],
-	["1440p", Vector2i(2560, 1440)],
-]
-const AUTO_RESOLUTION := 0
-const MATCH_SCREEN := 1
-const HANDHELD_RESOLUTION := 2 # 720p, what the scene renders at
-const MAX_RENDER_SIZE := Vector2i(3840, 2160)
-# Auto's timing: it waits out the hitch after each change (and the shader
-# compiles and loading at startup), then times a run of frames. A size passes
-# when its typical (median) frame makes 55 fps and no more than a quarter of
-# its frames miss a 60 Hz refresh (take over 25 ms), so a stray hitch doesn't
-# fail it; once a quarter have missed it fails at once, so a slow computer
-# doesn't sit through a full run at each size.
-const AUTO_SETTLE_TIME := 1.0 # s
-# Startup is busier (shader compiles, the rest of the page loading) than a
-# later size change, and a result that's remembered had better not be one
-# that startup dragged down: nothing is timed until this long after it.
-const AUTO_STARTUP_SETTLE := 3.0 # s
-const AUTO_SETTLE_FRAMES := 10
-const AUTO_SAMPLE_FRAMES := 60
-const AUTO_MEDIAN_FRAME := 1.0 / 55.0 # s
-const AUTO_MISSED_FRAME := 0.025 # s
-const AUTO_MAX_MISSED := AUTO_SAMPLE_FRAMES / 4
-const AUTO_RESULTS_FILE := "user://display.cfg"
-
-var _windowed_resolution := AUTO_RESOLUTION
-var _auto_candidates: Array[Vector2i] = [] # sharpest first; empty when not testing
-var _auto_waited := 0.0
-var _auto_settle_frames := 0
-var _auto_frame_times: Array[float] = []
-var _auto_missed := 0
-var _auto_mode := "" # "windowed" or "fullscreen", whichever is being tested
-var _display_started_at := 0 # ms
+# Display: fullscreen. The whole UI, monitor included, scales to fit the
+# window. The camera renders at 720p in a window and 1080p in fullscreen,
+# where the monitor is big enough for the extra sharpness to show. Phones
+# stay at 720p: their GPUs can't spare it, and the screen is small anyway.
+const WINDOWED_RENDER_SIZE := Vector2i(1280, 720)
+const FULLSCREEN_RENDER_SIZE := Vector2i(1920, 1080)
 
 func setup_display_options():
-	var menu: OptionButton = %ResolutionMenu
-	for option in RESOLUTIONS:
-		menu.add_item(option[0])
-	_display_started_at = Time.get_ticks_msec()
-	var handheld = OS.has_feature("web_android") or OS.has_feature("web_ios") or OS.has_feature("mobile")
-	menu.select(HANDHELD_RESOLUTION if handheld else AUTO_RESOLUTION)
-	%ResolutionLabel.visible = not handheld
-	menu.visible = not handheld
 	get_tree().root.size_changed.connect(_on_window_resized)
-	# Picking Auto again while it's already chosen doesn't count as a change
-	# for item_selected, but it should still test again.
-	menu.get_popup().index_pressed.connect(func(index):
-		if index == AUTO_RESOLUTION and menu.selected == AUTO_RESOLUTION:
-			apply_render_resolution(true))
-	apply_render_resolution()
-
-func _on_resolution_menu_item_selected(index: int) -> void:
-	apply_render_resolution(index == AUTO_RESOLUTION)
 
 func _on_fullscreen_button_toggled(toggled_on: bool) -> void:
-	var menu: OptionButton = %ResolutionMenu
 	if toggled_on:
-		_windowed_resolution = menu.selected
-		if menu.visible and menu.selected != AUTO_RESOLUTION:
-			menu.select(MATCH_SCREEN)
-		if not _embed_fullscreen:
-			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 	else:
-		menu.select(_windowed_resolution)
-		if _embed_fullscreen:
-			# The page put the app in fullscreen, so only the page can take it out.
-			JavaScriptBridge.eval("window.parent.postMessage({type: 'camera-sim:exit-fullscreen'}, '*')")
-		else:
-			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 	%FullscreenButton.text = "Exit Fullscreen" if toggled_on else "Fullscreen"
-	apply_render_resolution()
+	var handheld = OS.has_feature("web_android") or OS.has_feature("web_ios") or OS.has_feature("mobile")
+	viewport.size = FULLSCREEN_RENDER_SIZE if toggled_on and not handheld else WINDOWED_RENDER_SIZE
 
 func _on_window_resized():
-	# In the browser the page scales the canvas to fill the window on each
-	# resize event (fitCanvasToViewport in the web template), but on leaving
-	# fullscreen that event comes before the engine shrinks the canvas back to
-	# its 1656x968, so the page scales the fullscreen size and the game is left
-	# small in the middle. By now the engine has resized it: ask again.
-	if OS.has_feature("web"):
-		JavaScriptBridge.eval("window.dispatchEvent(new Event('resize'))")
-	apply_render_resolution()
 	# Esc (or the browser) can leave fullscreen without the button. A browser
 	# may resize the page before it reports the change, so look a moment later.
 	await get_tree().create_timer(0.3).timeout
-	var fullscreen = _embed_fullscreen or is_canvas_fullscreen()
+	var fullscreen = is_canvas_fullscreen()
 	if %FullscreenButton.button_pressed != fullscreen:
 		%FullscreenButton.button_pressed = fullscreen # runs the toggled handler
 
+# Fullscreen, whether the app's or the page's: when the app is iframed into a
+# page on another site, that page's own Fullscreen button puts the iframe in
+# fullscreen and tells the app (the web export's html/embed_fullscreen option),
+# and the engine reports it as fullscreen too. Leaving fullscreen from the app
+# then asks the page to leave.
 func is_canvas_fullscreen() -> bool:
 	return DisplayServer.window_get_mode() in [DisplayServer.WINDOW_MODE_FULLSCREEN, DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN]
-
-# Fullscreen from the page the app is embedded in. The app is iframed into a
-# page on another site, and a click on that page's own Fullscreen button
-# doesn't count as a click inside the iframe, so the browser won't let it put
-# the app's canvas in fullscreen. Instead the page puts the whole iframe in
-# fullscreen and posts a message into it to say so:
-#   {type: "camera-sim:fullscreen", on: true}   (false when it leaves)
-# The app then redraws at the screen's own size, as sharp as its own
-# fullscreen, and its Exit Fullscreen button asks the page to leave with
-#   {type: "camera-sim:exit-fullscreen"}
-# Only messages from the parent page count. Once listening, the app posts
-#   {type: "camera-sim:ready"}
-# and the page answers with the current state.
-var _embed_fullscreen := false
-var _embed_windowed_size := Vector2i.ZERO
-var _embed_callback: JavaScriptObject # kept: the page can't call it once it's freed
-
-func setup_embed_fullscreen():
-	if not OS.has_feature("web"):
-		return
-	_embed_callback = JavaScriptBridge.create_callback(_on_embed_fullscreen)
-	JavaScriptBridge.get_interface("window").cameraSimEmbedFullscreen = _embed_callback
-	JavaScriptBridge.eval("""
-		(function () {
-			let on = false;
-			function report() {
-				window.cameraSimEmbedFullscreen(on, window.innerWidth, window.innerHeight);
-			}
-			window.addEventListener('message', function (event) {
-				if (event.source !== window.parent || event.source === window || !event.data
-						|| event.data.type !== 'camera-sim:fullscreen') {
-					return;
-				}
-				on = !!event.data.on;
-				report();
-			});
-			// The iframe may still be growing when the message arrives.
-			window.addEventListener('resize', function () {
-				if (on) {
-					report();
-				}
-			});
-			// Ask for the current state: the page may have gone fullscreen while
-			// the app was still on its Start screen or loading.
-			if (window.parent !== window) {
-				window.parent.postMessage({type: 'camera-sim:ready'}, '*');
-			}
-		}());
-	""", true)
-
-# args: [on, the iframe's width and height in CSS pixels]
-func _on_embed_fullscreen(args: Array):
-	# The app's own fullscreen (its button, or the first tap on a phone) also
-	# puts the iframe in fullscreen, so the page reports that too: the engine
-	# already handles it.
-	if is_canvas_fullscreen():
-		return
-	var on: bool = args[0]
-	if on:
-		if not _embed_fullscreen:
-			_embed_windowed_size = get_window().size
-			_embed_fullscreen = true
-		# Windowed, the canvas stays 1656x968 and the page scales it to fit
-		# (fitCanvasToViewport). Scaled up to a whole screen that's blurry, so
-		# draw it at the screen's own size instead. (Through the Window, not
-		# DisplayServer.window_set_size(), so the UI is laid out again too.)
-		var pixel_scale = DisplayServer.screen_get_scale()
-		get_window().size = Vector2i(int(args[1] * pixel_scale), int(args[2] * pixel_scale))
-	elif _embed_fullscreen:
-		_embed_fullscreen = false
-		get_window().size = _embed_windowed_size
-	if %FullscreenButton.button_pressed != on:
-		%FullscreenButton.button_pressed = on # runs the toggled handler
-
-# retest: Auto measures again rather than using its remembered result.
-func apply_render_resolution(retest := false):
-	var menu: OptionButton = %ResolutionMenu
-	_auto_candidates.clear()
-	menu.set_item_text(AUTO_RESOLUTION, RESOLUTIONS[AUTO_RESOLUTION][0])
-	var render_size: Vector2i = RESOLUTIONS[menu.selected][1]
-	if render_size == Vector2i.ZERO:
-		render_size = match_screen_size()
-	elif menu.selected == AUTO_RESOLUTION:
-		start_auto_resolution(retest)
-		return
-	set_render_size(render_size)
-
-# The monitor panel's size in real screen pixels: the UI is laid out at
-# 1656x968 and scaled (keeping its aspect) to fill the window.
-func match_screen_size() -> Vector2i:
-	var window = Vector2(DisplayServer.window_get_size())
-	var base = Vector2(ProjectSettings.get_setting("display/window/size/viewport_width"), ProjectSettings.get_setting("display/window/size/viewport_height"))
-	var ui_scale = minf(window.x / base.x, window.y / base.y)
-	var render_size = Vector2i((viewport_monitor.size * ui_scale).round())
-	return render_size.min(MAX_RENDER_SIZE).max(Vector2i(320, 180))
-
-func set_render_size(render_size: Vector2i):
-	if viewport.size != render_size:
-		viewport.size = render_size
-
-# Auto's candidates, sharpest first: the screen's own size, then each fixed
-# size below it down to 720p. (A screen smaller than 720p is just matched.)
-func start_auto_resolution(retest: bool):
-	var screen = match_screen_size()
-	var candidates: Array[Vector2i] = [screen]
-	var fixed: Array[Vector2i] = []
-	for option in RESOLUTIONS:
-		if option[1].x > 0 and option[1].x < screen.x:
-			fixed.append(option[1])
-	fixed.sort_custom(func(a, b): return a.x > b.x)
-	candidates.append_array(fixed)
-
-	_auto_mode = "fullscreen" if %FullscreenButton.button_pressed else "windowed"
-	var results = ConfigFile.new()
-	results.load(AUTO_RESULTS_FILE) # missing the first time, which is fine
-	var max_pixels: int = results.get_value("auto", _auto_mode, 0)
-	if max_pixels > 0 and not retest:
-		var chosen = candidates[-1]
-		for candidate in candidates:
-			if candidate.x * candidate.y <= max_pixels:
-				chosen = candidate
-				break
-		set_render_size(chosen)
-		%ResolutionMenu.set_item_text(AUTO_RESOLUTION, "Auto (%dp)" % chosen.y)
-		return
-
-	_auto_candidates = candidates
-	%ResolutionMenu.set_item_text(AUTO_RESOLUTION, "Auto (testing...)")
-	_try_auto_candidate()
-
-func _save_auto_result(chosen: Vector2i):
-	var results = ConfigFile.new()
-	results.load(AUTO_RESULTS_FILE)
-	results.set_value("auto", _auto_mode, chosen.x * chosen.y)
-	results.save(AUTO_RESULTS_FILE)
-
-func _try_auto_candidate():
-	set_render_size(_auto_candidates[0])
-	_auto_waited = 0.0
-	_auto_settle_frames = 0
-	_auto_frame_times.clear()
-	_auto_missed = 0
-
-func update_auto_resolution(delta: float):
-	if _auto_candidates.is_empty():
-		return
-	var since_startup = (Time.get_ticks_msec() - _display_started_at) / 1000.0
-	if _auto_waited < AUTO_SETTLE_TIME or _auto_settle_frames < AUTO_SETTLE_FRAMES or since_startup < AUTO_STARTUP_SETTLE:
-		_auto_waited += delta
-		_auto_settle_frames += 1
-		return
-	_auto_frame_times.append(delta)
-	if delta > AUTO_MISSED_FRAME:
-		_auto_missed += 1
-	var failed = _auto_missed > AUTO_MAX_MISSED
-	if not failed and _auto_frame_times.size() < AUTO_SAMPLE_FRAMES:
-		return
-	if not failed:
-		_auto_frame_times.sort()
-		failed = _auto_frame_times[_auto_frame_times.size() / 2] > AUTO_MEDIAN_FRAME
-	if not failed or _auto_candidates.size() == 1:
-		var chosen = _auto_candidates[0]
-		_auto_candidates.clear()
-		%ResolutionMenu.set_item_text(AUTO_RESOLUTION, "Auto (%dp)" % chosen.y)
-		_save_auto_result(chosen)
-		return
-	_auto_candidates.pop_front()
-	_try_auto_candidate()

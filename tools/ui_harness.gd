@@ -16,6 +16,7 @@ extends SceneTree
 #   press=<Button>     emit pressed
 #   popup=/hide=<Window>, text=<LineEdit>:<text>, select=<OptionButton>:<item>
 #   hover=<Control>    move the mouse over a control's centre
+#   expr=<expression>  print a GDScript Expression evaluated on Main (no "=" or ",")
 #   call=<method on Main>, dump (print settings + UI labels), shot (no-op)
 # EMBED=1 embeds popups in the main window like the web build does.
 
@@ -69,6 +70,10 @@ func do_step(s: String):
 				" APSC=", n("APSC").button_pressed, " FF=", n("FullFrame").button_pressed, " keyE=", n("KeyLight").light_energy, " brightness=", n("WorldEnvironment").environment.adjustment_brightness,
 				" presets=", n("PresetMenu").item_count, " info=", n("InfoLabel").text.replace("\n", " / "))
 		"eval": print("EVAL ", val, " = ", n(val.split(".")[0]).get(val.split(".")[1]))
+		"expr":
+			var e := Expression.new()
+			e.parse(val)
+			print("EXPR ", val, " = ", e.execute([], current_scene))
 		_: (n(key) as Range).value = float(val)
 	print("STEP ", s)
 
