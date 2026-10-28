@@ -96,6 +96,70 @@ content_margin_bottom = 4.0
 
 [sub_resource type="SystemFont" id="SystemFont_aksx3"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tbhover"]
+content_margin_left = 12.0
+content_margin_top = 5.0
+content_margin_right = 12.0
+content_margin_bottom = 5.0
+bg_color = Color(0.16470589, 0.19607843, 0.22745098, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.27450982, 0.3254902, 0.38431373, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tbhoverpressed"]
+content_margin_left = 12.0
+content_margin_top = 5.0
+content_margin_right = 12.0
+content_margin_bottom = 5.0
+bg_color = Color(0.15294118, 0.38431373, 0.62352943, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.27450982, 0.56078434, 0.8509804, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tbnormal"]
+content_margin_left = 12.0
+content_margin_top = 5.0
+content_margin_right = 12.0
+content_margin_bottom = 5.0
+bg_color = Color(0.11372549, 0.14117648, 0.16470589, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.1764706, 0.21176471, 0.25490198, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tbpressed"]
+content_margin_left = 12.0
+content_margin_top = 5.0
+content_margin_right = 12.0
+content_margin_bottom = 5.0
+bg_color = Color(0.11764706, 0.32156864, 0.53333336, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.19215687, 0.48235294, 0.76862746, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
 [sub_resource type="ImageTexture" id="ImageTexture_geg1n"]
 
 [sub_resource type="SystemFont" id="SystemFont_23hqv"]
@@ -178,6 +242,11 @@ Label/constants/shadow_offset_y = 1
 Label/constants/shadow_outline_size = 1
 Label/font_sizes/font_size = 9
 Label/fonts/font = SubResource("SystemFont_aksx3")
+TitleBarButton/base_type = &"Button"
+TitleBarButton/styles/hover = SubResource("StyleBoxFlat_tbhover")
+TitleBarButton/styles/hover_pressed = SubResource("StyleBoxFlat_tbhoverpressed")
+TitleBarButton/styles/normal = SubResource("StyleBoxFlat_tbnormal")
+TitleBarButton/styles/pressed = SubResource("StyleBoxFlat_tbpressed")
 VScrollBar/icons/decrement = SubResource("ImageTexture_geg1n")
 VScrollBar/icons/decrement_highlight = SubResource("ImageTexture_geg1n")
 VScrollBar/icons/decrement_pressed = SubResource("ImageTexture_geg1n")

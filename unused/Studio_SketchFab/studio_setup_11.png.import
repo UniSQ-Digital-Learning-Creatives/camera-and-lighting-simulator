@@ -2,37 +2,37 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cwrehuav4821l"
-path="res://.godot/imported/studio_setup_10.png-ea2e1acf9f24bd7529ac4b3389341ecd.ctex"
+uid="uid://bigvegffdvlge"
+path="res://.godot/imported/studio_setup_11.png-1a7fdfa6503753772088f7e6e09df64b.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "646a6a0d41f942657b533425f2dc364a"
+"md5": "289cbb110c5e6675d6690321f192b669"
 }
 
 [deps]
 
-source_file="res://Studio_SketchFab/studio_setup_10.png"
-dest_files=["res://.godot/imported/studio_setup_10.png-ea2e1acf9f24bd7529ac4b3389341ecd.ctex"]
+source_file="res://Studio_SketchFab/studio_setup_11.png"
+dest_files=["res://.godot/imported/studio_setup_11.png-1a7fdfa6503753772088f7e6e09df64b.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/high_quality=false
 compress/high_quality_mode=0
-compress/lossy_quality=0.7
+compress/lossy_quality=0.5
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
-compress/normal_map=0
+compress/normal_map=1
 compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1
 mipmaps/preserve_alpha_test_coverage=false
 mipmaps/alpha_test_threshold=0.5
-roughness/mode=0
-roughness/src_normal=""
+roughness/mode=1
+roughness/src_normal="res://Studio_SketchFab/studio_setup_11.png"
 process/channel_remap/red=0
 process/channel_remap/green=1
 process/channel_remap/blue=2

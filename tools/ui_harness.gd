@@ -15,6 +15,7 @@ extends SceneTree
 #   toggle=<Button>    flip a toggle/check button (emits toggled)
 #   press=<Button>     emit pressed
 #   popup=/hide=<Window>, text=<LineEdit>:<text>, select=<OptionButton>:<item>
+#   hover=<Control>    move the mouse over a control's centre
 #   call=<method on Main>, dump (print settings + UI labels), shot (no-op)
 # EMBED=1 embeds popups in the main window like the web build does.
 
@@ -48,6 +49,11 @@ func do_step(s: String):
 		"shot": pass
 		"toggle": var b: BaseButton = n(val); b.button_pressed = !b.button_pressed
 		"press": (n(val) as BaseButton).pressed.emit()
+		"hover":
+			var motion := InputEventMouseMotion.new()
+			motion.position = (n(val) as Control).get_global_rect().get_center()
+			motion.global_position = motion.position
+			root.push_input(motion)
 		"popup": (n(val) as Window).show()
 		"hide": (n(val) as Window).hide()
 		"text": (n(val.split(":")[0]) as LineEdit).text = val.split(":")[1]
