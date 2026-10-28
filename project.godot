@@ -22,6 +22,10 @@ config/mode.ios=0
 config/mode.macos=0
 config/mode=0
 
+[debug]
+
+file_logging/enable_file_logging=true
+
 [display]
 
 window/size/viewport_width=1656
@@ -60,7 +64,8 @@ my_action={
 [rendering]
 
 rendering_device/driver.windows="d3d12"
-textures/vram_compression/import_etc2_astc=true
+textures/vram_compression/compress_with_gpu=false
+textures/vram_compression/cache_gpu_compressor=false
 lights_and_shadows/contact_shadow/enabled=true
 lights_and_shadows/contact_shadow/shadow_length=2
 lights_and_shadows/contact_shadow/surface_thickness=0.1

@@ -199,6 +199,7 @@ func _ready():
 		%WorldEnvironment.environment.ssao_enabled = false
 
 	setup_display_options()
+	setup_embed_fullscreen()
 
 	ensure_preset_directory()
 	refresh_preset_list()
@@ -1051,10 +1052,15 @@ func _on_fullscreen_button_toggled(toggled_on: bool) -> void:
 		_windowed_resolution = menu.selected
 		if menu.visible and menu.selected != AUTO_RESOLUTION:
 			menu.select(MATCH_SCREEN)
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+		if not _embed_fullscreen:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 	else:
 		menu.select(_windowed_resolution)
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+		if _embed_fullscreen:
+			# The page put the app in fullscreen, so only the page can take it out.
+			JavaScriptBridge.eval("window.parent.postMessage({type: 'camera-sim:exit-fullscreen'}, '*')")
+		else:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 	%FullscreenButton.text = "Exit Fullscreen" if toggled_on else "Fullscreen"
 	apply_render_resolution()
 
@@ -1070,9 +1076,85 @@ func _on_window_resized():
 	# Esc (or the browser) can leave fullscreen without the button. A browser
 	# may resize the page before it reports the change, so look a moment later.
 	await get_tree().create_timer(0.3).timeout
-	var fullscreen = DisplayServer.window_get_mode() in [DisplayServer.WINDOW_MODE_FULLSCREEN, DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN]
+	var fullscreen = _embed_fullscreen or is_canvas_fullscreen()
 	if %FullscreenButton.button_pressed != fullscreen:
 		%FullscreenButton.button_pressed = fullscreen # runs the toggled handler
+
+func is_canvas_fullscreen() -> bool:
+	return DisplayServer.window_get_mode() in [DisplayServer.WINDOW_MODE_FULLSCREEN, DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN]
+
+# Fullscreen from the page the app is embedded in. The app is iframed into a
+# page on another site, and a click on that page's own Fullscreen button
+# doesn't count as a click inside the iframe, so the browser won't let it put
+# the app's canvas in fullscreen. Instead the page puts the whole iframe in
+# fullscreen and posts a message into it to say so:
+#   {type: "camera-sim:fullscreen", on: true}   (false when it leaves)
+# The app then redraws at the screen's own size, as sharp as its own
+# fullscreen, and its Exit Fullscreen button asks the page to leave with
+#   {type: "camera-sim:exit-fullscreen"}
+# Only messages from the parent page count. Once listening, the app posts
+#   {type: "camera-sim:ready"}
+# and the page answers with the current state.
+var _embed_fullscreen := false
+var _embed_windowed_size := Vector2i.ZERO
+var _embed_callback: JavaScriptObject # kept: the page can't call it once it's freed
+
+func setup_embed_fullscreen():
+	if not OS.has_feature("web"):
+		return
+	_embed_callback = JavaScriptBridge.create_callback(_on_embed_fullscreen)
+	JavaScriptBridge.get_interface("window").cameraSimEmbedFullscreen = _embed_callback
+	JavaScriptBridge.eval("""
+		(function () {
+			let on = false;
+			function report() {
+				window.cameraSimEmbedFullscreen(on, window.innerWidth, window.innerHeight);
+			}
+			window.addEventListener('message', function (event) {
+				if (event.source !== window.parent || event.source === window || !event.data
+						|| event.data.type !== 'camera-sim:fullscreen') {
+					return;
+				}
+				on = !!event.data.on;
+				report();
+			});
+			// The iframe may still be growing when the message arrives.
+			window.addEventListener('resize', function () {
+				if (on) {
+					report();
+				}
+			});
+			// Ask for the current state: the page may have gone fullscreen while
+			// the app was still on its Start screen or loading.
+			if (window.parent !== window) {
+				window.parent.postMessage({type: 'camera-sim:ready'}, '*');
+			}
+		}());
+	""", true)
+
+# args: [on, the iframe's width and height in CSS pixels]
+func _on_embed_fullscreen(args: Array):
+	# The app's own fullscreen (its button, or the first tap on a phone) also
+	# puts the iframe in fullscreen, so the page reports that too: the engine
+	# already handles it.
+	if is_canvas_fullscreen():
+		return
+	var on: bool = args[0]
+	if on:
+		if not _embed_fullscreen:
+			_embed_windowed_size = get_window().size
+			_embed_fullscreen = true
+		# Windowed, the canvas stays 1656x968 and the page scales it to fit
+		# (fitCanvasToViewport). Scaled up to a whole screen that's blurry, so
+		# draw it at the screen's own size instead. (Through the Window, not
+		# DisplayServer.window_set_size(), so the UI is laid out again too.)
+		var pixel_scale = DisplayServer.screen_get_scale()
+		get_window().size = Vector2i(int(args[1] * pixel_scale), int(args[2] * pixel_scale))
+	elif _embed_fullscreen:
+		_embed_fullscreen = false
+		get_window().size = _embed_windowed_size
+	if %FullscreenButton.button_pressed != on:
+		%FullscreenButton.button_pressed = on # runs the toggled handler
 
 # retest: Auto measures again rather than using its remembered result.
 func apply_render_resolution(retest := false):
