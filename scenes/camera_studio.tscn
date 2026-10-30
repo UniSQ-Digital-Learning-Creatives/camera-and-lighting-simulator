@@ -20,7 +20,7 @@
 [ext_resource type="StyleBox" uid="uid://lek5vcrjl78o" path="res://UI/attributionHoverButton.tres" id="19_5sl37"]
 [ext_resource type="PackedScene" uid="uid://b5nb83n4nkijp" path="res://prefabs/ava.tscn" id="20_d88y4"]
 
-[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_povcam"]
+[sub_resource type="CameraAttributesPhysical" id="CameraAttributesPhysical_povcam"]
 white_balance_temperature = 5600.0
 grain_enabled = true
 grain_type = 2
@@ -29,13 +29,15 @@ chromatic_aberration_strength = 10.0
 starburst_strength = 100.0
 longitudinal_chromatic_aberration_strength = 0.0
 panini_enabled = true
-dof_blur_far_enabled = true
-dof_blur_far_distance = 5.0
-dof_blur_far_transition = -1.0
-dof_blur_near_enabled = true
-dof_blur_near_distance = 5.0
-dof_blur_near_transition = -1.0
-dof_blur_amount = 0.05
+sensor_format = 6
+sensor_size = Vector2(36, 20.25)
+frustum_focus_distance = 5.0
+frustum_focal_length = 50.0
+frustum_near = 0.001
+frustum_far = 15.0
+dof_physical_blur_size = true
+dof_legacy_gather = true
+exposure_aperture = 8.0
 
 [sub_resource type="Environment" id="Environment_40dvd"]
 background_mode = 1
@@ -102,13 +104,10 @@ render_target_update_mode = 4
 [node name="POV Cam" type="Camera3D" parent="SubViewport" unique_id=1997001179]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.14966322, 1.63, 5)
-keep_aspect = 0
 cull_mask = 1
-attributes = SubResource("CameraAttributesPractical_povcam")
+attributes = SubResource("CameraAttributesPhysical_povcam")
 current = true
-fov = 39.59775
-near = 0.001
-far = 15.0
+fov = 22.895191
 monitoring_visible_in_output = true
 autofocus_mode = 2
 autofocus_target = NodePath("../../Subject/Marker3D")
@@ -116,6 +115,8 @@ autofocus_target = NodePath("../../Subject/Marker3D")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewport" unique_id=625592752]
 unique_name_in_owner = true
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+light_temperature_enabled = true
+light_temperature = 5600.0
 light_energy = 0.15
 shadow_enabled = true
 shadow_reverse_cull_face = true
@@ -1672,6 +1673,8 @@ text = "  Help  "
 [node name="KeyLight" type="SpotLight3D" parent="." unique_id=115507418]
 unique_name_in_owner = true
 transform = Transform3D(0.7071067, -0.12526612, 0.6959228, 0, 0.9841834, 0.17715304, -0.7071068, -0.1252661, 0.6959227, 1.2103235, 1.9, 1.0606601)
+light_temperature_enabled = true
+light_temperature = 5600.0
 light_energy = 1.5
 shadow_enabled = true
 shadow_bias = 0.01
@@ -1690,6 +1693,8 @@ mesh = SubResource("CylinderMesh_0thei")
 unique_name_in_owner = true
 transform = Transform3D(-4.371139e-08, 0.177153, -0.9841833, 0, 0.9841834, 0.177153, 1, 7.743604e-09, -4.302002e-08, -1.3503368, 1.9, 9.313228e-10)
 visible = false
+light_temperature_enabled = true
+light_temperature = 5600.0
 light_energy = 2.0
 shadow_enabled = true
 shadow_bias = 0.01
@@ -1708,6 +1713,8 @@ mesh = SubResource("CylinderMesh_0thei")
 unique_name_in_owner = true
 transform = Transform3D(0.7071067, 0.12526612, -0.6959228, 0, 0.9841834, 0.17715304, 0.7071068, -0.1252661, 0.6959227, -0.910997, 1.9, 1.0606601)
 visible = false
+light_temperature_enabled = true
+light_temperature = 5600.0
 light_energy = 0.75
 shadow_enabled = true
 shadow_bias = 0.01

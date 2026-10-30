@@ -4,5 +4,5 @@
 
 [resource]
 script = ExtResource("1_wy24w")
-baseline_noise_multiplier = 4.0
+baseline_noise_multiplier = 3.375
 metadata/_custom_type_script = "uid://q5qdm0yijhsy"

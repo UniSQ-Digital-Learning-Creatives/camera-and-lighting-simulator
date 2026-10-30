@@ -52,9 +52,8 @@ extends Node3D
 @onready var key_light = %KeyLight
 @onready var fill_light = %FillLight
 @onready var rim_light = %RimLight
-# The scene's general "daylight" fill; white balanced as a 5600K source.
-@onready var sun_light = %DirectionalLight3D
-const SUN_TEMPERATURE := 5600.0
+# (The scene's general "daylight" fill, %DirectionalLight3D, is a fixed 5600K
+# source, set in the scene.)
 
 @onready var key_angle_slider = %KeyAngleSlider
 @onready var key_dist_slider = %KeyDistSlider
@@ -107,52 +106,40 @@ var idle_animation # AvaIdle (scripts/ava_idle.gd), added in _ready
 func _process(_delta):
 	update_dof()
 
-# Depth of field from the thin-lens model, using the selected lens and sensor.
-#
-# A point at distance d, with the lens focused at distance u, blurs into a
-# circle on the sensor of diameter
+# Depth of field is the engine's. POV Cam's attributes are a
+# CameraAttributesPhysical, a lens on a sensor: set_lens() gives it the focal
+# length and the sensor size, and this gives it the aperture and (when focusing
+# by hand) the focus distance. With dof_physical_blur_size on, a point at
+# distance d, with the lens focused at distance u, blurs as it would through a
+# real lens, into a circle on the sensor of diameter
 #     blur(d) = f² / (N·(u − f)) · |d − u| / d
-# so it grows from 0 at the focus plane towards f² / (N·(u − f)) far behind
-# it. Godot's bokeh shader has exactly this falloff built in: a negative
-# transition switches it to "physical" mode, where it scales its blur radius
-# (in pixels) by |d − u| / d on both sides of the focus plane. All that's left
-# to work out here is that maximum radius, converted from millimetres on the
-# sensor to pixels in the rendered image.
-#
-# (CameraAttributesPhysical would do this itself, but its blur is a fixed
-# fraction of f² / (N·(u − f)) whatever the sensor size or render resolution,
-# so a smaller sensor wouldn't show more blur for the same lens. The focus
-# plane itself is the engine's autofocus, see camera_controller.gd.)
+# and the engine sizes that circle against the sensor, so the same lens blurs
+# more of the picture on a smaller sensor. (dof_legacy_gather keeps the blur
+# drawn the way this app's look was tuned; turn it off for the engine's
+# newer, more exact drawing, which blurs a little more wide open.)
+# The focus plane itself is the engine's autofocus, see camera_controller.gd.
 func update_dof():
 	var focus_distance = settings.focus_distance
 	var aperture = settings.aperture
 	var focal_length = settings.focal_length
-	var sensor_width = settings.sensor_width
 
-	# Skip re-pushing the DOF attributes resource to the renderer when
-	# nothing changed since last frame -- on the web/WebGPU target every
-	# RenderingServer update crosses the JS/WASM command bridge, so a
-	# steady-state frame (nothing being dragged) should cost nothing here.
-	# Autofocus moves the focus a fraction of a millimetre every frame as
-	# she sways; that doesn't change the blur.
-	var key = [snappedf(focus_distance, 0.002), aperture, focal_length, sensor_width, viewport.size.x, settings.autofocus_enabled]
+	# Skip re-pushing the attributes to the renderer when nothing changed
+	# since last frame -- on the web/WebGPU target every RenderingServer
+	# update crosses the JS/WASM command bridge, so a steady-state frame
+	# (nothing being dragged) should cost nothing here. Autofocus moves the
+	# focus a fraction of a millimetre every frame as she sways, by itself.
+	var key = [snappedf(focus_distance, 0.002), aperture, focal_length, settings.sensor_width, settings.autofocus_enabled]
 	if key == _last_dof_key:
 		return
 	_last_dof_key = key
 
-	var u = maxf(focus_distance * 1000.0, focal_length + 1.0) # focus distance in mm
-	var max_blur_mm = (focal_length * focal_length) / (aperture * (u - focal_length))
-
-	# Blur diameter on the sensor -> blur radius in pixels across the image width.
-	var max_blur_px = 0.5 * max_blur_mm / sensor_width * viewport.size.x
-
 	var attributes = camera.attributes
+	if attributes.exposure_aperture != aperture:
+		attributes.exposure_aperture = aperture # the f-number; exposure stays exposure_controller.gd's
 	if not settings.autofocus_enabled:
-		# Focused by hand. (Autofocus moves both distances itself.)
-		attributes.dof_blur_far_distance = u / 1000.0
-		attributes.dof_blur_near_distance = u / 1000.0
-	attributes.dof_blur_amount = max_blur_px / 64.0 # the shader's blur amount is a fraction of a 64px radius
+		attributes.frustum_focus_distance = focus_distance # focused by hand
 
+	var u = maxf(focus_distance * 1000.0, focal_length + 1.0) # focus distance in mm
 	update_dof_label(u, focal_length, aperture)
 
 
@@ -267,15 +254,17 @@ func set_lens(focal_length):
 
 	settings.focal_length = round(focal_length)
 
-	# Horizontal field of view: the camera keeps its width (keep_aspect =
-	# KEEP_WIDTH), so the 16:9 frame is a crop of the sensor's full width.
-	var fov = rad_to_deg(
-		2.0 * atan(settings.sensor_width/ (2.0 * settings.focal_length))
-	)
+	# The field of view comes from the lens and the sensor: the camera's
+	# physical attributes work it out (2·atan(sensor height / (2·focal length)))
+	# and set camera.fov. The 16:9 picture is a strip across the sensor's full
+	# width, so that strip is the sensor size given to the camera.
+	var attributes = camera.attributes
+	attributes.frustum_focal_length = settings.focal_length
+	attributes.sensor_size = Vector2(settings.sensor_width, settings.sensor_width * 9.0 / 16.0)
 
-	camera.fov = fov
-
-	camera_diagram.current_fov = fov
+	# camera.fov is the vertical angle; the studio map shows the horizontal one.
+	var aspect = attributes.sensor_size.x / attributes.sensor_size.y
+	camera_diagram.current_fov = rad_to_deg(2.0 * atan(tan(deg_to_rad(camera.fov) / 2.0) * aspect))
 	camera_diagram.queue_redraw()
 
 #Label
@@ -550,16 +539,18 @@ func _on_camera_wb_slider_value_changed(value: float) -> void:
 	update_white_balance()
 	update_info_label()
 
-# Each light gets the colour of its colour temperature, and the camera's white
-# balance is the engine's own (CameraAttributes.white_balance_temperature): a
-# von Kries adaptation in linear light after exposure and before tonemapping,
-# like a camera's raw processing. A light that matches the white balance
-# records as neutral, a warmer one orange and a cooler one blue.
+# Each light has a colour temperature (Light3D.light_temperature, switched on
+# with light_temperature_enabled in the scene): the engine tints it with the
+# colour of a blackbody at that temperature, at the same brightness. The
+# camera's white balance is the engine's own too
+# (CameraAttributes.white_balance_temperature): a von Kries adaptation in
+# linear light after exposure and before tonemapping, like a camera's raw
+# processing. A light that matches the white balance records as neutral, a
+# warmer one orange and a cooler one blue.
 func update_white_balance():
-	key_light.light_color = CinemaSettings.light_color_for_temperature(settings.key_temperature)
-	fill_light.light_color = CinemaSettings.light_color_for_temperature(settings.fill_temperature)
-	rim_light.light_color = CinemaSettings.light_color_for_temperature(settings.rim_temperature)
-	sun_light.light_color = CinemaSettings.light_color_for_temperature(SUN_TEMPERATURE)
+	key_light.light_temperature = settings.key_temperature
+	fill_light.light_temperature = settings.fill_temperature
+	rim_light.light_temperature = settings.rim_temperature
 	camera.attributes.white_balance_temperature = settings.white_balance
 	key_temp_num.text = str(int(settings.key_temperature)) + "K"
 	fill_temp_num.text = str(int(settings.fill_temperature)) + "K"
@@ -748,85 +739,27 @@ func save_current_image():
 
 
 # "Download Screenshot": exactly what's on screen, controls and guides included.
+# Reading a picture back from the GPU takes a frame or more (and on the web it
+# can't be done any other way), so get_image_awaitable() hands it over when it
+# arrives: this frame's picture, or null if it couldn't be read.
 func save_screenshot():
-	# Wait for the frame being drawn, so the capture is the current one.
-	await RenderingServer.frame_post_draw
-	download_png(await read_back(get_viewport().get_texture()), "camera-sim-screenshot")
+	download_png(await get_viewport().get_texture().get_image_awaitable(), "camera-sim-screenshot")
 
 
-# The engine draws the zebras and false colour into the camera's own image, so
-# a photo can't be read from it while they're on. A clean view is a second,
-# off-screen view of the studio through a copy of the camera without them: it
-# shares the camera's attributes (focus, depth of field, white balance, noise),
-# copies its position and lens before each render, and only renders when asked to. The photo
-# uses one at the camera's resolution; the histogram a small one
-# (monitoring_controller.gd).
-var _recorder: SubViewport
-
-# temporal: keep the camera view's upscaler and TAA, which need a few frames
-# to settle; without them a single frame is enough.
-func make_clean_view(view_size: Vector2i, temporal := true) -> SubViewport:
-	var view = SubViewport.new()
-	view.size = view_size
-	view.world_3d = viewport.find_world_3d()
-	view.render_target_update_mode = SubViewport.UPDATE_DISABLED
-	for property in ["positional_shadow_atlas_size", "positional_shadow_atlas_16_bits",
-			"positional_shadow_atlas_quad_0", "positional_shadow_atlas_quad_1",
-			"positional_shadow_atlas_quad_2", "positional_shadow_atlas_quad_3",
-			"screen_space_aa", "msaa_3d", "use_debanding", "mesh_lod_threshold"]:
-		view.set(property, viewport.get(property))
-	if temporal:
-		view.use_taa = viewport.use_taa
-		view.scaling_3d_mode = viewport.scaling_3d_mode
-		view.scaling_3d_scale = viewport.scaling_3d_scale
-	else:
-		view.use_taa = false
-		view.scaling_3d_mode = Viewport.SCALING_3D_MODE_BILINEAR
-		view.scaling_3d_scale = 1.0
-	var clean_camera = Camera3D.new()
-	clean_camera.attributes = camera.attributes
-	clean_camera.cull_mask = camera.cull_mask
-	clean_camera.keep_aspect = camera.keep_aspect
-	clean_camera.near = camera.near
-	clean_camera.far = camera.far
-	view.add_child(clean_camera)
-	add_child(view)
-	clean_camera.current = true
-	return view
-
-func sync_clean_view(view: SubViewport):
-	var clean_camera: Camera3D = view.get_child(0)
-	clean_camera.global_transform = camera.global_transform
-	clean_camera.fov = camera.fov
-
-# Frames the photo's view renders before it's read: enough for the
-# temporal upscaler (FSR 2) to settle from a standing start.
-const RECORDER_FRAMES := 8
+# The engine draws the zebras and false colour into the camera's own image,
+# but while monitoring_clean_texture_enabled is on it also keeps a copy of each
+# frame from just before they're drawn: that's the photo. It's on only while a
+# capture is waiting for its frame (it costs a copy of every frame).
+var _captures_waiting := 0
 
 func capture_camera_image() -> Image:
-	if _recorder == null:
-		_recorder = make_clean_view(viewport.size)
-	_recorder.size = viewport.size
-	sync_clean_view(_recorder)
-	_recorder.render_target_update_mode = SubViewport.UPDATE_ALWAYS
-	for frame in RECORDER_FRAMES:
-		await RenderingServer.frame_post_draw
-	_recorder.render_target_update_mode = SubViewport.UPDATE_DISABLED
-	return await read_back(_recorder.get_texture())
-
-
-# Reads a rendered texture back to the CPU. On the web build that's
-# asynchronous: the first read of a texture comes back empty (or zero-filled)
-# and its pixels arrive a frame or so later (godotwebgpu TASKS.md §4.2), so
-# keep asking for a few frames. Both images are opaque, so a fully
-# transparent result means "not here yet". On desktop the first read works.
-func read_back(texture: Texture2D) -> Image:
-	for attempt in 30:
-		var image = texture.get_image()
-		if image != null and not image.is_empty() and image.get_pixel(image.get_width() / 2, image.get_height() / 2).a > 0.0:
-			return image
-		await RenderingServer.frame_post_draw
-	return null
+	_captures_waiting += 1
+	camera.monitoring_clean_texture_enabled = true
+	var image: Image = await camera.get_monitoring_clean_texture().get_image_awaitable()
+	_captures_waiting -= 1
+	if _captures_waiting == 0:
+		camera.monitoring_clean_texture_enabled = false
+	return image
 
 
 func download_png(image: Image, prefix: String):

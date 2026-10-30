@@ -61,11 +61,12 @@ func get_meter_text() -> String:
 	return "%+.1f EV (%s)" % [stops, "over" if stops > 0.0 else "under"]
 
 # Sensor noise is the engine's (CameraAttributes grain, type Digital): a
-# full-frame sensor holding 50,000 electrons per 24MP pixel at base ISO, with
-# shot and read noise, and the ISO as its gain. At the same pixel count a
-# smaller sensor has smaller pixels: its full well shrinks with the sensor's
-# area (1 / crop factor²), so its noise grows with the crop factor. APS-C is
-# about 1.2 stops and MFT 2 stops noisier than full frame for the same exposure.
+# sensor holding 1400 electrons per square micrometre at base ISO (50,000 in a
+# 24MP full-frame pixel), with shot and read noise, and the ISO as its gain.
+# The camera's attributes know the sensor size (main.set_lens), so at the same
+# pixel count a smaller sensor's pixels collect less light and its noise grows
+# with the crop factor: APS-C is about 1.2 stops and MFT 2 stops noisier than
+# full frame for the same exposure.
 # baseline_noise_multiplier (in the default settings) tunes how strong it looks.
 
 # "Exaggerate noise" scales the realistic noise up by this much, for showing it
@@ -76,7 +77,7 @@ const NOISE_EXAGGERATION := 8.0
 
 func update_noise():
 	camera.attributes.exposure_sensitivity = settings.iso
-	camera.attributes.grain_intensity = settings.get_crop_factor() * settings.baseline_noise_multiplier * (NOISE_EXAGGERATION if settings.exaggerate_noise else 1.0)
+	camera.attributes.grain_intensity = settings.baseline_noise_multiplier * (NOISE_EXAGGERATION if settings.exaggerate_noise else 1.0)
 
 func _on_exaggerate_noise_toggled(toggled_on: bool) -> void:
 	settings.exaggerate_noise = toggled_on

@@ -306,7 +306,7 @@ blend_shape_mode = 0
 [sub_resource type="Skin" id="Skin_ed6hd"]
 resource_name = "Skin"
 bind_count = 342
-bind/0/name = &"Root"
+bind/0/name = &"root"
 bind/0/bone = -1
 bind/0/pose = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 bind/1/name = &"pelvis"

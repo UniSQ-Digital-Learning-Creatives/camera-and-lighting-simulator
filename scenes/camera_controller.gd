@@ -2,8 +2,8 @@ extends Node
 
 # Focus. Auto Focus is the engine's: the camera (POV Cam, autofocus_mode
 # Continuous, autofocus_target %Marker3D) keeps the lens on her face as she
-# moves, by moving its depth of field's focus plane (main.update_dof). Dragging
-# Distance switches it to Manual and sets that distance by hand.
+# moves, by moving its lens's focus distance (frustum_focus_distance). Dragging
+# Distance switches it to Manual and sets that distance by hand (main.update_dof).
 
 @onready var main = get_tree().root.find_child("Main", true, false)
 

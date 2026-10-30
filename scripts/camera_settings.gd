@@ -96,29 +96,3 @@ func get_summary() -> String:
 		+ "Focus: %.1fm" % focus_distance
 	)
 
-
-# Colour of a light of the given colour temperature, for Light3D.light_color.
-# Uses the same blackbody approximation as the engine (Krystek's fit of the
-# Planckian locus, ported from Light3D's light_temperature code), because the
-# camera's white balance (CameraAttributes.white_balance_temperature) is
-# defined against it: a light renders exactly neutral under a white balance of
-# its own temperature. Scaled to a luminance of 1, so changing a light's
-# temperature changes its colour, not its brightness.
-static func light_color_for_temperature(kelvin: float) -> Color:
-	var t := clampf(kelvin, 1000.0, 15000.0)
-	var t2 := t * t
-	var u := (0.860117757 + 1.54118254e-4 * t + 1.28641212e-7 * t2) / (1.0 + 8.42420235e-4 * t + 7.08145163e-7 * t2)
-	var v := (0.317398726 + 4.22806245e-5 * t + 4.20481691e-8 * t2) / (1.0 - 2.89741816e-5 * t + 1.61456053e-7 * t2)
-
-	# CIE 1960 uv -> xy -> XYZ with Y = 1 -> linear sRGB.
-	var d := 1.0 / (2.0 * u - 8.0 * v + 4.0)
-	var x := 3.0 * u * d
-	var y := 2.0 * v * d
-	var X := x / y
-	var Z := (1.0 - x - y) / y
-	var r := maxf(3.2404542 * X - 1.5371385 - 0.4985314 * Z, 0.0)
-	var g := maxf(-0.9692660 * X + 1.8760108 + 0.0415560 * Z, 0.0)
-	var b := maxf(0.0556434 * X - 0.2040259 + 1.0572252 * Z, 0.0)
-
-	var luminance := r * 0.2126 + g * 0.7152 + b * 0.0722
-	return Color(r / luminance, g / luminance, b / luminance).linear_to_srgb()

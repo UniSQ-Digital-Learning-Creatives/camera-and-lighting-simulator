@@ -1,30 +1,16 @@
 extends Node
 
-@onready var main = get_tree().root.find_child("Main", true, false)
 @onready var camera = %"POV Cam"
 @onready var zebra_slider = %ZebraSlider
 @onready var zebra_num = %ZebraNum
 
-# The histogram is worked out from a small copy of the camera image, scaled
-# down on the GPU: reading that back is 1/100th of the data of the full
-# 1280x720 image, and the loop below only has to visit 9,216 pixels.
-# 128 wide on purpose: on the web build a row of a GPU readback must be a
-# multiple of 256 bytes (128 px x 4 bytes = 512). At 96 px wide (384 bytes)
-# the WebGPU readback came back garbled and the histogram showed nonsense.
-const ANALYSIS_SIZE := Vector2i(128, 72)
-var _analysis: SubViewport
-# The zebras and false colour are drawn by the engine into the camera's own
-# image (Camera3D monitoring), so while either is on that image isn't the
-# photo any more. The histogram then reads a small clean render of the studio
-# instead (main.make_clean_view), which costs an extra 3D render 4 times a
-# second, only while they're on.
-var _clean_analysis: SubViewport
-var _reading: SubViewport # the view the last update was requested from
-
+# The histogram is the engine's: the camera counts the brightness levels of
+# its picture on the GPU (Camera3D's monitoring histogram) and hands the counts
+# over 4 times a second. It counts the picture from before the zebras and false
+# colour are drawn on it, so it always shows the photo itself. The engine
+# could also draw it over the picture; here only the panel draws it
+# (histogram.gd), so monitoring_histogram_draw is off.
 var histogram_bins = []
-var brightest_pixel := 0.0
-var darkest_pixel := 1.0
-var timer := 0.0
 var highlights_clipping := false
 var shadows_clipping := false
 
@@ -34,61 +20,38 @@ signal analysis_updated
 func _ready():
 	add_to_group("monitoring")
 	histogram_bins.resize(64)
-	for i in range(histogram_bins.size()):
-		histogram_bins[i] = 0
+	histogram_bins.fill(0)
 	_on_zebra_slider_value_changed(zebra_slider.value)
 
-	var small = TextureRect.new()
-	small.texture = %SubViewport.get_texture()
-	small.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	small.stretch_mode = TextureRect.STRETCH_SCALE
-	small.size = ANALYSIS_SIZE
-	_analysis = SubViewport.new()
-	_analysis.size = ANALYSIS_SIZE
-	_analysis.disable_3d = true
-	_analysis.render_target_update_mode = SubViewport.UPDATE_ONCE
-	_analysis.add_child(small)
-	add_child(_analysis)
+	camera.monitoring_histogram_enabled = true
+	camera.monitoring_histogram_draw = false
+	camera.monitoring_histogram_update_interval = 0.25
+	camera.monitoring_histogram_updated.connect(calculate_histogram)
 
 func calculate_histogram():
-	# This reads the copy rendered at the previous update, so the histogram
-	# lags a quarter of a second, and it suits the web build, where a readback
-	# always returns an earlier frame (godotwebgpu TASKS §4.2).
-	var image = _reading.get_texture().get_image() if _reading != null else null
-	_reading = _analysis
-	if camera.monitoring_zebras_enabled or camera.monitoring_false_color_enabled:
-		if _clean_analysis == null:
-			_clean_analysis = main.make_clean_view(ANALYSIS_SIZE, false)
-		_reading = _clean_analysis
-		main.sync_clean_view(_clean_analysis)
-	_reading.render_target_update_mode = SubViewport.UPDATE_ONCE
+	# How many pixels have each of the 256 levels of brightness (Rec. 709
+	# luma, the brightness as displayed, 0 black to 255 white).
+	var levels = camera.get_monitoring_histogram()
+	if levels.is_empty():
+		return # (on the web the first counts take a few frames to arrive)
 
-	if image == null or image.is_empty():
-		return
-	if image.get_format() != Image.FORMAT_RGBA8:
-		image.convert(Image.FORMAT_RGBA8)
-
-	var data := image.get_data()
-	if data.size() < 4 or data[3] == 0:
-		return # a web readback that hasn't arrived yet (zero-filled)
-
+	# The panel shows 64 bars, 4 levels each.
 	histogram_bins.fill(0)
-	brightest_pixel = 0.0
-	darkest_pixel = 1.0
+	for level in range(levels.size()):
+		histogram_bins[int(level / 4.0)] += levels[level]
 
-	for i in range(0, data.size(), 4):
-		var lum = (data[i] * 0.2126 + data[i + 1] * 0.7152 + data[i + 2] * 0.0722) / 255.0
+	# Clipping: any pixel brighter than 98% (levels 250-255) or darker than
+	# 2% (levels 0-5).
+	highlights_clipping = false
+	shadows_clipping = false
+	for level in range(250, 256):
+		if levels[level] > 0:
+			highlights_clipping = true
+	for level in range(0, 6):
+		if levels[level] > 0:
+			shadows_clipping = true
 
-		brightest_pixel = max(brightest_pixel, lum)
-
-		darkest_pixel = min(darkest_pixel, lum)
-
-		var bin = clamp(int(lum * 63), 0, 63)
-
-		histogram_bins[bin] += 1
-
-	highlights_clipping = brightest_pixel > 0.98
-	shadows_clipping = darkest_pixel < 0.02
+	analysis_updated.emit()
 
 func _on_zebra_toggle_toggled(toggled_on):
 	camera.monitoring_zebras_enabled = toggled_on
@@ -100,14 +63,3 @@ func _on_zebra_slider_value_changed(value):
 
 func _on_false_colour_toggle_toggled(toggled_on):
 	camera.monitoring_false_color_enabled = toggled_on
-
-func _process(delta):
-
-	timer += delta
-
-	if timer > 0.25:
-
-		timer = 0.0
-
-		calculate_histogram()
-		analysis_updated.emit()
