@@ -1,0 +1,10 @@
+scenes/Ava/** filter=lfs diff=lfs merge=lfs -text
+*.glb filter=lfs diff=lfs merge=lfs -text
+*.scn filter=lfs diff=lfs merge=lfs -text
+*.fbx filter=lfs diff=lfs merge=lfs -text
+*.abc filter=lfs diff=lfs merge=lfs -text
+*.dna filter=lfs diff=lfs merge=lfs -text
+Studio_SketchFab/*.png filter=lfs diff=lfs merge=lfs -text
+Character_Sketchfab/** filter=lfs diff=lfs merge=lfs -text
+unused/Studio_SketchFab/*.png filter=lfs diff=lfs merge=lfs -text
+unused/scenes/Ava/** filter=lfs diff=lfs merge=lfs -text

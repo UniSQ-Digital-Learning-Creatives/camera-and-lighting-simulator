@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="CinemaSettings" format=3 uid="uid://crt5srncsfphy"]
+
+[ext_resource type="Script" uid="uid://q5qdm0yijhsy" path="res://scripts/camera_settings.gd" id="1_wy24w"]
+
+[resource]
+script = ExtResource("1_wy24w")
+baseline_noise_multiplier = 3.375
+metadata/_custom_type_script = "uid://q5qdm0yijhsy"

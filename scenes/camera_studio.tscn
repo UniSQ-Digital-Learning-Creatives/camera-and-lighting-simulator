@@ -1,0 +1,1968 @@
+[gd_scene format=3 uid="uid://2hkyi7q01hqa"]
+
+[ext_resource type="Script" uid="uid://xlvcb647y6ov" path="res://scripts/main.gd" id="1_uwu47"]
+[ext_resource type="Resource" uid="uid://crt5srncsfphy" path="res://data/default_settings.tres" id="2_gbrcl"]
+[ext_resource type="Script" uid="uid://drpeuixfdousm" path="res://scenes/camera_controller.gd" id="3_pw41u"]
+[ext_resource type="PackedScene" path="res://prefabs/studio_setup.scn" id="4_jbx1w"]
+[ext_resource type="Script" uid="uid://oi0gx752llfs" path="res://scripts/exposure_controller.gd" id="5_qxd8w"]
+[ext_resource type="Theme" uid="uid://niv0t0jdbdv1" path="res://UI/cinematography_theme.tres" id="6_wdn4e"]
+[ext_resource type="StyleBox" uid="uid://cpqa2ktkadepb" path="res://UI/panel_style.tres" id="7_p1eom"]
+[ext_resource type="FontFile" uid="uid://blvu1f1ph87o" path="res://UI/fonts/OpenSans-Bold.ttf" id="8_ii1va"]
+[ext_resource type="Script" uid="uid://douyrjghtbk24" path="res://scripts/sensor_diagram.gd" id="9_r42o2"]
+[ext_resource type="LabelSettings" uid="uid://bg7ohljhxi6ag" path="res://UI/heading_text.tres" id="10_4x11s"]
+[ext_resource type="Script" uid="uid://wgvsgeww2r03" path="res://scripts/aperture_indicator.gd" id="11_g5f7e"]
+[ext_resource type="Script" uid="uid://dtu81ma3so76n" path="res://scenes/texture_rect.gd" id="13_vnwbm"]
+[ext_resource type="Script" uid="uid://dut5pe02bgx3a" path="res://scenes/overlays.gd" id="14_wb43u"]
+[ext_resource type="Script" uid="uid://by25y3pu3yofl" path="res://scenes/monitoring_controller.gd" id="15_ts4rx"]
+[ext_resource type="Script" uid="uid://cqcrm4kueyhvh" path="res://scenes/histogram.gd" id="16_ttm7v"]
+[ext_resource type="Script" uid="uid://5yq7hddwqgvk" path="res://scripts/camera_diagram.gd" id="17_d2jds"]
+[ext_resource type="StyleBox" uid="uid://7lywg54073a" path="res://UI/attributionButton.tres" id="18_h4iyr"]
+[ext_resource type="StyleBox" uid="uid://lek5vcrjl78o" path="res://UI/attributionHoverButton.tres" id="19_5sl37"]
+[ext_resource type="PackedScene" uid="uid://b5nb83n4nkijp" path="res://prefabs/ava.tscn" id="20_d88y4"]
+
+[sub_resource type="CameraAttributesPhysical" id="CameraAttributesPhysical_povcam"]
+white_balance_temperature = 5600.0
+grain_enabled = true
+grain_type = 2
+grain_intensity = 4.0
+chromatic_aberration_strength = 10.0
+starburst_strength = 100.0
+longitudinal_chromatic_aberration_strength = 0.0
+panini_enabled = true
+sensor_format = 6
+sensor_size = Vector2(36, 20.25)
+frustum_focus_distance = 5.0
+frustum_focal_length = 50.0
+frustum_near = 0.001
+frustum_far = 15.0
+dof_physical_blur_size = true
+dof_legacy_gather = true
+exposure_aperture = 8.0
+
+[sub_resource type="Environment" id="Environment_40dvd"]
+background_mode = 1
+background_color = Color(0.02, 0.02, 0.022, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.5, 0.5, 0.52, 1)
+ambient_light_energy = 0.15
+ssao_radius = 0.6
+ssao_intensity = 1.5
+ssao_detail = 0.8
+ssao_light_affect = 0.15
+ssil_enabled = true
+grading_enabled = true
+grading_vibrance = 0.39
+
+[sub_resource type="FontVariation" id="FontVariation_e7jo2"]
+base_font = ExtResource("8_ii1va")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_controls"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.07450981, 0.11764706, 0.13333334, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="Theme" id="Theme_g8dpu"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_0thei"]
+lightmap_size_hint = Vector2i(6, 6)
+top_radius = 0.0
+bottom_radius = 0.15
+height = 0.2
+radial_segments = 4
+rings = 0
+
+[node name="Main" type="Node3D" unique_id=351611395]
+script = ExtResource("1_uwu47")
+settings = ExtResource("2_gbrcl")
+
+[node name="CameraController" type="Node" parent="." unique_id=626017590]
+unique_name_in_owner = true
+script = ExtResource("3_pw41u")
+
+[node name="SubViewport" type="SubViewport" parent="." unique_id=1412458474]
+unique_name_in_owner = true
+screen_space_aa = 1
+gui_disable_input = true
+positional_shadow_atlas_size = 4096
+positional_shadow_atlas_quad_0 = 1
+positional_shadow_atlas_quad_1 = 1
+positional_shadow_atlas_quad_2 = 1
+positional_shadow_atlas_quad_3 = 1
+size = Vector2i(1280, 720)
+render_target_update_mode = 4
+
+[node name="POV Cam" type="Camera3D" parent="SubViewport" unique_id=1997001179]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.14966322, 1.63, 5)
+cull_mask = 1
+attributes = SubResource("CameraAttributesPhysical_povcam")
+current = true
+fov = 22.895191
+monitoring_visible_in_output = true
+autofocus_mode = 2
+autofocus_target = NodePath("../../Subject/Marker3D")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewport" unique_id=625592752]
+unique_name_in_owner = true
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+light_temperature_enabled = true
+light_temperature = 5600.0
+light_energy = 0.15
+shadow_enabled = true
+shadow_reverse_cull_face = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewport" unique_id=469414272]
+unique_name_in_owner = true
+environment = SubResource("Environment_40dvd")
+
+[node name="Sketchfab_Scene" parent="SubViewport" unique_id=486905448 instance=ExtResource("4_jbx1w")]
+
+[node name="ExposureController" type="Node" parent="." unique_id=63031158]
+unique_name_in_owner = true
+script = ExtResource("5_qxd8w")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1165215695]
+
+[node name="Control" type="Control" parent="CanvasLayer" unique_id=1010182243]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme = ExtResource("6_wdn4e")
+
+[node name="OverallUI" type="VBoxContainer" parent="CanvasLayer/Control" unique_id=508728449]
+layout_mode = 0
+offset_right = 1656.0
+offset_bottom = 968.0
+theme = ExtResource("6_wdn4e")
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Control/OverallUI" unique_id=1731092385]
+custom_minimum_size = Vector2(1656, 40)
+custom_maximum_size = Vector2(1656, 40)
+layout_mode = 2
+theme = ExtResource("6_wdn4e")
+theme_override_styles/panel = ExtResource("7_p1eom")
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/PanelContainer" unique_id=1517003660]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="CinematographyStudio" type="Label" parent="CanvasLayer/Control/OverallUI/PanelContainer/MarginContainer" unique_id=586808130]
+layout_mode = 2
+theme_type_variation = &"Title"
+theme_override_fonts/font = SubResource("FontVariation_e7jo2")
+theme_override_font_sizes/font_size = 13
+text = "Camera Studio Simulator"
+uppercase = true
+
+[node name="DisplayOptions" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/PanelContainer" unique_id=1748203391]
+layout_mode = 2
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/PanelContainer/DisplayOptions" unique_id=1748203392]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+theme_override_constants/separation = 8
+
+[node name="FullscreenButton" type="Button" parent="CanvasLayer/Control/OverallUI/PanelContainer/DisplayOptions/HBoxContainer" unique_id=1748203395]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Fill the screen."
+mouse_default_cursor_shape = 2
+theme_type_variation = &"TitleBarButton"
+theme_override_font_sizes/font_size = 11
+toggle_mode = true
+text = "Fullscreen"
+
+[node name="MainLayout" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI" unique_id=1135730544]
+custom_minimum_size = Vector2(1656, 894)
+custom_maximum_size = Vector2(1656, 894)
+clip_contents = true
+layout_mode = 2
+
+[node name="Left Panel" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout" unique_id=704429243]
+custom_minimum_size = Vector2(200, 894)
+custom_maximum_size = Vector2(210, 894)
+layout_mode = 2
+theme = ExtResource("6_wdn4e")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel" unique_id=1830532059]
+layout_mode = 2
+
+[node name="CameraVBox" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer" unique_id=261040332]
+propagate_maximum_size = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Camera Section" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox" unique_id=925492912]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("7_p1eom")
+
+[node name="MarginContainer_Camera" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section" unique_id=399347273]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="CameraVBox" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera" unique_id=2097796469]
+layout_mode = 2
+size_flags_horizontal = 17
+size_flags_vertical = 17
+
+[node name="CameraHeader" type="CheckButton" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox" unique_id=1113127586]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("6_wdn4e")
+button_pressed = true
+text = "Camera"
+flat = true
+
+[node name="CameraContent" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox" unique_id=394608617]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 17
+size_flags_vertical = 3
+
+[node name="HSeparator4" type="HSeparator" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent" unique_id=637208360]
+layout_mode = 2
+
+[node name="SENSOR" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent" unique_id=182583933]
+layout_mode = 2
+size_flags_vertical = 6
+text = "Sensor"
+
+[node name="SensorContainer" type="BoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent" unique_id=1627355705]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="FullFrame" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent/SensorContainer" unique_id=1392156066]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+theme = ExtResource("6_wdn4e")
+toggle_mode = true
+text = "Full Frame"
+
+[node name="APSC" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent/SensorContainer" unique_id=934143034]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+toggle_mode = true
+text = "APS-C"
+
+[node name="MFT" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent/SensorContainer" unique_id=1584750582]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+toggle_mode = true
+text = "MFT"
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent" unique_id=213124776]
+custom_minimum_size = Vector2(0, 90)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="SensorDiagram" type="Control" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent/MarginContainer" unique_id=510067283]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+script = ExtResource("9_r42o2")
+
+[node name="SensorLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent" unique_id=765540314]
+unique_name_in_owner = true
+layout_mode = 2
+text = "content goes here"
+
+[node name="HSeparator" type="HSeparator" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent" unique_id=212668239]
+layout_mode = 2
+
+[node name="FOCAL LENGTH" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent" unique_id=1739194307]
+layout_mode = 2
+size_flags_vertical = 6
+text = "Focal Length"
+
+[node name="LensContainer" type="BoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent" unique_id=1022075020]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="24mm" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent/LensContainer" unique_id=1431501269]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+theme = ExtResource("6_wdn4e")
+theme_override_font_sizes/font_size = 10
+text = "24mm
+Wide"
+
+[node name="50mm" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent/LensContainer" unique_id=836034832]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+theme = ExtResource("6_wdn4e")
+text = "50mm
+Standard"
+
+[node name="200mm" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent/LensContainer" unique_id=382497593]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+text = "200mm
+Telephoto"
+
+[node name="LensLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent/LensContainer" unique_id=1042424294]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent" unique_id=1685254453]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LensSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent/HBoxContainer" unique_id=755338863]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+min_value = 18.0
+max_value = 200.0
+value = 50.0
+
+[node name="LensNum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent/HBoxContainer" unique_id=1601418614]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 0)
+custom_maximum_size = Vector2(50, -1)
+propagate_maximum_size = true
+layout_mode = 2
+text = "Num"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent" unique_id=33299774]
+layout_mode = 2
+
+[node name="Exposure Section" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox" unique_id=159726247]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("7_p1eom")
+
+[node name="MarginContainer_Exposure" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section" unique_id=1586799438]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="ExposureVBox" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure" unique_id=1326595561]
+layout_mode = 2
+
+[node name="ExposureHeader" type="CheckButton" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox" unique_id=957905650]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("6_wdn4e")
+button_pressed = true
+text = "Exposure"
+flat = true
+
+[node name="ExposureContent" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox" unique_id=882086705]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="EXPOSURE" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent" unique_id=2067564252]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8666667, 0.93333334, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "EXPOSURE"
+label_settings = ExtResource("10_4x11s")
+
+[node name="HSeparator3" type="HSeparator" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent" unique_id=2069602970]
+visible = false
+layout_mode = 2
+
+[node name="APERTURE" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent" unique_id=1206957715]
+unique_name_in_owner = true
+layout_mode = 2
+text = "APERTURE"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent" unique_id=1847260805]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ApertureSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent/HBoxContainer" unique_id=64118728]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+min_value = 1.4
+max_value = 22.0
+step = 0.1
+value = 5.6
+
+[node name="ApertureNum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent/HBoxContainer" unique_id=1905888691]
+unique_name_in_owner = true
+custom_maximum_size = Vector2(50, -1)
+propagate_maximum_size = true
+layout_mode = 2
+text = "Num"
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent" unique_id=1365022955]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+
+[node name="ApertureIndicator" type="Control" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent/MarginContainer" unique_id=990059114]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+mouse_filter = 2
+script = ExtResource("11_g5f7e")
+
+[node name="ISO Setting" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent" unique_id=458790921]
+layout_mode = 2
+text = "ISO"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent" unique_id=1350728641]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ISOSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent/HBoxContainer2" unique_id=565513804]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+min_value = 100.0
+max_value = 6400.0
+step = 100.0
+value = 100.0
+
+[node name="ISONum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent/HBoxContainer2" unique_id=1484873174]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 0)
+custom_maximum_size = Vector2(30, -1)
+propagate_maximum_size = true
+layout_mode = 2
+text = "Num"
+
+[node name="ExaggerateNoise" type="CheckBox" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent" unique_id=463904779]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Shows sensor noise eight times stronger than a real camera would, to make it easier to see."
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 10
+text = "Exaggerate noise (8x)"
+
+[node name="Shutter Speed Settings" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent" unique_id=1185902804]
+layout_mode = 2
+text = "Shutter Speed"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent" unique_id=1447243785]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ShutterSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent/HBoxContainer3" unique_id=94337700]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+max_value = 12.0
+
+[node name="ShutterNum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent/HBoxContainer3" unique_id=1612340614]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 0)
+custom_maximum_size = Vector2(30, -1)
+propagate_maximum_size = true
+layout_mode = 2
+text = "Num"
+
+[node name="WHITE BALANCE" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent" unique_id=389556510]
+layout_mode = 2
+text = "White Balance"
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent" unique_id=132196236]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CameraWBSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent/HBoxContainer4" unique_id=2014688945]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+min_value = 2000.0
+max_value = 10000.0
+step = 100.0
+value = 2000.0
+
+[node name="Camera_WBNum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent/HBoxContainer4" unique_id=812310183]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 0)
+custom_maximum_size = Vector2(30, -1)
+propagate_maximum_size = true
+layout_mode = 2
+text = "Num"
+
+[node name="Focus Section" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox" unique_id=339357323]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("7_p1eom")
+
+[node name="MarginContainer_Focus" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section" unique_id=514564074]
+layout_mode = 2
+size_flags_horizontal = 17
+size_flags_vertical = 17
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="FocusVBox" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section/MarginContainer_Focus" unique_id=2015254513]
+layout_mode = 2
+
+[node name="FocusHeader" type="CheckButton" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section/MarginContainer_Focus/FocusVBox" unique_id=785195988]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_default_cursor_shape = 2
+button_pressed = true
+text = "Focus"
+flat = true
+
+[node name="FocusContent" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section/MarginContainer_Focus/FocusVBox" unique_id=252289110]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="AutoFocus" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section/MarginContainer_Focus/FocusVBox/FocusContent" unique_id=1835136849]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Auto Focus"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section/MarginContainer_Focus/FocusVBox/FocusContent" unique_id=1054094733]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="FOCUS DISTANCE" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section/MarginContainer_Focus/FocusVBox/FocusContent/HBoxContainer" unique_id=1204639563]
+custom_minimum_size = Vector2(40, 0)
+custom_maximum_size = Vector2(40, -1)
+layout_mode = 2
+text = "Distance"
+
+[node name="FocusDistSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section/MarginContainer_Focus/FocusVBox/FocusContent/HBoxContainer" unique_id=2053388499]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+min_value = 0.5
+max_value = 10.0
+step = 0.1
+value = 0.5
+
+[node name="FocusDistanceNum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section/MarginContainer_Focus/FocusVBox/FocusContent/HBoxContainer" unique_id=1424463482]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 0)
+custom_maximum_size = Vector2(30, -1)
+propagate_maximum_size = true
+layout_mode = 2
+text = "Num"
+
+[node name="DOFLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section/MarginContainer_Focus/FocusVBox/FocusContent" unique_id=204793944]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+autowrap_mode = 3
+
+[node name="FocusDistLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section/MarginContainer_Focus/FocusVBox/FocusContent" unique_id=223504545]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="Focus Status" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section/MarginContainer_Focus/FocusVBox/FocusContent" unique_id=343047961]
+visible = false
+layout_mode = 2
+
+[node name="Status" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section/MarginContainer_Focus/FocusVBox/FocusContent" unique_id=1636821240]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Focus_" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section/MarginContainer_Focus/FocusVBox/FocusContent/Status" unique_id=1329906638]
+layout_mode = 2
+text = "Focus:"
+
+[node name="Label2" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section/MarginContainer_Focus/FocusVBox/FocusContent/Status" unique_id=715130030]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Num"
+
+[node name="Subject_" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section/MarginContainer_Focus/FocusVBox/FocusContent/Status" unique_id=664895615]
+layout_mode = 2
+text = "Subject:"
+
+[node name="Label4" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section/MarginContainer_Focus/FocusVBox/FocusContent/Status" unique_id=1343479847]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Num"
+
+[node name="Status_" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section/MarginContainer_Focus/FocusVBox/FocusContent/Status" unique_id=1263284473]
+layout_mode = 2
+text = "Status:"
+
+[node name="Label6" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section/MarginContainer_Focus/FocusVBox/FocusContent/Status" unique_id=1138798600]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Num"
+
+[node name="CenterPanel" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout" unique_id=785337053]
+custom_minimum_size = Vector2(1246, 894)
+custom_maximum_size = Vector2(1246, 894)
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("6_wdn4e")
+
+[node name="TopBottomDiv" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel" unique_id=358387872]
+propagate_maximum_size = false
+layout_mode = 2
+theme = ExtResource("6_wdn4e")
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv" unique_id=229285108 node_paths=PackedStringArray("viewport")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(1244, 700)
+custom_maximum_size = Vector2(1244, 700)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+script = ExtResource("13_vnwbm")
+viewport = NodePath("../../../../../../../SubViewport")
+
+[node name="Overlays" type="Control" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/TextureRect" unique_id=477488582]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("14_wb43u")
+
+[node name="Viewers" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv" unique_id=1608249621]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_controls")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers" unique_id=1281607692]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="MarginContainer2" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer" unique_id=170931534]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer2" unique_id=168885948]
+clip_contents = true
+layout_mode = 2
+
+[node name="MonitoringController" type="Node" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer2/PanelContainer" unique_id=799321570]
+unique_name_in_owner = true
+script = ExtResource("15_ts4rx")
+
+[node name="Histogram" type="Control" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer2/PanelContainer" unique_id=1283268403]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+mouse_filter = 2
+script = ExtResource("16_ttm7v")
+
+[node name="VSeparator" type="VSeparator" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer" unique_id=197161769]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer" unique_id=1740023191]
+custom_minimum_size = Vector2(150, 0)
+custom_maximum_size = Vector2(150, -1)
+propagate_maximum_size = false
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer" unique_id=1825264317]
+custom_maximum_size = Vector2(150, -1)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="RuleOfThirdsCheckbox" type="CheckBox" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer/VBoxContainer2" unique_id=1462021417]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Rule of Thirds"
+
+[node name="ActionSafe" type="CheckBox" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer/VBoxContainer2" unique_id=1087432614]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Action Safe"
+
+[node name="TitleSafe" type="CheckBox" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer/VBoxContainer2" unique_id=1921482410]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Title Safe"
+
+[node name="FalseColourToggle" type="CheckBox" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer/VBoxContainer2" unique_id=660295896]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "False Colour"
+
+[node name="ZebraToggle" type="CheckBox" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer/VBoxContainer2" unique_id=1379027455]
+layout_mode = 2
+text = "Zebra Lines"
+
+[node name="ZebraHContainer" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer/VBoxContainer2" unique_id=599842631]
+visible = false
+layout_mode = 2
+
+[node name="ZebraSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer/VBoxContainer2/ZebraHContainer" unique_id=1377315281]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 50.0
+value = 95.0
+
+[node name="ZebraNum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer/VBoxContainer2/ZebraHContainer" unique_id=1432822073]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(50, 0)
+custom_maximum_size = Vector2(50, -1)
+propagate_maximum_size = true
+layout_mode = 2
+text = "Num"
+
+[node name="VSeparator2" type="VSeparator" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer" unique_id=1577771591]
+layout_mode = 2
+
+[node name="MarginContainer3" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer" unique_id=1420038452]
+custom_minimum_size = Vector2(150, 0)
+custom_maximum_size = Vector2(150, -1)
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer3" unique_id=422390663]
+custom_maximum_size = Vector2(150, -1)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PresetOptions" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer3/VBoxContainer" unique_id=1104538205]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Preset Options"
+
+[node name="PresetName" type="LineEdit" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer3/VBoxContainer" unique_id=718739148]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="SavePreset" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer3/VBoxContainer" unique_id=1706692376]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Save New Preset"
+
+[node name="HSeparator" type="HSeparator" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer3/VBoxContainer" unique_id=1862955276]
+layout_mode = 2
+
+[node name="LoadPresetButton" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer3/VBoxContainer" unique_id=474687430]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Load Preset"
+
+[node name="PresetMenu" type="OptionButton" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer3/VBoxContainer" unique_id=2077347052]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_default_cursor_shape = 2
+
+[node name="HSeparator2" type="HSeparator" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer3/VBoxContainer" unique_id=1205896515]
+layout_mode = 2
+
+[node name="DeletePresets" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer3/VBoxContainer" unique_id=1338316033]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Delete Preset"
+
+[node name="ResetPreset" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer3/VBoxContainer" unique_id=647978987]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Reset to Scene Defaults"
+
+[node name="MarginContainer4" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer" unique_id=319883160]
+custom_minimum_size = Vector2(150, 0)
+custom_maximum_size = Vector2(150, -1)
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4" unique_id=1698658020]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="DownloadImage" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer" unique_id=1189103442]
+layout_mode = 2
+tooltip_text = "Saves the photo the camera records: exposure, focus, white balance and noise, without zebras, false colour or guides."
+mouse_default_cursor_shape = 2
+text = "Download Image"
+
+[node name="DownloadScreenshot" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer" unique_id=350200325]
+layout_mode = 2
+tooltip_text = "Saves a screenshot of the whole simulator window, including the controls and any guides."
+mouse_default_cursor_shape = 2
+text = "Download Screenshot"
+
+[node name="AnimationSeparator" type="HSeparator" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer" unique_id=323147703]
+layout_mode = 2
+
+[node name="AnimationLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer" unique_id=106899511]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "Subject animation"
+horizontal_alignment = 1
+
+[node name="AnimationButtons" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer" unique_id=1201745671]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PlayAnimation" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/AnimationButtons" unique_id=1405652892]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Play the subject's idle animation (blinking, breathing and a slight sway)."
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 11
+toggle_mode = true
+button_pressed = true
+text = "Play"
+
+[node name="PauseAnimation" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/AnimationButtons" unique_id=1826794182]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Pause the subject where she is."
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 11
+toggle_mode = true
+text = "Pause"
+
+[node name="ResetAnimation" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/AnimationButtons" unique_id=2100754804]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Ease the subject back to her starting pose and pause there."
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 11
+text = "Reset"
+
+[node name="SwapShirt" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer" unique_id=1630482917]
+layout_mode = 2
+tooltip_text = "Swap the subject's UniSQ shirt: gold, purple, orchid or coal."
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 11
+text = "Swap Shirt"
+
+[node name="OverlayStats" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel" unique_id=1769565706]
+custom_minimum_size = Vector2(170, 0)
+custom_maximum_size = Vector2(170, -1)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/OverlayStats" unique_id=295292308]
+layout_mode = 2
+theme_override_constants/margin_left = 11
+theme_override_constants/margin_top = 638
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/OverlayStats/MarginContainer" unique_id=825242034]
+layout_mode = 2
+
+[node name="InfoLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/OverlayStats/MarginContainer" unique_id=1523697019]
+unique_name_in_owner = true
+layout_mode = 2
+text = "info node"
+
+[node name="RightPanel" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout" unique_id=1730756574]
+custom_minimum_size = Vector2(200, 894)
+custom_maximum_size = Vector2(210, 894)
+layout_mode = 2
+size_flags_horizontal = 3
+theme = SubResource("Theme_g8dpu")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel" unique_id=281672805]
+custom_minimum_size = Vector2(200, 0)
+custom_maximum_size = Vector2(200, -1)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer" unique_id=380702833]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PanelContainer3" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer" unique_id=1538057823]
+custom_minimum_size = Vector2(0, 200)
+custom_maximum_size = Vector2(-1, 200)
+clip_contents = true
+layout_mode = 2
+theme_override_styles/panel = ExtResource("7_p1eom")
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer3" unique_id=1387965059]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 170
+
+[node name="SceneMapLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer3/MarginContainer" unique_id=1385478390]
+unique_name_in_owner = true
+layout_mode = 2
+text = "stuff and things"
+
+[node name="CameraMargin" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer3" unique_id=228590543]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="CameraDiagram" type="Control" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer3/CameraMargin" unique_id=1292417033]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+script = ExtResource("17_d2jds")
+
+[node name="PanelContainer2" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer" unique_id=965379969]
+layout_mode = 2
+theme = ExtResource("6_wdn4e")
+theme_override_styles/panel = ExtResource("7_p1eom")
+
+[node name="MarginContainer_Position" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2" unique_id=933176045]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="PositionVBox" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position" unique_id=765023714]
+layout_mode = 2
+
+[node name="PositionHeader" type="CheckButton" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox" unique_id=111927189]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_default_cursor_shape = 2
+button_pressed = true
+text = "Camera Position"
+flat = true
+
+[node name="Position Content" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox" unique_id=540984983]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HSeparator" type="HSeparator" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content" unique_id=2022814386]
+layout_mode = 2
+
+[node name="LookAtToggle" type="CheckBox" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content" unique_id=298121165]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_default_cursor_shape = 2
+button_pressed = true
+text = "Look at Subject"
+
+[node name="Label" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content" unique_id=101625412]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.57420003, 0.6171, 0.66, 1)
+theme_override_font_sizes/font_size = 8
+text = "'Look at' automatically calculates the camera
+yaw and ptich rotation."
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content" unique_id=761912281]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="DISTANCE" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/HBoxContainer" unique_id=713554490]
+custom_minimum_size = Vector2(40, 0)
+custom_maximum_size = Vector2(40, -1)
+layout_mode = 2
+text = "Distance"
+
+[node name="DistanceSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/HBoxContainer" unique_id=2100955375]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+min_value = 0.3
+max_value = 7.0
+step = 0.1
+value = 2.0
+
+[node name="DistanceNum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/HBoxContainer" unique_id=522016854]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 0)
+custom_maximum_size = Vector2(30, -1)
+propagate_maximum_size = true
+layout_mode = 2
+text = "Num"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content" unique_id=2021164932]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HEIGHT" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/HBoxContainer2" unique_id=284867459]
+custom_minimum_size = Vector2(40, 0)
+custom_maximum_size = Vector2(40, -1)
+layout_mode = 2
+text = "Height"
+
+[node name="HeightSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/HBoxContainer2" unique_id=680579700]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+max_value = 2.5
+step = 0.05
+
+[node name="HeightNum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/HBoxContainer2" unique_id=1546360130]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 0)
+custom_maximum_size = Vector2(30, -1)
+propagate_maximum_size = true
+layout_mode = 2
+text = "Num"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content" unique_id=1442587060]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LEFT-RIGHT" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/HBoxContainer3" unique_id=434745321]
+custom_minimum_size = Vector2(40, 0)
+custom_maximum_size = Vector2(40, -1)
+layout_mode = 2
+size_flags_vertical = 6
+text = "X Pos"
+
+[node name="LeftRightSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/HBoxContainer3" unique_id=903709554]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+min_value = -2.0
+max_value = 2.0
+step = 0.05
+
+[node name="LeftRightNum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/HBoxContainer3" unique_id=643908196]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 0)
+custom_maximum_size = Vector2(30, -1)
+propagate_maximum_size = true
+layout_mode = 2
+text = "Num"
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content" unique_id=1356711505]
+layout_mode = 2
+
+[node name="YAW" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/HBoxContainer4" unique_id=1797352727]
+custom_minimum_size = Vector2(40, 0)
+custom_maximum_size = Vector2(40, -1)
+layout_mode = 2
+text = "Yaw"
+
+[node name="YawSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/HBoxContainer4" unique_id=2086124904]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 2
+mouse_default_cursor_shape = 2
+min_value = -45.0
+max_value = 45.0
+
+[node name="YawNum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/HBoxContainer4" unique_id=869439838]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 0)
+custom_maximum_size = Vector2(30, -1)
+propagate_maximum_size = true
+layout_mode = 2
+text = "Num"
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content" unique_id=773299518]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CameraPitchLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/HBoxContainer5" unique_id=1088238204]
+custom_minimum_size = Vector2(40, 0)
+custom_maximum_size = Vector2(40, -1)
+layout_mode = 2
+text = "Pitch"
+
+[node name="PitchSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/HBoxContainer5" unique_id=482342103]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 2
+mouse_default_cursor_shape = 2
+min_value = -45.0
+max_value = 45.0
+
+[node name="PitchNum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/HBoxContainer5" unique_id=1907260717]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 0)
+custom_maximum_size = Vector2(30, -1)
+propagate_maximum_size = true
+layout_mode = 2
+text = "Num"
+
+[node name="ResetButton" type="Button" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content" unique_id=594180662]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Reset Camera"
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer" unique_id=93095452]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("7_p1eom")
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer" unique_id=1026364363]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer" unique_id=1168423044]
+layout_mode = 2
+
+[node name="LightsHeader" type="CheckButton" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2" unique_id=1149277451]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("6_wdn4e")
+button_pressed = true
+text = "Lights"
+flat = true
+
+[node name="LightsContent" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2" unique_id=268561011]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="KeyLightHeader" type="CheckBox" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent" unique_id=1672538496]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 6
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 11
+button_pressed = true
+text = "Key Light"
+
+[node name="KeylightContent" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent" unique_id=1885982076]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Key Angle Group" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/KeylightContent" unique_id=302540183]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="KeyAngleLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/KeylightContent/Key Angle Group" unique_id=1466749533]
+custom_minimum_size = Vector2(40, 0)
+custom_maximum_size = Vector2(40, -1)
+layout_mode = 2
+text = "Angle"
+
+[node name="KeyAngleSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/KeylightContent/Key Angle Group" unique_id=1615041954]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+mouse_default_cursor_shape = 2
+max_value = 360.0
+value = 45.0
+
+[node name="KeyAngleNum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/KeylightContent/Key Angle Group" unique_id=1399013810]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 0)
+custom_maximum_size = Vector2(30, -1)
+propagate_maximum_size = true
+layout_mode = 2
+text = "Num"
+
+[node name="Key Dist Group" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/KeylightContent" unique_id=399027468]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="KeyDistLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/KeylightContent/Key Dist Group" unique_id=373111333]
+custom_minimum_size = Vector2(40, 0)
+custom_maximum_size = Vector2(40, -1)
+layout_mode = 2
+text = "Distance"
+
+[node name="KeyDistSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/KeylightContent/Key Dist Group" unique_id=1458995321]
+unique_name_in_owner = true
+custom_maximum_size = Vector2(200, -1)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+mouse_default_cursor_shape = 2
+min_value = 0.5
+max_value = 5.0
+step = 0.1
+value = 1.0
+
+[node name="KeyDistNum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/KeylightContent/Key Dist Group" unique_id=2077626575]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 0)
+custom_maximum_size = Vector2(30, -1)
+propagate_maximum_size = true
+layout_mode = 2
+text = "Num"
+
+[node name="Key Height Group" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/KeylightContent" unique_id=1770847508]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="KeyHeightLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/KeylightContent/Key Height Group" unique_id=609323898]
+custom_minimum_size = Vector2(40, 0)
+custom_maximum_size = Vector2(40, -1)
+layout_mode = 2
+text = "Height"
+
+[node name="KeyHeightSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/KeylightContent/Key Height Group" unique_id=607916845]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+mouse_default_cursor_shape = 2
+max_value = 2.5
+step = 0.1
+value = 0.6
+
+[node name="KeyHeightNum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/KeylightContent/Key Height Group" unique_id=1248344553]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 0)
+custom_maximum_size = Vector2(30, -1)
+propagate_maximum_size = true
+layout_mode = 2
+text = "Num"
+
+[node name="Key Temp Group" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/KeylightContent" unique_id=1658345405]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="KeyTempLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/KeylightContent/Key Temp Group" unique_id=48045600]
+custom_minimum_size = Vector2(40, 0)
+custom_maximum_size = Vector2(40, -1)
+layout_mode = 2
+text = "Temp"
+
+[node name="KeyTempSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/KeylightContent/Key Temp Group" unique_id=760978581]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+mouse_default_cursor_shape = 2
+min_value = 2000.0
+max_value = 10000.0
+step = 100.0
+value = 5600.0
+
+[node name="KeyTempNum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/KeylightContent/Key Temp Group" unique_id=2091515130]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 0)
+custom_maximum_size = Vector2(30, -1)
+layout_mode = 2
+text = "Num"
+
+[node name="Key Int Group" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/KeylightContent" unique_id=342854072]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="KeyIntLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/KeylightContent/Key Int Group" unique_id=338994408]
+custom_minimum_size = Vector2(40, 0)
+custom_maximum_size = Vector2(40, -1)
+layout_mode = 2
+text = "Intensity"
+
+[node name="KeyIntSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/KeylightContent/Key Int Group" unique_id=1705383947]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+mouse_default_cursor_shape = 2
+max_value = 10.0
+step = 0.1
+value = 1.0
+
+[node name="KeyIntNum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/KeylightContent/Key Int Group" unique_id=1778699138]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 0)
+custom_maximum_size = Vector2(30, -1)
+layout_mode = 2
+text = "Num"
+
+[node name="HSeparator2" type="HSeparator" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent" unique_id=253380091]
+layout_mode = 2
+
+[node name="FillLightHeader" type="CheckBox" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent" unique_id=574462056]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 11
+text = "Fill Light"
+
+[node name="FilllightContent" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent" unique_id=2137547403]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Fill Angle Group" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/FilllightContent" unique_id=1095657739]
+layout_mode = 2
+
+[node name="FillAngleLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/FilllightContent/Fill Angle Group" unique_id=1797958809]
+custom_minimum_size = Vector2(40, 0)
+custom_maximum_size = Vector2(40, -1)
+layout_mode = 2
+text = "Angle"
+
+[node name="FillAngleSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/FilllightContent/Fill Angle Group" unique_id=114871884]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+max_value = 360.0
+value = 45.0
+
+[node name="FillAngleNum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/FilllightContent/Fill Angle Group" unique_id=1909258416]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 0)
+custom_maximum_size = Vector2(30, -1)
+propagate_maximum_size = true
+layout_mode = 2
+text = "Angle"
+
+[node name="Fill Dist Group" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/FilllightContent" unique_id=166962843]
+layout_mode = 2
+
+[node name="FillDistLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/FilllightContent/Fill Dist Group" unique_id=1957633286]
+custom_minimum_size = Vector2(40, 0)
+custom_maximum_size = Vector2(40, -1)
+layout_mode = 2
+text = "Distance"
+
+[node name="FillDistSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/FilllightContent/Fill Dist Group" unique_id=2103635211]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+min_value = 0.5
+max_value = 5.0
+step = 0.1
+value = 1.5
+
+[node name="FillDistNum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/FilllightContent/Fill Dist Group" unique_id=2071238120]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 0)
+custom_maximum_size = Vector2(30, -1)
+propagate_maximum_size = true
+layout_mode = 2
+text = "Distance"
+
+[node name="Fill Height Group" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/FilllightContent" unique_id=1377222195]
+layout_mode = 2
+
+[node name="FillHeightLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/FilllightContent/Fill Height Group" unique_id=1519662672]
+custom_minimum_size = Vector2(40, 0)
+custom_maximum_size = Vector2(40, -1)
+layout_mode = 2
+text = "Height"
+
+[node name="FillHeightSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/FilllightContent/Fill Height Group" unique_id=1975224881]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+max_value = 2.5
+step = 0.1
+value = 0.6
+
+[node name="FillHeightNum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/FilllightContent/Fill Height Group" unique_id=1053835831]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 0)
+custom_maximum_size = Vector2(30, -1)
+propagate_maximum_size = true
+layout_mode = 2
+text = "Height"
+
+[node name="Fill Temp Group" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/FilllightContent" unique_id=1298042515]
+layout_mode = 2
+
+[node name="FillTempLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/FilllightContent/Fill Temp Group" unique_id=116864293]
+custom_minimum_size = Vector2(40, 0)
+custom_maximum_size = Vector2(40, -1)
+layout_mode = 2
+text = "Temp"
+
+[node name="FillTempSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/FilllightContent/Fill Temp Group" unique_id=56663021]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+min_value = 2000.0
+max_value = 10000.0
+step = 100.0
+value = 5600.0
+
+[node name="FillTempNum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/FilllightContent/Fill Temp Group" unique_id=1535929970]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 0)
+custom_maximum_size = Vector2(30, -1)
+propagate_maximum_size = true
+layout_mode = 2
+text = "Num"
+
+[node name="Fill Int Group" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/FilllightContent" unique_id=227921744]
+layout_mode = 2
+
+[node name="FillIntLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/FilllightContent/Fill Int Group" unique_id=190971757]
+custom_minimum_size = Vector2(40, 0)
+custom_maximum_size = Vector2(40, -1)
+layout_mode = 2
+text = "Intensity"
+
+[node name="FillIntSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/FilllightContent/Fill Int Group" unique_id=1590545939]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+max_value = 10.0
+step = 0.1
+value = 1.0
+
+[node name="FillIntNum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/FilllightContent/Fill Int Group" unique_id=1050994077]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 0)
+custom_maximum_size = Vector2(30, -1)
+propagate_maximum_size = true
+layout_mode = 2
+text = "Temperature"
+
+[node name="HSeparator" type="HSeparator" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent" unique_id=1906395687]
+layout_mode = 2
+
+[node name="RimLightHeader" type="CheckBox" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent" unique_id=1178958955]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 11
+text = "Rim Light"
+
+[node name="RimlightContent" type="VBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent" unique_id=1545438708]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Rim Angle Group" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/RimlightContent" unique_id=1952334820]
+layout_mode = 2
+
+[node name="RimAngleLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/RimlightContent/Rim Angle Group" unique_id=881838337]
+custom_minimum_size = Vector2(40, 0)
+custom_maximum_size = Vector2(40, -1)
+layout_mode = 2
+text = "Angle"
+
+[node name="RimAngleSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/RimlightContent/Rim Angle Group" unique_id=1607774061]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+max_value = 360.0
+value = 45.0
+
+[node name="RimAngleNum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/RimlightContent/Rim Angle Group" unique_id=2126069874]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 0)
+custom_maximum_size = Vector2(30, -1)
+propagate_maximum_size = true
+layout_mode = 2
+text = "Angle"
+
+[node name="Rim Dist Group" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/RimlightContent" unique_id=1353288496]
+layout_mode = 2
+
+[node name="RimDistLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/RimlightContent/Rim Dist Group" unique_id=476697031]
+custom_minimum_size = Vector2(40, 0)
+custom_maximum_size = Vector2(40, -1)
+layout_mode = 2
+text = "Distance"
+
+[node name="RimDistSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/RimlightContent/Rim Dist Group" unique_id=451162935]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+min_value = 0.5
+max_value = 5.0
+step = 0.1
+value = 1.5
+
+[node name="RimDistNum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/RimlightContent/Rim Dist Group" unique_id=1373782013]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 0)
+custom_maximum_size = Vector2(30, -1)
+propagate_maximum_size = true
+layout_mode = 2
+text = "Distance"
+
+[node name="Rim Height Group" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/RimlightContent" unique_id=1821133039]
+layout_mode = 2
+
+[node name="RimHeightLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/RimlightContent/Rim Height Group" unique_id=612399184]
+custom_minimum_size = Vector2(40, 0)
+custom_maximum_size = Vector2(40, -1)
+layout_mode = 2
+text = "Height"
+
+[node name="RimHeightSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/RimlightContent/Rim Height Group" unique_id=1333538751]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+max_value = 2.5
+step = 0.1
+value = 0.6
+
+[node name="RimHeightNum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/RimlightContent/Rim Height Group" unique_id=160143612]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 0)
+custom_maximum_size = Vector2(30, -1)
+propagate_maximum_size = true
+layout_mode = 2
+text = "Height"
+
+[node name="Rim Temp Group" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/RimlightContent" unique_id=190302453]
+layout_mode = 2
+
+[node name="RimTempLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/RimlightContent/Rim Temp Group" unique_id=1532073645]
+custom_minimum_size = Vector2(40, 0)
+custom_maximum_size = Vector2(40, -1)
+layout_mode = 2
+text = "Temp"
+
+[node name="RimTempSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/RimlightContent/Rim Temp Group" unique_id=1247280274]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+min_value = 2000.0
+max_value = 10000.0
+step = 100.0
+value = 5600.0
+
+[node name="RimTempNum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/RimlightContent/Rim Temp Group" unique_id=1516769338]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 0)
+custom_maximum_size = Vector2(30, -1)
+propagate_maximum_size = true
+layout_mode = 2
+text = "Num"
+
+[node name="Rim Int Group" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/RimlightContent" unique_id=1629114962]
+layout_mode = 2
+
+[node name="RimIntLabel" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/RimlightContent/Rim Int Group" unique_id=1204915681]
+custom_minimum_size = Vector2(40, 0)
+custom_maximum_size = Vector2(40, -1)
+layout_mode = 2
+text = "Intensity"
+
+[node name="RimIntSlider" type="HSlider" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/RimlightContent/Rim Int Group" unique_id=888720717]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+max_value = 10.0
+step = 0.1
+value = 1.0
+
+[node name="RimIntNum" type="Label" parent="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/RimlightContent/Rim Int Group" unique_id=865914645]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 0)
+custom_maximum_size = Vector2(30, -1)
+propagate_maximum_size = true
+layout_mode = 2
+text = "Temperature"
+
+[node name="BottomPanel" type="Panel" parent="CanvasLayer/Control/OverallUI" unique_id=1126146870]
+custom_minimum_size = Vector2(1656, 25)
+custom_maximum_size = Vector2(1656, 25)
+layout_mode = 2
+theme = ExtResource("6_wdn4e")
+theme_override_styles/panel = ExtResource("7_p1eom")
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/BottomPanel" unique_id=293991698]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -9.5
+offset_bottom = 9.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control/OverallUI/BottomPanel/MarginContainer" unique_id=1982572535]
+layout_mode = 2
+
+[node name="Disclaimer" type="Label" parent="CanvasLayer/Control/OverallUI/BottomPanel/MarginContainer/HBoxContainer" unique_id=738961559]
+layout_mode = 2
+text = "This simulator provides an indicative representation of camera and lighting behaviour and may not fully reflect real-world equipment or physical results."
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/OverallUI/BottomPanel/MarginContainer/HBoxContainer" unique_id=1364831421]
+custom_minimum_size = Vector2(525, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AttributionButton" type="Button" parent="CanvasLayer/Control/OverallUI/BottomPanel/MarginContainer/HBoxContainer" unique_id=913323268]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("6_wdn4e")
+theme_override_styles/normal = ExtResource("18_h4iyr")
+theme_override_styles/hover = ExtResource("19_5sl37")
+text = "  Attribution  "
+
+[node name="HelpButton" type="Button" parent="CanvasLayer/Control/OverallUI/BottomPanel/MarginContainer/HBoxContainer" unique_id=1574478328]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme = ExtResource("6_wdn4e")
+theme_override_styles/normal = ExtResource("18_h4iyr")
+theme_override_styles/pressed = ExtResource("19_5sl37")
+theme_override_styles/hover = ExtResource("18_h4iyr")
+text = "  Help  "
+
+[node name="KeyLight" type="SpotLight3D" parent="." unique_id=115507418]
+unique_name_in_owner = true
+transform = Transform3D(0.7071067, -0.12526612, 0.6959228, 0, 0.9841834, 0.17715304, -0.7071068, -0.1252661, 0.6959227, 1.2103235, 1.9, 1.0606601)
+light_temperature_enabled = true
+light_temperature = 5600.0
+light_energy = 1.5
+shadow_enabled = true
+shadow_bias = 0.01
+shadow_normal_bias = 0.5
+shadow_blur = 3.0
+spot_range = 10.0
+spot_angle = 55.0
+spot_angle_attenuation = 3.0
+
+[node name="Mesh" type="MeshInstance3D" parent="KeyLight" unique_id=636445641]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_0thei")
+
+[node name="RimLight" type="SpotLight3D" parent="." unique_id=271086274]
+unique_name_in_owner = true
+transform = Transform3D(-4.371139e-08, 0.177153, -0.9841833, 0, 0.9841834, 0.177153, 1, 7.743604e-09, -4.302002e-08, -1.3503368, 1.9, 9.313228e-10)
+visible = false
+light_temperature_enabled = true
+light_temperature = 5600.0
+light_energy = 2.0
+shadow_enabled = true
+shadow_bias = 0.01
+shadow_normal_bias = 0.5
+shadow_blur = 3.0
+spot_range = 10.0
+spot_angle = 55.0
+spot_angle_attenuation = 3.0
+
+[node name="Mesh3" type="MeshInstance3D" parent="RimLight" unique_id=1501152486]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_0thei")
+
+[node name="FillLight" type="SpotLight3D" parent="." unique_id=1945025475]
+unique_name_in_owner = true
+transform = Transform3D(0.7071067, 0.12526612, -0.6959228, 0, 0.9841834, 0.17715304, 0.7071068, -0.1252661, 0.6959227, -0.910997, 1.9, 1.0606601)
+visible = false
+light_temperature_enabled = true
+light_temperature = 5600.0
+light_energy = 0.75
+shadow_enabled = true
+shadow_bias = 0.01
+shadow_normal_bias = 0.5
+shadow_blur = 3.0
+spot_range = 10.0
+spot_angle = 55.0
+spot_angle_attenuation = 3.0
+
+[node name="Mesh2" type="MeshInstance3D" parent="FillLight" unique_id=327402929]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_0thei")
+
+[node name="Subject" type="Node3D" parent="." unique_id=444173362]
+transform = Transform3D(0.07884044, 0, -0.99688727, 0, 1, 0, 0.99688727, 0, 0.07884044, 0, 0, 0)
+
+[node name="Ava2" parent="Subject" unique_id=1895001219 instance=ExtResource("20_d88y4")]
+transform = Transform3D(0.07884044, 0, 0.99688697, 0, 1, 0, -0.99688697, 0, 0.07884044, -0.098996356, 0.04826671, -0.14913379)
+
+[node name="Marker3D" type="Marker3D" parent="Subject" unique_id=143947559]
+unique_name_in_owner = true
+transform = Transform3D(0.07884042, 0, 0.9968862, 0, 1, 0, -0.9968862, 0, 0.07884042, 0.011799514, 1.6827664, -0.14919734)
+
+[node name="SavePresetDialog" type="AcceptDialog" parent="." unique_id=134801878]
+unique_name_in_owner = true
+oversampling_override = 1.0
+title = "Save a new preset"
+size = Vector2i(391, 80)
+max_size = Vector2i(500, 500)
+ok_button_text = "      OK      "
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SavePresetDialog" unique_id=985251524]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 383.0
+offset_bottom = 39.0
+
+[node name="PresetNameInput" type="LineEdit" parent="SavePresetDialog/VBoxContainer" unique_id=782019947]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 30)
+layout_mode = 2
+placeholder_text = "Save a new preset?"
+
+[node name="AcknowledgementsPopup" type="Window" parent="." unique_id=4560040]
+unique_name_in_owner = true
+oversampling_override = 1.0
+title = "Acknowledgements"
+initial_position = 1
+size = Vector2i(550, 300)
+visible = false
+
+[node name="MarginContainer" type="MarginContainer" parent="AcknowledgementsPopup" unique_id=802128364]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="AcknowledgementsPopup/MarginContainer" unique_id=572982758]
+custom_minimum_size = Vector2(550, 300)
+custom_maximum_size = Vector2(550, 300)
+layout_mode = 2
+
+[node name="DevelopedBy" type="Label" parent="AcknowledgementsPopup/MarginContainer/VBoxContainer" unique_id=1668969993]
+custom_minimum_size = Vector2(510, 0)
+custom_maximum_size = Vector2(510, -1)
+propagate_maximum_size = true
+layout_mode = 2
+size_flags_horizontal = 17
+size_flags_vertical = 22
+theme = ExtResource("6_wdn4e")
+theme_override_font_sizes/font_size = 12
+text = "This Camera Simulator tool was developed by:
+"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="IMD" type="Label" parent="AcknowledgementsPopup/MarginContainer/VBoxContainer" unique_id=1979479921]
+custom_minimum_size = Vector2(510, 0)
+custom_maximum_size = Vector2(510, -1)
+propagate_maximum_size = true
+layout_mode = 2
+size_flags_horizontal = 17
+size_flags_vertical = 22
+theme = ExtResource("6_wdn4e")
+theme_override_font_sizes/font_size = 14
+text = "Innovative Media and Design | Learning and Teaching Futures
+University of Southern Queensland
+"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="DevelopedBy2" type="Label" parent="AcknowledgementsPopup/MarginContainer/VBoxContainer" unique_id=2053326249]
+custom_minimum_size = Vector2(510, 0)
+custom_maximum_size = Vector2(510, -1)
+propagate_maximum_size = true
+layout_mode = 2
+size_flags_horizontal = 17
+size_flags_vertical = 22
+theme = ExtResource("6_wdn4e")
+theme_override_font_sizes/font_size = 12
+text = "It is intended for educational purposes and not to be used commercially.
+"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="HSeparator" type="HSeparator" parent="AcknowledgementsPopup/MarginContainer/VBoxContainer" unique_id=2087768238]
+layout_mode = 2
+
+[node name="Attribution" type="Label" parent="AcknowledgementsPopup/MarginContainer/VBoxContainer" unique_id=934277896]
+custom_minimum_size = Vector2(510, 0)
+custom_maximum_size = Vector2(510, -1)
+propagate_maximum_size = true
+layout_mode = 2
+size_flags_horizontal = 17
+size_flags_vertical = 22
+theme = ExtResource("6_wdn4e")
+theme_override_font_sizes/font_size = 14
+text = "Asset Attribution:
+
+Metahumans by Epic Games.
+https://www.metahuman.com/license
+
+\"Studio Setup\" (https://skfb.ly/opCzL) by Render Blue is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="HelpDocsPopup" type="Window" parent="." unique_id=1408639208]
+unique_name_in_owner = true
+oversampling_override = 1.0
+title = "Help Documentation"
+initial_position = 1
+size = Vector2i(720, 700)
+visible = false
+
+[node name="MarginContainer" type="MarginContainer" parent="HelpDocsPopup" unique_id=1947289764]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HelpDocsPopup/MarginContainer" unique_id=1786426077]
+layout_mode = 2
+
+[node name="HelpDocs" type="RichTextLabel" parent="HelpDocsPopup/MarginContainer/VBoxContainer" unique_id=1296612603]
+custom_minimum_size = Vector2(680, 660)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/bold_font = ExtResource("8_ii1va")
+theme_override_font_sizes/normal_font_size = 13
+theme_override_font_sizes/bold_font_size = 13
+bbcode_enabled = true
+text = "[b]Camera Studio Simulator[/b] lets you set up a camera and studio lights and see the photo they would make.
+
+[b]Camera[/b]: choose a sensor size and a focal length. A smaller sensor crops the view (it acts like a longer lens) and is noisier. 24mm is wide, 50mm is standard and 200mm is telephoto.
+
+[b]Exposure[/b]: the exposure triangle. A lower f-number (wider aperture) lets in more light and makes the depth of field shallower. A faster shutter lets in less light. A higher ISO brightens the image by amplifying it, and the grain grows with it. Tick Exaggerate noise to see the grain more easily. Set the white balance to the colour temperature of your light so that white looks white: about 3200K for tungsten, 5600K for daylight.
+
+[b]Light meter[/b]: the Meter line in the box on the picture shows how your exposure compares with what a light meter at the subject's face recommends, in stops: 0.0 is correct, + is brighter (over) and - is darker (under). It changes with the camera settings and with the lights.
+
+[b]Focus[/b]: Auto Focus keeps the subject's face sharp, even as she moves. Drag Distance to focus by hand. The panel shows the range that will look sharp, and how deep it is.
+
+[b]Camera Position[/b]: distance, height and side offset. Look at Subject aims the camera for you; untick it to set the yaw and pitch yourself.
+
+[b]Lights[/b]: a key, fill and rim light. Tick a light to switch it on. Angle moves a light around the subject, Distance and Height place it, Temp sets its colour and Intensity its brightness. A classic portrait puts the key at about 45 degrees and the fill on the other side at about half the key's intensity.
+
+[b]Monitoring[/b]: the histogram shows the photo's brightness from dark (left) to bright (right). Its border turns red when highlights clip and blue when shadows are crushed. Zebra Lines stripe areas that are close to clipping, False Colour paints brightness in bands, and the guides help with framing.
+
+[b]Subject animation[/b]: Play, Pause and Reset control her idle movement (blinking, breathing and a slight sway). Pause holds her still; Reset eases her back to her starting pose. Swap Shirt cycles her UniSQ shirt through gold, purple, orchid and coal.
+
+[b]Display[/b]: Fullscreen fills the screen.
+
+[b]Presets and downloads[/b]: save a set-up and load it again later. Download Image saves the photo the camera takes, without the guides; Download Screenshot saves the whole screen."
+
+[connection signal="toggled" from="CanvasLayer/Control/OverallUI/PanelContainer/DisplayOptions/HBoxContainer/FullscreenButton" to="." method="_on_fullscreen_button_toggled"]
+[connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraHeader" to="." method="_on_camera_header_toggled"]
+[connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent/SensorContainer/FullFrame" to="." method="_on_full_frame_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent/SensorContainer/APSC" to="." method="_on_apsc_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent/SensorContainer/MFT" to="." method="_on_mft_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent/LensContainer/24mm" to="." method="_on_24mm_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent/LensContainer/50mm" to="." method="_on_50mm_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent/LensContainer/200mm" to="." method="_on_200mm_pressed"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Camera Section/MarginContainer_Camera/CameraVBox/CameraContent/HBoxContainer/LensSlider" to="." method="_on_lens_slider_value_changed"]
+[connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureHeader" to="." method="_on_exposure_header_toggled"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent/HBoxContainer/ApertureSlider" to="ExposureController" method="_on_aperture_slider_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent/HBoxContainer2/ISOSlider" to="ExposureController" method="_on_iso_slider_value_changed"]
+[connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent/ExaggerateNoise" to="ExposureController" method="_on_exaggerate_noise_toggled"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent/HBoxContainer3/ShutterSlider" to="ExposureController" method="_on_shutter_slider_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Exposure Section/MarginContainer_Exposure/ExposureVBox/ExposureContent/HBoxContainer4/CameraWBSlider" to="." method="_on_camera_wb_slider_value_changed"]
+[connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section/MarginContainer_Focus/FocusVBox/FocusHeader" to="." method="_on_focus_header_toggled"]
+[connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section/MarginContainer_Focus/FocusVBox/FocusContent/AutoFocus" to="CameraController" method="_on_auto_focus_pressed"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/Left Panel/ScrollContainer/CameraVBox/Focus Section/MarginContainer_Focus/FocusVBox/FocusContent/HBoxContainer/FocusDistSlider" to="CameraController" method="_on_focus_dist_slider_value_changed"]
+[connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer/VBoxContainer2/RuleOfThirdsCheckbox" to="." method="_on_rule_of_thirds_checkbox_toggled"]
+[connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer/VBoxContainer2/ActionSafe" to="." method="_on_safe_areas_toggled"]
+[connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer/VBoxContainer2/TitleSafe" to="." method="_on_title_safe_toggled"]
+[connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer/VBoxContainer2/FalseColourToggle" to="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer2/PanelContainer/MonitoringController" method="_on_false_colour_toggle_toggled"]
+[connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer/VBoxContainer2/ZebraToggle" to="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer2/PanelContainer/MonitoringController" method="_on_zebra_toggle_toggled"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer/VBoxContainer2/ZebraHContainer/ZebraSlider" to="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer2/PanelContainer/MonitoringController" method="_on_zebra_slider_value_changed"]
+[connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer3/VBoxContainer/SavePreset" to="." method="_on_save_preset_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer3/VBoxContainer/LoadPresetButton" to="." method="_on_load_preset_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer3/VBoxContainer/DeletePresets" to="." method="_on_delete_presets_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer3/VBoxContainer/ResetPreset" to="." method="_on_reset_preset_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/DownloadImage" to="." method="_on_download_image_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/DownloadScreenshot" to="." method="_on_download_screenshot_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/AnimationButtons/PlayAnimation" to="." method="_on_play_animation_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/AnimationButtons/PauseAnimation" to="." method="_on_pause_animation_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/AnimationButtons/ResetAnimation" to="." method="_on_reset_animation_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/CenterPanel/TopBottomDiv/Viewers/HBoxContainer/MarginContainer4/VBoxContainer/SwapShirt" to="." method="_on_swap_shirt_pressed"]
+[connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/PositionHeader" to="." method="_on_position_header_toggled"]
+[connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/LookAtToggle" to="." method="_on_look_at_toggle_toggled"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/HBoxContainer/DistanceSlider" to="." method="_on_camera_distance_slider_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/HBoxContainer2/HeightSlider" to="." method="_on_camera_height_slider_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/HBoxContainer3/LeftRightSlider" to="." method="_on_camera_left_right_slider_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/HBoxContainer4/YawSlider" to="." method="_on_camera_yaw_slider_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/HBoxContainer5/PitchSlider" to="." method="_on_camera_ptich_slider_value_changed"]
+[connection signal="pressed" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer2/MarginContainer_Position/PositionVBox/Position Content/ResetButton" to="." method="_on_reset_button_pressed"]
+[connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsHeader" to="." method="_on_lights_header_toggled"]
+[connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/KeyLightHeader" to="." method="_on_keylight_header_toggled"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/KeylightContent/Key Angle Group/KeyAngleSlider" to="." method="_on_key_angle_slider_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/KeylightContent/Key Dist Group/KeyDistSlider" to="." method="_on_key_dist_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/KeylightContent/Key Height Group/KeyHeightSlider" to="." method="_on_key_height_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/KeylightContent/Key Temp Group/KeyTempSlider" to="." method="_on_keytemp_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/KeylightContent/Key Int Group/KeyIntSlider" to="." method="_on_key_int_slider_value_changed"]
+[connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/FillLightHeader" to="." method="_on_fill_light_header_toggled"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/FilllightContent/Fill Angle Group/FillAngleSlider" to="." method="_on_fill_angle_slider_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/FilllightContent/Fill Dist Group/FillDistSlider" to="." method="_on_fill_dist_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/FilllightContent/Fill Height Group/FillHeightSlider" to="." method="_on_fill_height_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/FilllightContent/Fill Temp Group/FillTempSlider" to="." method="_on_fill_temp_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/FilllightContent/Fill Int Group/FillIntSlider" to="." method="_on_fill_int_slider_value_changed"]
+[connection signal="toggled" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/RimLightHeader" to="." method="_on_rim_light_header_toggled"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/RimlightContent/Rim Angle Group/RimAngleSlider" to="." method="_on_rim_angle_slider_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/RimlightContent/Rim Dist Group/RimDistSlider" to="." method="_on_rim_dist_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/RimlightContent/Rim Height Group/RimHeightSlider" to="." method="_on_rim_height_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/RimlightContent/Rim Temp Group/RimTempSlider" to="." method="_on_rim_temp_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/Control/OverallUI/MainLayout/RightPanel/ScrollContainer/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer2/LightsContent/RimlightContent/Rim Int Group/RimIntSlider" to="." method="_on_rim_int_slider_value_changed"]
+[connection signal="pressed" from="CanvasLayer/Control/OverallUI/BottomPanel/MarginContainer/HBoxContainer/AttributionButton" to="." method="_on_attribution_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/OverallUI/BottomPanel/MarginContainer/HBoxContainer/HelpButton" to="." method="_on_help_button_pressed"]
+[connection signal="confirmed" from="SavePresetDialog" to="." method="_on_save_preset_dialog_confirmed"]
+[connection signal="close_requested" from="AcknowledgementsPopup" to="." method="_on_popup_window_close_requested"]
+[connection signal="close_requested" from="HelpDocsPopup" to="." method="_on_help_docs_popup_close_requested"]

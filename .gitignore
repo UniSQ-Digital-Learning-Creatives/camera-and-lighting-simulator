@@ -21,5 +21,26 @@ mono_crash.*.json
 
 # Export outputs
 *.exe
+builds/
 # Uncomment if your project does not version PCK files as runtime dependencies.
 # *.pck
+
+# Local instructions file, kept out of history on purpose
+CLAUDE.md
+
+# macOS Finder metadata
+.DS_Store
+
+# GodotHub's local project marker (time tracking)
+.godothub/
+
+# The original MetaHuman export; scenes/Ava/ holds the same files, extracted
+scenes/Ava.zip
+
+# Old snapshots of the main scene (the live one is scenes/camera_studio.tscn)
+scenes/main_19October.*
+scenes/main_20October.scn
+scenes/main_NewUI.scn
+scenes/main_scene22October*.scn
+*.depren
+pb-deps.json

@@ -1,0 +1,59 @@
+<style>
+/* UniSQ title slide (the 'Title Slide with border and background' layout of
+   res/usq-brand-powerpoint.pptx), laid out to fit any window: the plum border
+   runs along the right and bottom edges, and the splash image (UI/splash.png,
+   made by tools/make_splash.gd) is cropped to its logo and title and pinned
+   top left. The spinner, status and progress bar sit in the slide's subtitle
+   slot, under the title. --u is 1% of the slide height, the template's own
+   unit. */
+#status {
+	--u: min(1vh, calc(1vw / 1.7107));
+	justify-content: flex-start;
+	align-items: flex-start;
+	padding: calc(53.46 * var(--u)) 0 0 calc(5.95 * var(--u));
+}
+#status::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background: #3C2D4D;
+}
+#status::after {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: calc(100% - 11.99 * var(--u));
+	height: calc(100% - 5.556 * var(--u));
+	background: #FFB448;
+	border-bottom-right-radius: calc(15.96 * var(--u));
+}
+#status > * {
+	position: relative;
+	z-index: 1;
+}
+#status #status-splash {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: auto;
+	height: calc(100 * var(--u));
+	max-width: none;
+	max-height: none;
+	clip-path: inset(0 16.5% 6% 0);
+}
+#status #status-progress {
+	width: calc(50 * var(--u));
+	accent-color: #3C2D4D;
+}
+#status #status-label {
+	text-align: left;
+	color: #3C2D4D;
+	text-shadow: none;
+	opacity: 1;
+}
+#status #webgpu-spinner {
+	border-color: rgba(60, 45, 77, 0.25);
+	border-top-color: #3C2D4D;
+}
+</style>

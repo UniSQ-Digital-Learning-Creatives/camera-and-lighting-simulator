@@ -1,0 +1,11 @@
+[gd_resource type="StyleBoxFlat" format=3 uid="uid://bulg3ncwpp4b4"]
+
+[resource]
+draw_center = false
+border_width_top = 3
+border_width_bottom = 3
+border_color = Color(0.1764706, 0.21176471, 0.25490198, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
